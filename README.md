@@ -78,3 +78,5 @@ scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/F
           14        0.05000 0.26515910E+00
           14        0.06000 0.26590940E+00
           15        0.00000 0.26590940E+00
+
+创新的live 2，飞利浦的SHP9500
