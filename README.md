@@ -5,13 +5,14 @@
  
  ssh -X  gpc03
  
- cd /scratch/l/liuqy/zhang18/seisDD
+ cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/submit_job
 
 scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
 
 
 
 /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/submit_job
+
 /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC
 
            1        0.00000 0.66308063E+00
