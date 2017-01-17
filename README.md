@@ -6,8 +6,7 @@
  ssh -X  gpc03
  
  cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/submit_job
- 
- 
+ cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN1/submit_job 
  cd /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC
 
 scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
