@@ -10,7 +10,7 @@
  cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN1/submit_job 
  
   
- cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN1/submit_job 
+ cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN/submit_job 
  
  cd /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC
  
