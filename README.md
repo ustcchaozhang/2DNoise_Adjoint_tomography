@@ -9,7 +9,12 @@
  
  cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN1/submit_job 
  
+  
+ cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN1/submit_job 
+ 
  cd /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC
+ 
+ vim /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC/misfit_adjoint.f90
 
 scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
 
