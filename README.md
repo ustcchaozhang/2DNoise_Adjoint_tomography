@@ -15,6 +15,8 @@
  cd /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC
  
  vim /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC/misfit_adjoint.f90
+ 
+ cd /scratch/l/liuqy/zhang18/seisDD/seisDD/scripts_mpi
 
 scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
 
