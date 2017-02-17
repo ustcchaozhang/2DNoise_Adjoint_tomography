@@ -20,6 +20,7 @@
 
 scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
 
+mpirun -np 4 ./bin/misfit_adjoint.exe true z CC AD /oldscratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN/submit_job/FwiSYN//000000/
 
 
 /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/submit_job
