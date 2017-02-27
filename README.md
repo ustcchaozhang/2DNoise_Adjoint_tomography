@@ -16,11 +16,13 @@
  
  vim /scratch/l/liuqy/zhang18/seisDD/seisDD/SRC/misfit_adjoint.f90
  
- vim /scratch/l/liuqy/zhang18/seisDD/seisDD/lib/src/
- 
- cd /scratch/l/liuqy/zhang18/seisDD/seisDD/scripts_mpi
+cd  /scratch/l/liuqy/zhang18/seisDD/seisDD/lib
 
-scp   zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
+cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF_fang_smooth/submit_job/RESULTS/invesion/Scale0_CC_AD
+
+cd /scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF_fang/submit_job/RESULTS/invesion/Scale0_CC_AD
+
+scp -r  zhang18@login.scinet.utoronto.ca:/scratch/l/liuqy/zhang18/seisDD/GJI2016/FwiEGF/model_init_bin_empirefunc
 
 mpirun -np 4 ./bin/misfit_adjoint.exe true z CC AD /oldscratch/l/liuqy/zhang18/seisDD/GJI2016/FwiSYN/submit_job/FwiSYN//000000/
 
