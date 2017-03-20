@@ -1,7 +1,10 @@
 # 3D-2D
 
-
  ssh -X zhang18@login.scinet.utoronto.ca
+ ssh zhangc@128.100.79.35 -X
+ ssh zhangchao@222.195.76.41
+ 
+ 
  
  ssh -X  gpc03
  
