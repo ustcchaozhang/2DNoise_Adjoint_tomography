@@ -1,6 +1,8 @@
 # 3D-2D
  scp -r  zhangc@172.21.51.221:/home/zhangc/
+ 
  ssh -X  zhangc@172.21.51.221
+ 
  ssh -X zhang18@login.scinet.utoronto.ca
  ssh zhangc@128.100.79.35 -X
  ssh zhangchao@222.195.76.41
