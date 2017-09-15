@@ -1,5 +1,6 @@
 # 3D-2D
- scp -r  zhangc@172.21.51.221:/home/zhangc/
+ scp -r  zhangc@172.21.51.221:/home/zhangc/telesem2d/checker/event
+ 
  
  ssh -X  zhangc@172.21.51.221
  
