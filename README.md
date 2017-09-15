@@ -1,6 +1,8 @@
 # 3D-2D
  scp -r  zhangc@172.21.51.221:/home/zhangc/telesem2d/checker/event
  
+ gfortran  -std=gnu -fimplicit-none -frange-check -O2 -pedantic -pedantic-errors -Waliasing -Wampersand -Wline-truncation -Wsurprising -Wunderflow -ffree-line-length-132 -I../../setup -c -o ../../obj/specfem2D.o ./specfem2D.F90
+ 
  
  ssh -X  zhangc@172.21.51.221
  
