@@ -1,0 +1,38 @@
+FC=ifort
+ifeq ($(FC),gfortran)
+FCFLAGS=-g
+FLAGS=-Wall -fbounds-check
+else
+FCFLAGS=-g
+FLAGS=-O3 -xSSSE3 -no-ip -fno-fnalias -fno-alias -vec-report1 -assume byterecl -sox -cpp -traceback -w -ftz
+FLAGE=-I/home/l/liuqy/zhang18/usr/local/sac/include  -L/home/l/liuqy/zhang18/usr/local/sac/lib  -lsac -lsacio
+
+endif
+
+SRC_DIR=./src
+MOD_DIR=./src
+LIB_preprocess=seismo.a
+LIBSRC_preprocess=\
+         ${MOD_DIR}/constants.f90 \
+         ${SRC_DIR}/ma_sub2.f90 \
+         ${SRC_DIR}/ma_sub.f90 \
+         ${SRC_DIR}/adjoint_lib.f90 \
+         ${SRC_DIR}/optimization_lib.f90 
+
+LIBOBJ_preprocess = ${LIBSRC_preprocess:%.f=${LIB_preprocess}(%.o)} ${LIBSRC_preprocess:%.f90=${LIB_preprocess}(%.o)} \
+         ${LIBSRC_preprocess:%.F=${LIB_preprocess}(%.o)}
+
+${LIB_preprocess}:${LIBOBJ_preprocess}
+
+SUFFIXES = .f .o .f90 .F .mod
+.SUFFIXES: $(SUFFIXES)
+
+.f.o:
+	$(FC) ${FCLAGS} ${FLAGS} -c -o $@ $<
+.F.o:
+	$(FC) ${FCLAGS} ${FLAGS} -c -o $@ $<
+.f90.o:
+	$(FC) ${FCLAGS} ${FLAGS} -c -o $@ $<
+
+clean:
+	rm -rf  ${LIB_preprocess} *.o *.mod OUTPUT_FILES/*

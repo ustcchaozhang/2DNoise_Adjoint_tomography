@@ -1,0 +1,36 @@
+this is <COPYING>
+============================================================================
+liblinearxx
+============================================================================
+ 
+Copyright (c) 2004, 2007 by Thomas Forbriger (BFO Schiltach)
+Copyright (c) 1992, 1996 by J. J. Dongarra, E. Greaser, R. Pozo, D. Walker
+
+The source code and other files in this directory are part of liblinearxx.
+This library provides a C++ interface to LAPACK. It uses libaff arrays to
+store matrix data. The library builds a framework to be extended in the
+future with further interface functions to LAPACK.
+
+Most components of liblinearxx are provided under terms of the
+GNU General Public License
+
+Please check contrib/README.lapack++ for specific licensing conditions
+applying to source code in subdirectory contrib.
+
+----
+liblinearxx is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+----
+
+----- END OF COPYING ----- 

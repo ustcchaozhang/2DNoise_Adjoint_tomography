@@ -1,0 +1,43 @@
+this is <README>
+============================================================================
+PGPLOT++ --- C++ interface for PGPLOT 
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+This provides a C++ interface to the FORTRAN PGPLOT library. It is based on 
+the C-interface (cpgplot.h) coming with the library.
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+  TF_WWWBASEDIR   Defines the path to your personal homepage. That's the
+                  place where doxygen output will be written too (see
+                  in the Makefile).
+
+make all             installs headers, binary libraries and documentation
+
+Dependencies
+------------
+This library requires code from libaff.
+External dependency is PGPLOT.
+The testprogram requires libtfxx in addition.
+
+When compiling the PGPLOT library you must use the same Fortran compiler you
+use for the other code and in particular pass the options -ff2c and
+-fno-backslash to the the gfortran compiler. See
+https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc_PGPLOT
+or contrib/pgplot/README.pgplot (as seen from the root directory of Seitosh)
+for assistance.
+
+Detailed documentation is provided through doxygen source code. See target
+doxydoc in the Makefile.
+
+----- END OF README ----- 

@@ -1,0 +1,10 @@
+# this is <stfinvidentity_summary_usage.txt>
+# ----------------------------------------------------------------------------
+#
+Procedure: Scale with amplitude factor
+--------------------------------------
+Scale signals by a scalar factor (i.e. keep signal shape).
+
+Options and parameters:
+  scaleenergy   if flag is set: scale energy
+# ----- END OF stfinvidentity_summary_usage.txt ----- 

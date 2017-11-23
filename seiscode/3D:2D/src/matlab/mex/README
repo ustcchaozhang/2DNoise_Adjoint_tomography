@@ -1,0 +1,9 @@
+this is <README>
+============================================================================
+matlab/mex
+============================================================================
+
+This directory just contains some test code for calling binary programs from
+within matlab.
+
+----- END OF README ----- 

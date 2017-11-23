@@ -1,0 +1,88 @@
+# this is <Makefile.SingleTraceTransformation>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2015 by Thomas Forbriger (BFO Schiltach) 
+# 
+# apply single trace transformation
+# 
+# REVISIONS and CHANGES 
+#    12/05/2015   V1.0   Thomas Forbriger
+#    07/07/2015   V1.1   provide test data with sparse receiver array
+# 
+# ============================================================================
+#
+# transform point source seismograms tracewise
+# --------------------------------------------
+#
+FULLSPACETVELOCITY=1.
+fullspace%.tvel.xxx: ; echo "-velocity $(FULLSPACETVELOCITY)" > $@
+fullspace%.tvelval.xxx: ; echo "$(FULLSPACETVELOCITY) km/s" > $@
+fs.%.tvel.xxx: ; echo "-velocity $(FULLSPACETVELOCITY)" > $@
+fs.%.tvelval.xxx: ; echo "$(FULLSPACETVELOCITY) km/s" > $@
+acousticfs%.tvel.xxx: ; echo "-velocity $(FULLSPACETVELOCITY)" > $@
+BIETIGHEIMTVELOCITY=0.18
+biet000601%.tvel.xxx: ; echo "-velocity $(BIETIGHEIMTVELOCITY)" > $@
+biet000601%.tvelval.xxx: ; echo "$(BIETIGHEIMTVELOCITY) km/s" > $@
+biet.%.tvel.xxx: ; echo "-velocity $(BIETIGHEIMTVELOCITY)" > $@
+biet.%.tvelval.xxx: ; echo "$(BIETIGHEIMTVELOCITY) km/s" > $@
+#
+LISOUSIOPT=-integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10.
+LISOUSIXOPT=
+# *.LS.*: optimal transformation
+%.LS.bin: %.bin
+	lisousi -v -o -type bin -Type bin -limitlength \
+	  $(LISOUSIOPT) $(LISOUSIXOPT) $@ $<
+# *.LSF.*: optimal transformation, numeric filter response in Fourier domain
+%.LSF.bin: %.bin
+	lisousi -v -o -type bin -Type bin -limitlength \
+	  -fdfilter $(LISOUSIOPT) $(LISOUSIXOPT) $@ $<
+# *.LST.*: optimal transformation in the time domain
+%.LST.bin: %.bin
+	lisousi -v -o -type bin -Type bin -limitlength \
+	  -tdfilter $(LISOUSIOPT) $(LISOUSIXOPT) $@ $<
+# *.LSA.*: optimal transformation, taper last
+%.LSA.bin: %.bin
+	lisousi -v -o -type bin -Type bin -limitlength -taperlast \
+	  $(LISOUSIOPT) $(LISOUSIXOPT) $@ $<
+# *.LSG.*: single velocity transformation (far-field)
+TVELOCITY=1.
+%.LSG.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -fredomain \
+	  $(shell cat $(word 2,$^)) $(LISOUSIXOPT) $@ $<
+# *.LSEG.*: single velocity transformation (explosion)
+%.LSEG.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -fredomain -fdexplosion \
+	  $(shell cat $(word 2,$^)) $(LISOUSIXOPT) $@ $<
+# *.LSWIHS.*: single velocity transformation 
+# (single force on halfspace, wavenumber integ.)
+%.LSWIHS.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -fredomain -fdlamb $(DEBUG) \
+	  $(LISOUSIXOPT) $(shell cat $(word 2,$^)) $@ $<
+# *.LSWIFS.*: single velocity transformation (single force, wavenumber integ.)
+%.LSWIFS.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -fredomain -fdwizforce $(DEBUG) \
+	  $(LISOUSIXOPT) $(shell cat $(word 2,$^)) $@ $<
+# *.LSFG.*: single velocity transformation (single force)
+%.LSFG.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -fredomain -fdzforce $(DEBUG) \
+	  $(LISOUSIXOPT) $(shell cat $(word 2,$^)) $@ $<
+# *.LSP.*: reflection seismic tapering with sqrt(t)
+%.LSP.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin -sqrttaper -limitlength \
+	  $(LISOUSIXOPT) $(shell cat $(word 2,$^)) $(LISOUSIOPT) $@ $<
+# *.LSTR.*: transition transformation
+TRANSITION=5.,15.
+%.LSTR.bin: %.bin %.tvel.xxx
+	lisousi -v -o -type bin -Type bin $(LISOUSIXOPT) \
+	  -transition $(TRANSITION) $(shell cat $(word 2,$^)) $@ $<
+
+#----------------------------------------------------------------------
+# labels
+%.transform.LT.xxx: ; echo "Fourier Bessel" > $@
+%.transform.LS.xxx: ; echo "direct wave" > $@
+%.transform.LSP.xxx: %v.tvelval.xxx 
+	echo "reflected wave (v\\dPh\\u=$(shell cat $<))" > $@
+%.transform.LSG.xxx: %v.tvelval.xxx 
+	echo "single velocity (v\\dPh\\u=$(shell cat $<))" > $@
+
+# ----- END OF Makefile.SingleTraceTransformation ----- 

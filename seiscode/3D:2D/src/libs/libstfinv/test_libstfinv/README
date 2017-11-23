@@ -1,0 +1,71 @@
+README for Test_libstfinv
+=========================
+
+Test_libstfinv is a small C programme to test the C interface to libstfinv (for
+its use in the 2D elastic inversion code DENISE). The programme can be compiled 
+by the Makefile in the directory 'src'. 
+
+To run the programme one first has to prepare an input file like
+Test_libstfinv.inp. In this input file one has to define su-files containing the 
+measured data and the synthetic data and the number of traces included in these 
+su-files. Also the names of the output files and the parameter string selecting 
+the applied engine for source wavelet inversion have to be defined in the input
+file. 
+
+After compiling and preparing the input file one can run the programme via:
+
+	Test_libstfinv <name of parameterfile>  
+	
+	(e.g. Test_libstfinv Test_libstfinv.inp)
+
+
+
+Information concerning copyright and license:
++ read_parameters.c, fd.h, globvar.h:
+  As mentioned at the beginning of this README file this programme serves as a
+  test of libstfinv for its use in DENISE. Therefore, I tried to already use the
+  structure of the DENISE code. Consequently some files are copied from the 
+  DENISE code and adjusted for this testprogramme. This affects the files:
+	* read_parameters.c
+	* fd.h
+	* globvar.h
+  
+  DENISE is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version. 
+   
+  DENISE is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+  
++ segy.h:
+  Copyright (c) Colorado School of Mines, 2011.
+  All rights reserved.
+  For license information please see the file LEGAL_STATEMENT_segy_h.
+
++ Test_libstfinv.c
+  Copyright (c) 2011 by Lisa Rehor (KIT Karlsruhe)                        
+  
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version. 
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ 
+P.S.: Please have a look at src/ts/wf/testcases/Makefile.soutifu to find
+some rules to create test data

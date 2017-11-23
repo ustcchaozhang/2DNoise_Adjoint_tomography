@@ -1,0 +1,144 @@
+/*! \file doxygen_end_users.txt
+ * \brief Information for library end users 
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 04/10/2015
+ * 
+ * Information for library end users 
+ *
+ * ----
+ * libstfinv is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * Copyright (c) 2015 by Thomas Forbriger (BFO Schiltach) 
+ * 
+ * REVISIONS and CHANGES 
+ *  - 04/10/2015   V1.0   Thomas Forbriger
+ * 
+ * ============================================================================
+ */
+
+/*! \page page_end_users Information for end-users
+
+\par Contents of this page
+- \ref page_eu_sec_users
+  - \ref page_eu_subsec_introduction
+  - \ref page_eu_subsec_parameters
+- \ref page_eu_sec_texts
+  - \ref page_eu_subsec_texts_lib 
+  - \ref page_eu_subsec_texts_any 
+  - \ref page_eu_subsec_texts_base 
+  - \ref page_eu_subsec_texts_fourier 
+  - \ref page_eu_subsec_texts_identity 
+  - \ref page_eu_subsec_texts_fdleastsquares 
+
+\section page_eu_sec_users The library libstfinv for end-users
+
+\subsection page_eu_subsec_introduction Introduction
+
+  The purpose of this library is to provide methods for the derivation of
+  source wavelet correction filters
+  in approaches to full waveform inversion.
+  Given a set of recorded data and a set of synthetic data (typically,
+  but not necessarilly the impulse response of the subsurface) a source
+  wavelet correction filter
+  is obtained due to some optimization citerion.
+  The synthetic waveforms are convolved with this filter
+  wavelet and the convolved
+  synthetics as well as the wavelet itself are returned to the user.
+
+  The source wavelet correction filter
+  in this context not necessarily is the actual
+  force time history of the source used in the experiment or a similar
+  quantity of physical meaning.
+  The source wavelet correction filter
+  simply is the wavelet which minimizes the misfit
+  between synthetic and recorded waveforms due to some misfit condition, if
+  the synthetics are concolved with this wavelet.
+  In particular this implies that the synthetics not necessarily need be the
+  impulse response (Greens function) of the subsurface, they may simply be
+  synthetic waveforms computed for some generic source wavelet (like a
+  Ricker wavelet).
+  The derived source wavelet correction filter
+  then has to be understood with respect to
+  this generic wavelet.
+
+\subsection page_eu_subsec_parameters How to construct parameter strings
+  A specific engine is selected by passing a parameter string to the library
+  interface like function ::initstfinvengine() or the constructor of the
+  interface class stfinv::STFEngine::STFEngine().
+  This parameter string may further contain parameters to control the
+  execution mode of the engine.
+
+  The parameter string starts with an ID-sequence identifying the desired
+  engine.
+  This ID-sequences are stored in stfinv::STFEngineFDLeastSquares::ID
+  for the Fourier domain least squares engine.
+  In the parameter string the ID-sequence is terminated by a colon (:).
+
+  After selecting the desired engine, the interface function strips of the
+  ID-sequence as well as the colon from the parameter string and initializes
+  the engine, passing the references to user workspace as well as the rest
+  of the parameter string.
+  The rest of the parameter string may consist of several control
+  parameters being separated by colons (:).
+  Each control parameter may just be a flag (switch to turn an option on) or
+  may come along with a parameter value.
+  The value of the parameter is separated by an equal sign (=).
+
+  \par Examples
+    - To select frequency domain least squares
+      (stfinv::STFEngineFDLeastSquares) and shift the returned source
+      correction wavelet 
+      by 0.4s and switch on verbose mode, pass the following
+      parameter string:
+      \verbatim fdlsq:tshift=0.4:verbose \endverbatim
+    - To select stfinv::STFEngineIdentity and to switch on debug level 4:
+      \verbatim ident:DEBUG=4 \endverbatim
+    - To select stfinv::STFEngineFDLeastSquares, apply offset dependent
+      weights and use a power of two to speed up the FFT:
+      \verbatim fdlsq:pow2:exp=1.4 \endverbatim
+
+
+\section page_eu_sec_texts End-user usage information text files
+
+\subsection page_eu_subsec_texts_lib Summary and detailed description for overall library
+\verbinclude ./stfinv_summary_usage.txt
+\verbinclude ./stfinv_description_usage.txt
+
+\subsection page_eu_subsec_texts_any Summary and detailed description in handle class
+\verbinclude ./stfinvany_summary_usage.txt
+\verbinclude ./stfinvany_description_usage.txt
+
+\subsection page_eu_subsec_texts_base Summary and detailed description in base class
+\verbinclude ./stfinvbase_summary_usage.txt
+\verbinclude ./stfinvbase_description_usage.txt
+
+\subsection page_eu_subsec_texts_fourier Summary and detailed description in Fourier class
+\verbinclude ./stfinvfourier_summary_usage.txt
+\verbinclude ./stfinvfourier_description_usage.txt
+
+\subsection page_eu_subsec_texts_identity Summary and detailed description for scaling procedure
+\verbinclude ./stfinvidentity_summary_usage.txt
+\verbinclude ./stfinvidentity_description_usage.txt
+
+\subsection page_eu_subsec_texts_fdleastsquares Summary and detailed description for Fourier least squares procedure
+\verbinclude ./stfinvfdleastsquares_summary_usage.txt
+\verbinclude ./stfinvfdleastsquares_description_usage.txt
+*/
+
+/* ----- END OF doxygen_end_users.txt ----- */

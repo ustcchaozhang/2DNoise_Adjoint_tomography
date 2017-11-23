@@ -1,0 +1,11 @@
+# this is <.gitignore>
+# ============================================================================
+# files to be ignored by git
+# --------------------------
+# files in src/libs/libfouries
+# ----------------------------
+#
+# source code documentation
+*.doc
+# 
+# ----- END OF .gitignore ----- 

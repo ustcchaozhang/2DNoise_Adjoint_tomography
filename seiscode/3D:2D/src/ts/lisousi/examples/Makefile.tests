@@ -1,0 +1,41 @@
+# this is <Makefile.tests>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2015 by Thomas Forbriger (BFO Schiltach) 
+# 
+# lisousi tests
+# 
+# REVISIONS and CHANGES 
+#    19/09/2015   V1.0   Thomas Forbriger
+# 
+# ============================================================================
+#
+# test invalid time domain filter coda
+# ------------------------------------
+T1.tdfilter.bin: biet.zforce.sparse.PZ.bin
+	lisousi -v -o -D -Type bin -type bin -velocity 0.18 -tdfilter \
+	   -sqrttaper \
+	  $@ $< t:2-15
+T1.tdfiltertaperlast.bin: biet.zforce.sparse.PZ.bin
+	lisousi -v -o -D -Type bin -type bin -velocity 0.18 -tdfilter \
+	  -taperlast -sqrttaper \
+	  $@ $< t:2-15
+T1.fdfilter.bin: biet.zforce.sparse.PZ.bin
+	lisousi -v -o -D -Type bin -type bin -velocity 0.18 -sqrttaper \
+	  $@ $<  t:2-15
+T1.ps: T1.tdfilter.bin T1.tdfiltertaperlast.bin T1.fdfilter.bin
+	refractx -d $@/vcps -C -Eg -Sm 2 -Se 1. -Sc 100. \
+	    -ty bin -Lc -Ts 1.2 -TL 1\
+	  -Tt "$(BIETCASE); vertical component" \
+	  $(word 3,$^) s:4,1,10 $(COLREF) \
+	  $(word 2,$^) s:2,1,4 $(COLDW) \
+	  $(word 1,$^) s:6,1,2 $(COLFB)
+T1Z.ps: T1.tdfilter.bin T1.tdfiltertaperlast.bin T1.fdfilter.bin
+	refractx -d $@/vcps -C -Eg -Sm 2 -Se 1. -Sc 10. -Sa 30 \
+	    -ty bin -Lc -Ts 1.2 -TL 1\
+	  -Tt "$(BIETCASE); vertical component" \
+	  $(word 3,$^) s:4,1,10 $(COLREF) \
+	  $(word 2,$^) s:2,1,4 $(COLDW) \
+	  $(word 1,$^) s:6,1,2 $(COLFB)
+
+# ----- END OF Makefile.tests ----- 

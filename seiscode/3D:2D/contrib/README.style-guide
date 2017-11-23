@@ -1,0 +1,104 @@
+this is <README.style-guide>
+============================================================================
+A style guide for Fortran, C, and C++ coding conventions
+--------------------------------------------------------
+$Id: $
+============================================================================
+A common coding style to be used in all source code improves readability and
+reduces the risk of error. Different packages in Seitosh follow different
+conventions. However, when in doubt, please consult the recommendations given
+below.
+
+============================================================================
+General:
+--------
+- use indentation to mark loops and if-then-else clauses
+- use only 2 characters of whitespace per indentation level
+- NEVER use tab-characters for indentation
+
+----------------------------------------------------------------------------
+Denomination of variables, classes, etc. (C++):
+-----------------------------------------------
+- typedef names start with a capital T
+- private member data names start with a capital M
+- typenames in templates start with a capital C
+  if there are more than one typnames necessary than use the 
+  typenames C1, C2, ...
+- class names start with a capital character
+
+----------------------------------------------------------------------------
+Other C++ conventions:
+----------------------
+- the declaration and the definition of templates are placed in the same 
+  headerfile
+- in the public, protected, and private section of a class declaration
+  place declarations in the following order:
+  1. typedefs
+  2. member functions
+  3. static member functions
+  4. member data
+
+============================================================================
+File names
+----------
+
+Source code directories may contain additional files appart from the actual
+source code and make control files.
+
+README and/or README.*
+  Each source code directory should contain a README file, which explains the
+  purpose of the software present in this directory. It should provide
+  installation instructions and should report dependencies. Further README
+  files (distinguished by file name extensions) can be provided for specific
+  aspects.
+    All README files should be in plain ASCII!
+
+COPYING
+  Each primary source code directory should contain a COPYING file to be
+  applicable to all subdirectories. This file contains Copyright information
+  (list of authors and their copyright, including comments indicating to which
+  part of the source the copyright applies, if not to the entire source code)
+  as well as information regarding the license under which the source code is
+  presented.
+
+doxydoc.cfg
+  Contains the control parameters for doxygen which creates source code
+  documentation from C++ source code files.
+
+doxygen*.txt
+  Additional documenation to be used by doxygen which is not specific to
+  one of source code files (like the mainpage section) is presented in files
+  matching the pattern doxygen*.txt . These files contain C++ syntax elements
+  (comment markers) and doxygen control commands and are therefore
+  unconvenient to read. For this reason it is deprecated to place doxygen
+  source text in README files.
+
+*_text.txt
+  It is recommended to place extended usage information in pure ASCII text
+  files. They then can be read by the user of the source code directly and be
+  included in doxygen documentation, e.g. An example for this is the source
+  code in src/ts/lisousi make rules to convert such text into source code to
+  be compiled and be used to output usage information from the binary
+  executable are presented in Makefile.buildingblocks
+
+============================================================================
+SVN repository:
+---------------
+- please add meaningful comments to the revision log in the file headers
+  and sign them with your name/initials.
+
+============================================================================
+If your question is not answered here, you might like to visit one of the
+following places:
+
+GNU coding standards:
+  http://www.gnu.org/prep/standards/
+
+Linux kernel coding style:
+  https://www.kernel.org/doc/Documentation/CodingStyle
+
+A Fortran Coding Convention for Use in the U.S. Geological Survey,
+Water Resources Division:
+  http://water.usgs.gov/software/SYSDOC/code/doc/coding.pdf
+
+----- END OF README.style-guide ----- 

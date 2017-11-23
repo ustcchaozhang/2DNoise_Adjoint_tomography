@@ -1,0 +1,12 @@
+tests/blitztest
+tests/commandlinetest
+tests/exceptiontest
+tests/filetest
+tests/fortraniotest
+tests/fstest
+tests/handletest
+tests/misctest
+tests/rangetest
+tests/regextest
+tests/stringtest
+tests/fortranF77

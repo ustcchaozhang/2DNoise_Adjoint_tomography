@@ -1,0 +1,239 @@
+# this is <lisousi_description_text.txt>
+# ============================================================================
+# description of lisousi processing concepts
+# ============================================================================
+# 
+Purpose of lisousi
+==================
+
+Line-source simulation: Transform field data to apparent line-source generated
+waveforms in preparation for Cartesian 2D full-waveform inversion.
+
+Seismic field data is excited by point sources (e.g. hammer blows).
+Full waveform inversion (FWI) approaches which make use of Cartesian 2D
+forward modeling implicitly use a line source to fit the observed data.
+Therefore recorded waveforms must be transformed to simulate equivalent
+line-source generated data prior to application of 2D FWI.
+
+lisousi offers several single-trace approaches for vertical component and
+radial component data excited by vertical hammer blows or explosions.
+Single-trace approaches can be applied to each seismic trace individually in
+contrast to integral transform approaches, which require data from a complete
+profile. Single-trace approaches have the benefit, that they are independent
+of survey layout and that they perform reasonably well for data recorded on
+laterally heterogeneous structures. On the downside they must estimate the
+wave number from sample time and receiver offset. They inherently are
+approximations, most of them being derived from the acoustic wave Green's
+function. Nevertheless, they perform surprisingly well on data from
+visco-elastic wave propagation in heterogeneous structures.
+
+For shallow seismic data we recommend a simple but effective procedure:
+
+ 1. scale waveform by r*sqrt(2)    (offset times square root of 2)
+ 2. convolve with 1/sqrt(t)        (fractional half integration)
+ 3. taper samples with 1/sqrt(t)
+
+Where r is source-to-receiver offset and t is sample time.
+We call this "direct-wave transformation".
+
+Theory of operation
+===================
+
+Lisousi in particular offers the following approaches as defined by Forbriger
+et al. (2014, section 5) and tested by Schäfer et al. (2014, see definition in
+section 2.2):
+ - Single-velocity transformation
+ - Direct-wave transformation
+ - Reflected-wave transformation
+ - Hybrid transformation
+
+All approaches are based on the ratio of the 2D and the 3D Green's function
+in the frequency domain (Forbriger et al. 2014, eq. 51). This ratio can be
+understood as a convolution with 1/sqrt(t) in the time domain and appropriate
+scaling (tapering) of the samples in the time domain (Forbriger et al. 2014,
+eq. 52). The appropriate scaling factor depends on wave travel time and wave
+travel distance, where only travel time can be deduced immediately from the
+data.
+
+Single-velocity transformation
+------------------------------
+  This approach is appropriate for wave propagation in homogeneous full space,
+  where travel distance equals source to receiver offset and the average wave
+  speed equals the actual (constant) wave speed. In this case the amplitude
+  factor is taken to be (Forbriger et al. 2014, eq. 52)
+
+    F = sqrt(2*r*v),
+
+  where r is taken as the source to receiver offset (as provided in the data
+  files) and v is the propagation velocity taken from the argument to option
+  -velocity or its default value.
+
+Direct-wave transformation
+--------------------------
+  This approach is appropriate for shallow seismic data, where sources as well
+  as receivers are close to the free surface and data are dominated by direct
+  waves or surface waves. In this case the amplitude factor is taken to be
+  (Forbriger et al. 2014, eq. 58)
+
+    F = r*sqrt(2/t),
+
+  where r is taken as the source to receiver offset (as provided in the data
+  files) and t is the travel time of the wave (which equals the sample time in
+  the data files).
+
+Reflected-wave transformation
+-----------------------------
+  This approach is appropriate for body waves which are reflected at deep
+  reflectors in structures where propagation velocity varies only weakly (when
+  compared to shallow structures). In this case the amplitude factor is taken
+  to be (Forbriger et al. 2014, eq. 56)
+
+    F = v*sqrt(2*t),
+
+  where v is the average propagation velocity taken from the argument to
+  option -velocity or its default value and t is the travel time of the wave
+  (which equals the sample time in the data files).
+
+Hybrid transformation
+---------------------
+  This approch is a variant of the direct-wave transformation, where the 
+  single-velocity transformation is used as a replacement at small offsets
+  (Forbriger et al. 2014, sec. 6.2). This is necessary in cases, where the
+  amplitude taper, which becomes singular at zero offset for the direct-wave
+  transformation, otherwise would result in artefacts. The one is replaced by
+  the other gradually over a given offset range.
+
+The program offers options to select different ways of constructing the
+1/sqrt(t) filter and the way this filter is applied. Application of the filter
+(convolution with 1/sqrt(t)) and the application of the scaling (tapering with
+1/sqrt(t)) are not commutative in a mathematical sense and the results may
+differ for a different order of the application. However, residuals have not
+yet been observed at a significant level in practical application. Some of the
+options are not really of practical relevance due to more efficient and
+equally accurate alternatives. For instance a time domain convolution is not
+recommended. These options are primarily provided for experimental purposes.
+
+Application of program control parameters
+=========================================
+
+Direct-wave transformation and reflected-wave transformation
+------------------------------------------------------------
+The default (with no option selected) is the "direct-wave transformation". Use
+the option -sqrttaper to select the "reflected-wave transformation". Both
+approaches convolve the seismograms with 1/sqrt(t) and are different with
+respect to the time domain taper applied to the waveform data. Both operations
+can be controlled by command line options.
+
+  Application of filter (convolution with 1/sqrt(t)):
+    1) Frequency domain application:
+       recommended approach
+       default; fastest approach
+       Convolution with the 1/sqrt(t) filter response is done in the
+       Fourier domain by multiplication with the analytically derived
+       Fourier coefficients of the filter response function.
+
+    2) Frequency domain application of dicrete Fourier transform:
+       select option: -fdfilter
+       The 1/sqrt(t) filter response is constructed in the time
+       domain. Convolution with the time series is done in the
+       frequency domain after FFT.
+
+    3) Time domain application:
+       slowest approach
+       select option: -tdfilter
+       The 1/sqrt(t) filter response is constructed in the time
+       domain. Convolution with the time series is done in the
+       time domain by discrete convolution.
+
+    Options:
+      For the frequency domain applications (1 and 2) the following
+      options are available:
+        -pad n    padding of time series
+
+      The 1/sqrt(t) filter response becomes singular for t=0. This
+      requires special measures for the approaches which construct
+      the filter response in the time domain (2 and 3) in order to
+      create a response which behaves equivalent to its analytical
+      counterpart. The following options are available:
+        -integshift t
+        -notinteg
+      If -nointeg is selected, the following options are available:
+        -tshift f
+        -tlim f
+        -tfac f
+
+  Application of the taper:
+    By default 1/sqrt(t) is applied to the seismograms as a time-domain taper
+    and the signals are scaled by r*sqrt(2). This is called the "direct-wave
+    transformation".
+
+    Option -sqrttaper selects sqrt(t) as taper function and scales
+    seismograms additionally by a factor sqrt(2)*velocity. This is called the
+    "reflected-wave transformation".
+
+    Tapers are applied prior to filtering by default. Option -taperlast
+    selects to taper the time series after filtering.
+
+    Tapers are always constructed in the time domain. The default
+    1/sqrt(t) taper is singular at t=0. This requires special
+    measures to set up the taper appropriately, such that it behaves
+    equivalent to its analytical counterpart. The following options
+    are available:
+        -integshift t
+        -nointeg
+    If -nointeg is selected, the following additional options are available:
+      -tshift f
+      -tlim f
+      -tfac f
+    They have a lesser (or even unnoticeable) impact when compared to their
+    impact when constructing the filter resonse. This is because the portion
+    of the time series (close to t=0) which would be affected by the
+    close-to-singular taper usually is of small or vanishing amplitude.
+
+    Sampling time is taken as travel time in order to determine the
+    appropriate scaling (taper) factor. Since a finite bandwidth wavelet
+    appears slightly after the ray-theoretical arrival in the seismogram,
+    scaling factors are typically too small for near offset traces, where
+    pulse duration is close to pulse travel time. The program offers the
+    option -tapdel to apply a correction for this effect. -tapslo can be used
+    to set an upper limit for tapdel at small offsets.
+
+Single-velocity transformation
+------------------------------
+  select by option: -fredomain
+  additional options:
+    -velocity v
+    -pad n
+
+  Operation:
+  A Fourier transform of the waveform is divided by the Fourier transform of
+  the 3D Greens function and multiplied by the 2D Greens function. This
+  approach works only for waves of a single given wave velocity. It is hence
+  only appropriate for the impulse response in homogeneous full space, but
+  also performs surprisingly well when applied to dispersive wavefields.
+
+Hybrid transformation
+---------------------
+  select by option: -transition
+
+References
+==========
+
+Forbriger, T., Groos, L. and Schäfer, M., 2013. Appropriate line source
+  simulation procedure for shallow seismic field data. 73rd Annual Meeting of
+  the German Geophysical Society (DGG), Leipzig. 
+  (http://www.opentoast.de/Data_analysis_code_246.php)
+
+Forbriger, T., 2014. Line source simulation.
+  http://www.opentoast.de/Data_analysis_code_lisousi.php
+
+Forbriger, T., L. Groos, M. Schäfer, 2014. Line-source simulation for
+  shallow-seismic data. Part 1: theoretical background. Geophys. J. Int.,
+  198(3), 1387-1404. (doi:10.1093/gji/ggu199)
+        
+Schäfer, T., M., L. Groos, T. Forbriger, T. Bohlen, 2014. Line-source
+  simulation for shallow-seismic data. Part 2: full-waveform inversion 
+  — a synthetic 2-D case study. Geophys. J. Int., 198(3), 1405-1418.
+  (doi:10.1093/gji/ggu171)
+#
+# ----- END OF lisousi_description_text.txt ----- 

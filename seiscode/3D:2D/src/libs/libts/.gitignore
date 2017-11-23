@@ -1,0 +1,11 @@
+# this is <.gitignore>
+# ============================================================================
+# files to be ignored by git
+# --------------------------
+# files in src/libs/libts
+# -----------------------
+#
+# source code documentation
+*.doc
+# 
+# ----- END OF .gitignore ----- 

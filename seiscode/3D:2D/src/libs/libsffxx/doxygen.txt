@@ -1,0 +1,714 @@
+/*! \file libsfxx/doxygen.txt
+ * \brief documentation for libsffxx.a 
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 25/12/2003
+ * 
+ * documentation for libsffxx.a 
+ * 
+ * Copyright (c) 2003 by Thomas Forbriger (BFO Schiltach) 
+ *
+ * ----
+ * libsffxx is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * REVISIONS and CHANGES 
+ *  - 25/12/2003   V1.0   Thomas Forbriger
+ *  - 18/07/2013   V1.1   tmetz (renamed file)
+ *  - 18/07/2013   V1.2   removed some erroneously scattered strings 
+ * ============================================================================
+ */
+
+/*! \mainpage
+\author Thomas Forbriger
+\since December 2003
+\date July 2013
+
+The library is designed to provide a tool for SFF (Stuttgart File Format)
+writing and reading.
+It uses libgsexx for the GSE2 layer of SFF.
+While libgsexx does not explicitely use an array class for time series,
+libsffxx provides whole array reading and writing functionality.
+For this purpose the library uses code from libaff.
+
+A major advantage of the library is a feature of libgsexx.
+With this code you can deal with time series of arbitrary length.
+In particular no temporary character buffer for CM6 decoding and encoding is
+needed (like it is in the Fortran library).
+This means, on the other hand, that the library has no information to fill the
+nchar field of the DAST line.
+
+\warning
+<b>
+The library will write -1 to the nchar field of the DAST line.
+You will need an updated version (2.00 or higher) of \c libstuff or \c libsff
+(Fortran version) to read data files written with \c libsffxx to Fortran code.
+</b>
+
+\section Contents
+
+  - \ref sec_main_dependencies
+  - \ref sec_main_format_definition
+  - \ref sec_main_structure
+    - \ref sec_main_structs
+    - \ref sec_main_header_classes
+    - \ref sec_main_waveform_io
+  - \ref sec_main_usage
+    - \ref sec_main_streams
+    - \ref sec_main_reading
+    - \ref sec_main_writing
+
+<HR>
+\section sec_main_dependencies Dependencies
+
+  The library depends on other code libaries.
+  They are libtime, libgsexx, libaff, and STL.
+  The packages for libtime, libgsexx, and libaff should be available at the
+  place you obtained libsffxx from.
+
+  \subsection libtime
+
+    You must link against libtime++.a
+
+    Date values in WID2 and SRCE structs are stored in libtime::TAbsoluteTime
+    objects.
+    The library uses the reading functions of libtime to decode time strings.
+    The header sffxx.h includes libtime++.h
+
+  \subsection libgsexx
+
+    You must link against libgsexx.a
+
+    The GSE2 layer of the library relies on the code provided by libgsexx.
+    The header sffxx.h includes gsexx.h
+
+  \subsection libaff
+
+    You must link against libaff.a
+    
+    The reading and writing classes sff::InputWaveform and sff::OutputWaveform
+    as well as the sff::TraceHeader::scanseries member function deal with
+    series type containers as defined in libaff.
+    The header sffxx.h includes aff/series.h and aff/iterator.h
+
+  \subsection STL (Standard Template Libarary)
+
+    The sff::FREE block struct uses an STL list of strings.
+
+<HR>
+\section sec_main_format_definition SFF format definition
+
+SFF (Stuttgart File Format) is based on the definition of the GSE2.0 format.
+It supplements GSE2.0 by header elements the provide source specification
+(SRCE lines), receiver information (INFO lines), and comments (FREE blocks).
+It further provides an amplitude scaling factor (DAST line) to support
+synthetic (non-integer) data.
+
+The \ref page_sff_definition from file \c sff.doc in package \c libsff is
+provided on a separate page: \ref page_sff_definition
+
+The functions sff::WIDXline provide an extended WID format which breaks the
+SFF format standard.
+
+<HR>
+\section sec_main_structure Structure of the library modules
+
+\subsection sec_main_structs SFF element structs
+
+  For each of the structural elements in an SFF file there exists a C++ struct
+  to represent the file contents:
+
+  - STAT line: sff::STAT
+  - FREE block: sff::FREE
+  - SRCE line: sff::SRCE
+  - DAST line: sff::DAST
+  - WID2 line: sff::WID2
+  - INFO line: sff::INFO
+
+  For each relevant entry in the data file there exists a corresponding member
+  data field in the struct.
+  The member data are read and modified by directly accessing the data fields.
+  However some member functions are provided together with the structs.
+  These member functions set default values (constructors), provide an ASCII
+  representation of the values as has to be written to the file (line and
+  write functions) and support reading from a file (read functions).
+  The WID2 struct will be mapped to a WID2 struct from the libgsexx upon
+  reading and writing.
+  There ist no struct for the DAT2 line and the CHK2 line, since both are
+  written and read through the DAT2read and DAT2write class from libgsexx.
+
+\subsection sec_main_header_classes Header Classes
+
+  The classes sff::FileHeader and sff::TraceHeader glue SFF structs to a
+  compount.
+  Header data is filled either by creating a class object through one of the
+  constructors or through on of the file reading member functions.
+  The member data fields (SFF structs) are only provided for reading access.
+  The Header classes keep track on optional fields.
+  They are selected by using and appropriate constructor or by reading a file.
+  Member functions like sff::FileHeader::hasfree() tell you whether an
+  optional element is used and present.
+
+  While an sff::FileHeader can immediately be used for reading from and
+  writing to a data file, this is not the case for sff::TraceHeader.
+  The structure defintion for SFF files wants the optional trace header fields
+  to be placed after the the trace data (after the CHK2 line).
+  This means that the trace header must be written together with the data
+  through an sff::OutputWaveform object.
+  Use an sff::InputWaveform object for the same reason upon reading.
+
+\subsection sec_main_waveform_io Waveform I/O tools
+
+  The class templates sff::OutputWaveform and sff::InputWaveform are used for
+  writing and reading SFF data together with the trace header.
+  They expect a time series to be contained in an aff::Series object and are
+  defined as class templates.
+  You may select your own numerical type for the aff::Series container.
+  Use sff::SkipWaveform to skip the trace data upon reading.
+  The sff::SkipWaveform will still provide the header information for the
+  skipped data block.
+
+\subsection sec_main_exceptions Exceptions
+
+  The library uses the exception class GSE2::Terror from libgsexx to indicate
+  error conditions.
+
+<HR>
+\section sec_main_usage HOWTO use the library
+
+  Examples for the usage of the library modules can be found in sfftest.cc
+
+\subsection sec_main_streams I/O streams for SFF data
+
+  There are input and output streams available for SFF data.
+  The output stream class template sff::SFFostream is available within this
+  library through sffostream.h
+  Using this output stream, you must always write the time series itself first!
+  Header lines are written to the stream after the time series has been
+  written.
+
+  A stream for reading SFF data is available within 
+  <a href="../../libdatreadxx/html/index.html">libdatreadxx.a</a>.
+  A short tutorial for reading and writing SFF data with streams is given
+  there too.
+
+\subsection sec_main_reading Reading from an SFF data file
+
+  First open a file input stream.
+  \code
+  std::ifstream is("filename");
+  \endcode
+
+  Then read the file header.
+  \code
+  sff::FileHeader fileheader(is);
+  \endcode
+
+  Optional blocks are read as well and you may check for them and access them
+  through the member functions of sff::FileHeader.
+  Next cycle through the traces as desired.
+  Each trace is read by creating an object of type sff::InputWaveform or
+  sff::SkipWaveform:
+  \code
+  sff::InputWaveform<Tseries> inputwaveform(is);
+  sff::SkipWaveform<Tseries> skipwaveform(is);
+  \endcode
+
+  Here Tseries should be an appropriate libaff container like
+  \code
+  typedef aff::Series<double> Tseries;
+  \endcode
+
+  You may read to existing objects as well:
+  \code
+  is >> inputwaveform;
+  is >> skipwaveform;
+  \endcode
+
+  After reading each trace, you may access the trace header object through
+  the sff::InputWaveform::header() or sff::SkipWaveform::header() member
+  functions and the time series through the sff::InputWaveform::series()
+  member function.
+  You should check for more traces through the sff::InputWaveform::last() and
+  sff::SkipWaveform::last() member functions.
+  The sff::InputWaveform::valid() and sff::SkipWaveform::valid() member
+  functions tell you whether the object already contains valid data, which is
+  not the case if the object was created through its default constructor and
+  has no data yet read into it.
+  
+\subsection sec_main_writing Writing to an SFF data file
+
+  For writing an SFF data file first open an output file stream.
+  \code
+  std::ofstream os("filename");
+  \endcode
+
+  Create the elements to combine to an sff::FileHeader object.
+  \code
+  sff::SRCE srceline;
+  srceline.cx=1.;
+  srceline.type="Hammerblow";
+  srceline.date=libtime::TAbsoluteTime("2003/12/31 10:12:00");
+  sff::FREE filefree;
+  filefree.lines.push_back("Example for a free block.");
+  filefree.lines.puch_back("another line...");
+  \endcode
+
+  The create an sff::FileHeader from them.
+  \code
+  sff::FileHeader fileheader(srceline,filefree);
+  \endcode
+  or
+  \code
+  sff::FileHeader fileheader;
+  \endcode
+  in the minimalistic case of no optional blocks.
+  The file header may be written directly through
+  \code
+  os << fileheader;
+  \endcode
+
+  No cycle through all traces.
+  First create all header elements needed for each trace.
+  \code
+  sff::INFO infoline;
+  infoline.cx=20.
+  infoline.nstacks=5;
+  sff::FREE tracefree;
+  tracefree.lines.push_back("A FREE block for a waveform");
+  sff::WID2 wid2line;
+  wid2line.station="BFO";
+  wid2line.channel="UGZ";
+  wid2line.instype="ET-19";
+  wid2line.nsamples=2048;
+  wid2line.dt=10.;
+  \endcode
+
+  The create an sff::TraceHeader from them.
+  \code
+  bool last=true;
+  sff::TraceHeader traceheader(wid2line,infoline,tracefree,last);
+  \endcode
+  or
+  \code
+  sff::TraceHeader traceheader(wid2line);
+  \endcode
+  in the minimalistic case of no optional blocks.
+  At this point you must specify whether this is the last trace in the file or
+  not.
+  If you omit the last flag, it is implicitely set to false.
+
+  The trace header together with the time series is written to os through an
+  sff::OutputWaveform object, which may be instantiated just for this purpose:
+  \code
+  os << sff::OutputWaveform<Tseries>(series, traceheader, sff::NM_maxdyn);
+  \endcode
+  The sff::OutputWaveform object takes care about normalization of the time
+  series samples provided through the aff::Series object passed as argument
+  series.
+  The way normalization is done, can be selected by passing on of the
+  sff::Enormmode flags to the constructor of sff::OutputWaveform.
+
+*/
+
+/* ========================================================================= */
+
+/*! \page page_sff_definition Definition of the Stuttgart File Format
+
+The following format definition is obtained from \c sff.doc which comes along
+with \c libsff or \c libstuff.
+The SFF was invented in 1996.
+
+\date 28/09/2007
+
+\par Contents
+  - \ref sec_definition_structure
+  - \ref sec_definition_elements
+  - \ref sec_definition_structure
+    - \ref subsec_definition_file_header
+    - \ref subsec_definition_data_block
+  - \ref sec_definition_elements
+    - \ref subsec_definition_stat_line
+    - \ref subsec_definition_free_block
+    - \ref subsec_definition_srce_line
+    - \ref subsec_definition_dast_line
+    - \ref subsec_definition_wid2_line
+    - \ref subsec_definition_dat2_indicator
+    - \ref subsec_definition_chk2_line
+    - \ref subsec_definition_info_line
+  - \ref sec_definition_coordinates
+    - \ref subsec_definition_cartesian_coordinates
+    - \ref subsec_definition_spherical_coordinates
+
+  The SFF (Stuttgart File Format) is an attempt to reconcile
+  different demands on the way seismic data used at the Institute
+  of Geophysics at Stuttgart University should be archived.
+
+  A single data format allows the standardization of software
+  used to perform common tasks on the data as reading, 
+  writing, processing and plotting of data. Software has to
+  be written only once, may be used by many people and may
+  be kept at a single place in the computer system.
+
+  The general structure of the file format is a header block
+  followed by one or more data blocks. Within the header and
+  the data blocks optional blocks containing additional
+  information are allowed.  Each data block is structured as
+  described by the GSE2.0 format. The data are compressed
+  using second differences and are encoded into pure ASCII
+  characters using a six bit encoding scheme (CM6) also described
+  by the GSE2.0 format. The ASCII encoding ensures portability
+  of the data across different operating systems and computer
+  architectures. Moreover, it allows sending data via e-mail.
+
+\section sec_definition_structure Overall structure
+
+  The whole datafile is ASCII readable with any text editor
+  and is therefor transferable from any system to any system
+  via email. You can extract valid GSE2.0 data blocks from
+  the files by just using a text editor to delete additional lines.
+
+  The whole file consists of one file header block and one ore
+  more data blocks:
+
+\verbatim
+    File Header
+    Data Block
+       .
+       .
+       .
+\endverbatim
+
+
+\subsection subsec_definition_file_header File Header
+ 
+  The File Header consists of a STAT line which is obligatory.
+  There may be an optional FREE block and/or and an optional
+  SRCE line:
+
+\verbatim
+    STAT line              obligatory
+    FREE block             optional
+    SRCE line              optional
+\endverbatim
+
+  \sa sff::FileHeader
+
+\subsection subsec_definition_data_block Data Block
+
+  Each Data Block has to start with an obligatory DAST line
+  and a WID2 line defined in GSE2.0 format. After that
+  there have to follow the encoded data samples between
+  a DAT2 identifier and a CHK2 checksum. These lines may
+  be followed by an optional FREE block and/or an optional
+  INFO line.
+
+\verbatim
+    DAST line              obligatory
+    WID2 line              obligatory \
+    DAT2 identifier        obligatory  | The GSE2.0 data block consists
+    dataset                obligatory  | of these four elements.
+    CHK2 line              obligatory /
+    FREE block             optional
+    INFO line              optional
+\endverbatim
+
+  \sa sff::TraceHeader
+
+\section sec_definition_elements Definition of the elements
+
+  \subsection subsec_definition_stat_line STAT line
+ 
+    This line provides general information about the data file
+
+<TABLE>
+  <TR>
+  <TH> position </TH><TH> format </TH><TH> contents </TH>
+  </TR><TR>
+  <TD> 1-5  </TD><TD> a5  </TD><TD> STAT  (identifier) </TD>
+  </TR><TR>
+  <TD> 6-12 </TD><TD> f6.2 </TD><TD> library version <BR>
+                          minor versions are counted in 0.01 steps<BR>
+                          major versions are counted in 1.0 steps </TD>
+  </TR><TR>
+  <TD> 14-26 </TD><TD> a13 </TD><TD> timestamp of file creation time:
+                          yymmdd.hhmmss </TD>
+  </TR><TR>
+  <TD> 28-37 </TD><TD> a10 </TD><TD> code with a combination of two 
+                        possible characters:<BR>
+                        F:   there follows a FREE block<BR>
+                        S:   there follows a SRCE line </TD>
+  </TR>
+</TABLE>
+
+  \sa sff::STAT
+
+  \subsection subsec_definition_free_block FREE block
+
+    This is a block of any set of 80 characters wide lines.
+    The start of this block is indicated a single line
+    containing FREE in the first 5 positions. Another line
+    of this content indicates the end of the FREE block.
+    A FREE block may contain any usefull information for
+    the user and has to follow no other standard than
+    a line length of 80 characters.
+
+  \sa sff::FREE
+
+  \subsection subsec_definition_srce_line SRCE line
+
+    This line holds information of the source that caused the
+    seismic signal
+
+<TABLE>
+  <TR>
+  <TH> position </TH><TH> format </TH><TH> contents </TH>
+  </TR><TR>
+  <TD> 1-5   </TD><TD> a5 </TD><TD>  SRCE  (identifier) </TD>
+  </TR><TR>
+  <TD> 6-25  </TD><TD> a20 </TD><TD> type of source (any string like
+  "earthquake") </TD>
+  </TR><TR>
+  <TD> 27    </TD><TD> a1 </TD><TD>  type of coordinate system:<BR>
+                            C: cartesian<BR>    S: spherical </TD>
+  </TR><TR>
+  <TD> 29-43 </TD><TD> f15.6 </TD><TD> c1: x, latitude
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 44-58 </TD><TD> f15.6 </TD><TD> c2: y, longitude
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 59-73 </TD><TD> f15.6 </TD><TD> c3: z, height
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 75-80 </TD><TD> a6 </TD><TD>  date of source event: yymmdd </TD>
+  </TR><TR>
+  <TD> 82-91 </TD><TD> a10 </TD><TD> time of source event: hhmmss.sss </TD>
+  </TR>
+</TABLE>
+
+  \sa sff::SRCE
+
+  \subsection subsec_definition_dast_line DAST line
+
+    This line holds information on the actual dataset
+
+<TABLE>
+  <TR>
+  <TH>  position </TH><TH>  format </TH><TH>  contents </TH>
+  </TR><TR>
+  <TD>  1-5   </TD><TD>     a5  </TD><TD>     DAST  (identifier) </TD>
+  </TR><TR>
+  <TD>  7-16   </TD><TD>    i10  </TD><TD>    
+                         number of characters in encoded dataset <BR>
+                         From library version 1.10 this field may be -1.
+                         In this case the reading program has to determine
+                         the number of characters itself by detecting the
+                         CHK2 line. This change was necessary to implement
+                         the C++ version of libsff since this starts writing
+                         without having encoded the whole trace already.
+                         </TD>
+  </TR><TR>
+  <TD>  18-33  </TD><TD>    e16.6 </TD><TD>   ampfac <BR>
+                        This is a factor to scale the (floating point)
+                        dataset to an desireable dynamic range
+                        before converting it to Fortran integer
+                        values. After reading the dataset and
+                        decoding and converting it to floating point
+                        you have to multiply each sample by ampfac
+                        to get back the original values.
+                        As the maximum range of integer values goes
+                        from -(2.**31) to (2.**31)-1 you might
+                        like to adjust the maximum integer value
+                        to 0x7FFFFFFF. This may cause problems
+                        as the second differences compressing algorithm
+                        may increase the dynamic range of your data
+                        by a factor of four in the worst case.
+                        It is save to adjust the largest absolute
+                        value in the dataset to (2.**23)-1 which
+                        is 0x7FFFFF. </TD>
+  </TR><TR>
+  <TD>  35-44  </TD><TD>    a10 </TD><TD>     
+                        code with a combination of three possible
+                        characters indicating possible optional blocks
+                        and a following further dataset:<BR>
+                          F:   a FREE block follows after dataset<BR>
+                          I:   an INFO line follows after dataset<BR>
+                          D:   there is another Data Block following
+                               in this file (this must be the last
+                               character in code) </TD>
+  </TR>
+</TABLE>
+
+  \sa sff::DAST
+
+  \subsection subsec_definition_wid2_line WID2 line
+  (is 132 characters wide!)
+
+    This waveform identification line holds information on the dataset 
+    as defined in GSE2.0 format.
+
+<TABLE>
+  <TR>
+  <TH> position </TH><TH> name </TH><TH> format </TH><TH> contents </TH>
+  </TR><TR>
+  <TD> 1-4 </TD><TD> id </TD><TD> a4 </TD><TD> WID2 (identifier) </TD>
+  </TR><TR>
+  <TD> 6-15 </TD><TD> date </TD><TD> i4,a1,i2,a1,i2 </TD><TD>
+                               date of first sample: yyyy/mm/dd </TD>
+  </TR><TR>
+  <TD> 17-28 </TD><TD> time </TD><TD> i2,a1,i2,a1,f6.3</TD><TD>
+                               time of first sample: hh:mm:ss.sss </TD>
+  </TR><TR>
+  <TD> 30-34 </TD><TD> station </TD><TD> a5 </TD><TD>
+                   for a valid GSE2.0 block use ISC station code </TD>
+  </TR><TR>
+  <TD> 36-38 </TD><TD> channel </TD><TD> a3 </TD><TD>
+                   for a valid GSE2.0 block use FDSN channel designator </TD>
+  </TR><TR>
+  <TD> 40-43 </TD><TD> auxid   </TD><TD> a4 </TD><TD>
+                   auxiliary identification code </TD>
+  </TR><TR>
+  <TD> 45-47 </TD><TD> datatype </TD><TD>a3 </TD><TD>
+                   must be CM6 in SFF </TD>
+  </TR><TR>
+  <TD> 49-56 </TD><TD> samps   </TD><TD> i8 </TD><TD>
+                   number of samples </TD>
+  </TR><TR>
+  <TD> 58-68 </TD><TD> samprat </TD><TD> f11.6 </TD><TD>
+                   data sampling rate in Hz </TD>
+  </TR><TR>
+  <TD> 70-79 </TD><TD> calib   </TD><TD> e10.2 </TD><TD>
+                   calibration factor </TD>
+  </TR><TR>
+  <TD> 81-87 </TD><TD> calper  </TD><TD> f7.3 </TD><TD>
+                   calibration period where calib is valid </TD>
+  </TR><TR>
+  <TD> 89-94 </TD><TD> instype </TD><TD> a6 </TD><TD>
+                   instrument type (as defined in GSE2.0) </TD>
+  </TR><TR>
+  <TD> 96-100 </TD><TD> hang   </TD><TD> f5.1 </TD><TD>
+                   horizontal orientation of sensor, measured in degrees
+                   clockwise from North (-1.0 if vertical) </TD>
+  </TR><TR>
+  <TD> 102-105 </TD><TD> vang  </TD><TD> f4.1 </TD><TD>
+                   vertical orientation of sensor, measured in degrees from
+                   vertical (90.0 if horizontal) </TD>
+  </TR>
+</TABLE>
+
+  \sa sff::WID2
+
+  \subsection subsec_definition_dat2_indicator DAT2 indicator
+
+    This line indicates the beginning of the encoded dataset.
+    The dataset follows in 80 characters wide lines.
+
+  \subsection subsec_definition_chk2_line CHK2 line
+
+    Provides a checksum for the dataset. The checksum has to be
+    calculated as defined in GSE2.0:
+
+\code
+    integer function CHECKSUM(nsamp, idata)
+    integer nsamp, idata
+    integer nchecksum, data, ichecksum
+    integer MODULO_VALUE
+    parameter(MODULO_VALUE=100 000 000)
+    modulo=MODULO_VALUE
+    do 1 i=1,nsamp
+      data=idata(i)
+      if (abs(data).ge.modulo) data=data-(data/modulo)*modulo
+      nchecksum=nchecksum+data
+      if (abs(nchecksum).ge.modulo)
+   &    nchecksum=nchecksum-(nchecksum/modulo)*modulo
+  1 continue
+    ichecksum=abs(nchecksum)
+    CHECKSUM=ichecksum
+    return
+    end
+\endcode
+
+<TABLE>
+  <TR>
+  <TH> position </TH><TH> format </TH><TH> contents </TH>
+  </TR><TR>
+  <TD> 1-4  </TD><TD> a4 </TD><TD> CHK2 (identifier) </TD>
+  </TR><TR>
+  <TD> 6-13 </TD><TD> i8 </TD><TD> checksum </TD>
+  </TR>
+</TABLE>
+
+  \subsection subsec_definition_info_line INFO line
+
+    Holds additional information on the seismometer position.
+
+<TABLE>
+  <TR>
+  <TH> position </TH><TH>  format </TH><TH>  contents </TH>
+  </TR><TR>
+  <TD> 1-5  </TD><TD> a5 </TD><TD> INFO  (identifier) </TD>
+  </TR><TR>
+  <TD> 6    </TD><TD> a1 </TD><TD> type of coordinate system:<BR>
+                            C: cartesian<BR>    S: spherical </TD>
+  </TR><TR>
+  <TD> 8-22 </TD><TD> f15.6 </TD><TD> c1: x, latitude 
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 23-37 </TD><TD> f15.6 </TD><TD> c2: y, longitude 
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 38-52 </TD><TD> f15.6 </TD><TD> c3: z, height
+                         (see also \ref sec_definition_coordinates)</TD>
+  </TR><TR>
+  <TD> 54-57 </TD><TD> i4 </TD><TD> number of stacks done during acquisition
+         (a value of zero and a value of one both mean a single shot) </TD>
+  </TR>
+</TABLE>
+
+  \sa sff::INFO
+
+\section sec_definition_coordinates Coordinate Specification
+
+   Notice that given coordinates imply a spatial relation between
+   the source location and the receiver locations. While spherical
+   coordinates refer to a fixed reference frame on the earth, cartesian
+   coordinates refer to an arbitrary origin. The creator of the 
+   datafile is responsible to take care that coordinate information
+   is consistent between the SRCE line and the several possible
+   INFO lines.
+
+  \subsection subsec_definition_cartesian_coordinates cartesian coordinates
+
+     x, y and z are vector components in a right handed cartesian
+     reference frame. While x and y lie arbitrary orientated in the
+     horizontal plane, z is counted positive upwards from an arbitrary
+     reference level (preferably the free surface). All three coordinate
+     values are measured in meters.
+
+  \subsection subsec_definition_spherical_coordinates spherical coordinates
+
+     Latitude and longitude are given in the geographical reference frame
+     and measured in degrees. The height value gives the height above
+     the geoid and is measured in meters.
+
+  \sa sff::SRCE, sff::INFO, \ref subsec_definition_srce_line,
+       \ref subsec_definition_info_line
+
+*/
+
+/* ----- END OF doxygen.txt ----- */

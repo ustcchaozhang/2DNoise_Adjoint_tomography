@@ -1,0 +1,5 @@
+usage: DL1logger [-verbose] [-port device] [-lastdate date] [-memory path] 
+                 [-interval i] [-toleratewrongtime] [-activepath pattern]
+                 [-datapath pattern] [-datatypes type[,type,...]]
+   or: DL1logger --help|-h
+   or: DL1logger --xhelp

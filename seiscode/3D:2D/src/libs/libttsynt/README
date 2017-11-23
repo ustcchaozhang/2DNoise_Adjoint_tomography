@@ -1,0 +1,30 @@
+this is <README>
+============================================================================
+TTSYNT --- synthetic traveltimes for dipping refractors 
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+libttsynt is a library of Fortran 77 functions and subroutines. The support
+the evaluation of travel times of refracted waves for subsurface models
+containing plane dipping interfaces.
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+
+make all             installs headers, binary libraries and documentation
+
+Dependencies
+------------
+  external dependencies: -
+  internal dependencies: -
+
+----- END OF README ----- 

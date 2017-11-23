@@ -1,0 +1,65 @@
+this is <COPYING>
+============================================================================
+Copyright, license and disclaimer of warranty
+---------------------------------------------
+
+Seitosh (A Seismologist's Tool Shed)
+====================================
+
+Seitosh is a collection of software source code. It provides software
+libraries and programs for seismic signal processing and the simulation and
+inversion of seismic data. Copyright statements and author's names are given
+in the COPYING files in the respective subdirectories as well as in the
+comments within the files themselves.
+
+The home location of seitosh is https://git.scc.kit.edu/Seitosh/Seitosh
+
+You are invited to fork the project and provide your own contributions.
+
+Most files are published under the terms of the GNU General Public License as
+published by the Free Software Foundation. For some of the files specific
+licensing conditions apply. Please read the COPYING files in the respective
+subdirectories and the comments within the files themselves. A copy of the GNU
+General Public License is provided in LICENSE.GPL 
+
+See files COPYING.legacy for conditions applying to legacy commits.
+
+Disclaimer of Warranty
+======================
+
+The content of this repository is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+The contents were compiled with due diligence. However, the authors and
+distributors of the Seitosh repository shall not assume any liability, neither
+expressly nor implied, for the type or correctness of the material offered and
+shall not be liable (including liability for indirect loss or loss of profit)
+for the material or use of this material. In case contents violate valid legal
+regulations, we kindly ask you to inform us immediately. Such we will be able
+to remove the site or the respective contents as quickly as possible.
+
+References to External Resources
+================================
+
+The contents of this repository contain links to information, data and source
+code offered by servers which are not subject to the control and
+responsibility of the distributor of Seitosh, be it the original repository or
+any fork of it. He shall not assume any responsibility or guarantee for this
+information and shall not approve of or support such information in terms of
+contents.
+
+Contact
+=======
+Questions and recommendations regarding the original repository shall be
+directed to
+
+Dr. Thomas Forbriger                
+email: Thomas.Forbriger@kit.edu
+Black Forest Observatory (BFO), Heubach 206, 77709 Wolfach, Germany,
+Geophysical Institute (GPI), Karlsruhe Institute of Technology (KIT)
+Tel.: ++49 (0)7836/2151, Fax.: ++49 (0)7836/955240
+http://www.gpi.kit.edu/BFO.php
+
+----- END OF COPYING ----- 

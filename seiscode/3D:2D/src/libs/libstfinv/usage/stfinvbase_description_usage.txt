@@ -1,0 +1,18 @@
+# this is <stfinvbase_description_usage.txt>
+# ----------------------------------------------------------------------------
+# Common control parameters
+# -------------------------
+Options and parameters in common for all procedures:
+  verbose       produce verbose output (if implemented)
+  DEBUG=l       produce debug output with level l
+  exp=k         apply offset dependent weights to signals
+
+Due to the amplitude decay with offset to the source signals from receivers at
+larger offset would contribute less to the optimization criterion for which
+the source wavelet correction filter is constructed. The option exp provides
+means to add a weight factor ((r/1m)**k) to each signal, where r is the
+receiver to source offset. This is used to compensate the decrease in signal
+amplitude. If the energy in the original signal decays with ((-r/1m)**(2*k))
+all traces will contribute at a similar level to the derived correction filter
+after application of the weight factors.
+# ----- END OF stfinvbase_description_usage.txt ----- 

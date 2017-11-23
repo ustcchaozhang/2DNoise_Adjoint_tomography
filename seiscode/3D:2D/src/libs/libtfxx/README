@@ -1,0 +1,60 @@
+this is <README>
+============================================================================
+C++ library libtfxx
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+A collection of miscellaneous code frequently used by C++ programs in
+Seitosh. 
+
+This library contains smaller and independent sets of classes and modules.
+They should provide stable and reliable interfaces and sematics. Some of them
+will be copied from libclass which was more for experimenting purposes. The
+modules provide handling of commandline options and arguments, I/O byte
+swapping, I/O for Fortran binary files, error handling, and more.
+
+The home of this software suite is
+https://git.scc.kit.edu/Seitosh/Seitosh/tree/master/src/libs/libtfxx
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+Installation instructions
+-------------------------
+The command make all will compile and install the binary executables 
+as well as the doxygen documentation.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+
+  LOCLIBDIR           defines location of binary libraries
+  LOCINCLUDEDIR       defines location of C/C++ header files (prototypes)
+  LOCBINDIR           defines location of binary executables
+  TF_WWWBASEDIR       defines location of doxygen output
+
+Dependencies:
+-------------
+  Compilers required to build the programs:
+    C++ compiler
+    C/C++ preprocessor
+    doxygen (required to process source code documentation)
+
+  Seitosh libraries required to compile the code:
+    non; the library is self-contained
+
+  Further non-standard libraries required to compile the code:
+    - the C++ standard template library (STL)
+    - libboost (libboost_regex)
+    - libgsl (libgsl, libgslcblas)
+
+Tests and examples are provided in subdirectory tests
+
+The source code itself depends only on common system libraries and the STL.
+
+Detailed documentation is provided through doxygen source code. See target
+doxydoc in the Makefile.
+
+----- END OF README ----- 

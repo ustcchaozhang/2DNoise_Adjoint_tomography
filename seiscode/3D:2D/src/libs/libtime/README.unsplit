@@ -1,0 +1,79 @@
+This is the introductory part to the solid block libtime.f from which the
+new kernel was derived. It is conserved here to document chnages applied in
+the past an the library shape that might be expected by older programs.
+
+thof, 05/08/2000
+ 
+---------------------------------------------------------------------
+ 
+Thomas Forbriger (IfG Stuttgart) 1997
+ 
+a fortran library to manipulate absolute and relative data times
+ 
+---------------------------------------------------------------------
+ 
+REVISIONS and CHANGES
+  27/05/97   V1.0   first version
+  25/06/97   V1.01  changed write(1, *) error messages to print *,
+                    changed time_compare looking for date(1) instead
+                    of date(0)
+  13/08/97   V1.02  time_clear still did clear up to element 8
+  02/02/99   V1.03  added time_read
+  01/08/00   V1.04  in time_read: if month value OR year value is greater
+                    than zero expect absolute time
+  05/08/00          I'm about to split the whole thing into pieces
+ 
+---------------------------------------------------------------------
+
+time format declaration
+ 
+  the absolute time value is stored in an integer array:
+ 
+  integer date(7)
+  date(1)=year
+  date(2)=day of year
+  date(3)=hour
+  date(4)=minute
+  date(5)=second
+  date(6)=millisecond
+  date(7)=microsecond
+
+A year of value 0 will indicate that this is a relative time. This
+affects the routines time_norm and time_getdate and time_sprint.
+Notice that the routine time_fullyear will NOT be affected by this
+declaration and will set a year of value 0 to 2000.
+ 
+The best way to be aware of absolute/relative time confusion is
+to finish every manual setting of absolute times by a call to
+time_finish and to keep the year value fo relative times zero 
+in any case.
+ 
+Absolute times are only accepted from year 100 on. Users must expect
+some routines to set year values below 100 to the range of 1970 to 2069.
+
+Only positive time values will be accepted. Therefore routines like
+time_sub will return only the absolute value of the difference.
+ 
+---------------------------------------------------------------------
+
+subroutines and what they do
+ 
+time_libversion        returns library version                V1.0
+time_isleapyear        returns leapyear flag                  V1.0
+time_fullyear          returns full year value                V1.0
+time_setdoy            returns day of year                    V1.0
+time_getdate           get date from doy                      V1.0
+time_sprint            print time to character array          V1.0
+time_clear             clears a time record to zero           V1.0
+time_norm              set all field to correct value range   V1.0
+time_add               add two time records                   V1.0
+time_sub               calculate difference                   V1.0
+time_copy              copy a time record                     V1.0
+time_finish            finish setting of absolute time value  V1.0
+time_compare           compare two time values                V1.0
+time_mul               multiply relative time by integer n    V1.0
+time_div               divide relative time by integer n      V1.0
+time_nfit              find number of samples fiitng in time  V1.0
+time_read              extra time from a timestring           V1.03
+
+---- END OF <README.unsplit> ----

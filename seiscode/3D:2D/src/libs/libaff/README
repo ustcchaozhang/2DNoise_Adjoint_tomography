@@ -1,0 +1,44 @@
+this is <README>
+============================================================================
+AFF --- A container for numbers
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+The AFF (Array of Friederich and Forbriger) is a lightweight class library. It
+offers a simple and easy to use container for numbers as is necessary in
+numerical code. The offered array always has a rectangular strided layout,
+reference semantics (through counted references) and a Fortran layout in
+memory. The interface is intentionally kept sparse to keep compilation times
+small. The array itself is meant to be used to pass numbers from one program
+module to the other. If you want to exploit the power of expression templates,
+pass the array contents to something like Blitz++.
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+  TF_WWWBASEDIR   Defines the path to your personal homepage. That's the
+                  place where doxygen output will be written too (see
+                  in the Makefile).
+
+ make all             installs headers, binary libraries and documentation
+
+You will find the installed library header files in $(LOCINCLUDEDIR)/aff
+
+Dependencies
+------------
+  external dependencies: -
+  internal dependencies: -
+ 
+
+Detailed documentation is provided through doxygen source code. See target
+doxydoc in the Makefile.
+
+----- END OF README ----- 

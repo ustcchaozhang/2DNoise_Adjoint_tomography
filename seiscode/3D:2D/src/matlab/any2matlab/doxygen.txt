@@ -1,0 +1,60 @@
+/*! \file README
+ *  \mainpage
+ *
+ * \authors Thomas Forbriger, Daniel Armbruster  
+ *
+ * \since March 2004
+ * \date 2010
+ * \version V1.1
+ *
+ * Contents of the page:
+ * - \link any2matlab.cc any2matlab.mexa64 \endlink
+ *
+ * \section concept Concept of the library 
+ * The library provides seismic data file reading modules for several data formats. Functionality
+ * for all formats is provided through a common interface defined in class datrw::idatstream. All
+ * format specific classes are derived from this base. The class datrw::ianystream  has the same
+ * common interface but provides an inheritance transparent constructor mechanism. Programs making
+ * use of datrw::ianystream  for reading seismic data will directly benefit from each additional
+ * waveform format added to libdatrwxx without the need of changing the source code of the
+ * library. Just link against libdatrwxx and go...
+ *
+ * See libdatrwxx coming together with any2matlab for a current list of
+ * supported file format types.
+ *
+ * Each format specific module will be placed into its own namespace, like datrw::hpmo. There you
+ * will find specific functions like datrw::hpmo::readdata. The interface provided through these
+ * functions is specific to the data format. However, for each format we provide a class derived
+ * from datrw::idatstream, like datrw::ihpmostream. Being derived from a common base class all
+ * these format specific classes provide a common interface once defined in datrw::idastream. This
+ * interface handles data in terms of SFF (Stuttgart File Format) data elements (like INFO lines and
+ * FREE blocks). Thus the format specific input classes perform the conversion from the specific
+ * format to SFF. Any data that does not fit into SFF, must be dropped or may be only passed via the
+ * FREE blocks. All SFF data elements not present in the specific format must be replaced by default
+ * values.
+ *
+ * datrw::idatstream behaves like an input stream for SFF data elements. Appropriate input
+ * operators are presented in namespace datrw. All derived classes and datrw::ianystream provide
+ * the same interface and operator set. datrw::ianystream is not derived from datrw::idatstream.
+ * It rather serves as a handle to any class derived from datrw::idatstream. Anyway
+ * datrw::ianystream provides the same interface. Consider to use datrw::sequentialtracereader
+ * instead of datrw::ianystream since it provides higher efficiency when reading several traces
+ * from the same file.
+ *
+ * \section any2matlab any2matlab.mexa64
+ * This program allows the import of the supported dataformats in MATLAB via MEX.
+ *
+ * \c any2matlab.mexa64 is the built program of any2matlab.cc, which had been compiled with the MATLAB
+ * mex compiler.
+ *
+ * <hr>
+ * \section revision Revision
+ *  - 01/07/2010   V1.0   Daniel Armbruster
+ *  - 30/09/2010   V1.1   introduced option 'int'
+ * <hr>
+ *
+ * \section requirements Requirements
+ * <hr> 
+ * @todo 
+ * @todo
+ */

@@ -1,0 +1,37 @@
+this is <COPYING>
+============================================================================
+libsff software library
+-----------------------
+$Id: COPYING 4960 2013-02-01 09:02:16Z tforb $
+============================================================================
+
+The source code in this directory is part of libsff which
+compiles to libsff.a
+
+Copyright (c) 1996, 2013 by Thomas Forbriger 
+Copyright (c) 1996 by Wolfgang Friederich
+Copyright (c) 1989 by Shane Ingate (Australian Seismological Centre)
+Copyright (c) 1989 by Ken Muirhead (Australian Seismological Centre)
+Copyright (c) 1990 by Urs Kradolfer (SED, Swiss Seismological c Service)
+
+gse20.f was taken from codeco.f; see Copyright statement in the file
+
+To other modules the GNU General Public License applies.
+
+----
+libsff is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+----
+
+----- END OF COPYING ----- 

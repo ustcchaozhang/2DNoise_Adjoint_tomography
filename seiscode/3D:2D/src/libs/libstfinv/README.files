@@ -1,0 +1,145 @@
+this is <README.files>
+============================================================================
+description of source files presented in src/libs/libstfinv
+-----------------------------------------------------------
+
+Source code and usage texts
+===========================
+
+Engine base classes
+-------------------
+
+  Abstract base class for engines to derive source correction filter
+  ------------------------------------------------------------------
+  class     stfinv::STFBaseEngine
+    stfinvbase.cc
+    stfinvbase.h
+
+    Source code also contains waveform containers.
+
+  Handle-class to access any engine in the library (C++ API)
+  ----------------------------------------------------------
+  class     stfinv::STFEngine
+    stfinvany.cc
+    stfinvany.h
+
+  Base class for all engines which operate in the Fourier domain
+  --------------------------------------------------------------
+  class     stfinv::STFFourierDomainEngine
+    stfinvfourier.cc
+    stfinvfourier.h
+
+Engines
+-------
+  Fourier domain least squares engine
+  -----------------------------------
+  class       stfinv::STFEngineFDLeastSquares
+    stfinvfdleastsquares.cc
+    stfinvfdleastsquares.h
+   
+  Engine to find a finite, causal source time-history in time domain
+  ------------------------------------------------------------------
+  class       stfinv::STFEngineFiniteCausal
+    stfinvfinitecausal.cc
+    stfinvfinitecausal.h
+   
+  Engine to provide a fixed wavelet
+  ---------------------------------
+  class       stfinv::STFEngineFixedWavelet
+    stfinvfixedstf.cc
+    stfinvfixedstf.h
+   
+  Engine to apply a scalar factor
+  -------------------------------
+  class       stfinv::STFEngineIdentity
+    stfinvidentity.cc
+    stfinvidentity.h
+   
+  Normalization engine
+  --------------------
+  class       stfinv::STFEngineNormalize
+    stfinvnormalize.cc
+    stfinvnormalize.h
+
+C API to library
+----------------
+stfinv.cc
+stfinv.h
+
+Internal functions
+------------------
+fouriertools.cc
+fouriertools.h
+parameterhandler.cc
+parameterhandler.h
+tools.cc
+tools.h
+waveformheader.h
+
+Debugging and error handling
+----------------------------
+debug.h
+error.cc
+error.h
+
+C API test programs
+-------------------
+test_libstfinv/
+test_libstfinv_withpairs/
+
+Programs to test internal components of the library
+---------------------------------------------------
+tests/
+
+Documentation
+=============
+doc/
+doxydoc.cfg
+doxygen.txt
+doxygen_end_users.txt
+doxygen_implementers.txt
+doxygen_library_users.txt
+
+end-user usage instructions
+---------------------------
+summary: more or less just a short list of options or description of purpose
+description: a detailed description of theory of operation and all available
+    parameters; possibly together with examples
+
+  description of overall library:
+    usage/stfinv_summary_usage.txt
+    usage/stfinv_description_usage.txt
+
+  description of prodecure selection and configuration:
+    usage/stfinvany_description_usage.txt
+    usage/stfinvany_summary_usage.txt
+
+  description of options available for all procedures:
+    usage/stfinvbase_description_usage.txt
+    usage/stfinvbase_summary_usage.txt
+
+  description of Fourier domain least squares procedure:
+    usage/stfinvfdleastsquares_description_usage.txt
+    usage/stfinvfdleastsquares_summary_usage.txt
+
+  description of procedure for finite causal filter:
+    usage/stfinvfinitecausal_description_usage.txt
+    usage/stfinvfinitecausal_summary_usage.txt
+
+  description of procedure for fixed filter:
+    usage/stfinvfixedstf_description_usage.txt
+    usage/stfinvfixedstf_summary_usage.txt
+
+  description of common options for procedures in the Fourier domain:
+    usage/stfinvfourier_description_usage.txt
+    usage/stfinvfourier_summary_usage.txt
+
+  description of scaling procedure:
+    usage/stfinvidentity_description_usage.txt
+    usage/stfinvidentity_summary_usage.txt
+
+  description of normalization procedure:
+    usage/stfinvnormalize_description_usage.txt
+    usage/stfinvnormalize_summary_usage.txt
+
+----- END OF README.files ----- 

@@ -1,0 +1,206 @@
+this is <README.soutifu>
+============================================================================
+soutifu toy example - step by step
+==================================
+
+Purpose and basic usage
+-----------------------
+src/ts/wf/testcases/Makefile.soutifu contains the definition of test cases for
+soutifu. Change directory to src/ts/wf/testcases and execute
+
+  make soutifutests
+
+This will run all tests as defined in Makefile.soutifu The results will be
+presented in PDF files:
+
+  soutifu1_add_report.pdf  soutifu2b_report.pdf  soutifu3b_report.pdf
+  soutifu1_report.pdf      soutifu2c_report.pdf  soutifu3c_report.pdf
+  soutifu2a_report.pdf     soutifu3a_report.pdf
+
+These reports contain descriptive texts and waveform displays. They serve as a
+quick test for proper operation and should be useful as a first approach to
+soutifu operation. The setup of the test cases can be controlled through make
+variables passed on the command line. This way they can serve as toy examples.
+
+Principle of operation for test cases and toy examples
+------------------------------------------------------
+The test cases are applied to simulated recordings and corresponding
+synthetics. Both are computed with the reflectivity algorithm as implemented
+in the program refmet.
+
+A plot of the waveform data all other components are based on, can be produced
+by
+
+  make soutifubasewaveform.pdf
+
+To study the surface wave propagation properties, plots of Fourier-Bessel
+expansion coefficients are provided too. Additionally a plot of the difference
+between expansion coefficients for both subsurface models (2lay and 2layb) ㄞs
+provided:
+
+  make soutifu2laysyggrn.pdf soutifu2laybsyggrn.pdf
+  make soutifudiffgrn.pdf
+
+To simulate recordings a low-pass filter, a time delay, and a scaling factor
+are applied to the seismograms. Additionally noise can be added. This results
+in two sets of data. On the one hand there are the simulated recorded data and
+on the other hand there are the corresponding synthetics. A plot of simulated
+observations can be produced by
+
+  make soutifudataplot.pdf
+
+The corresponding synthetics are display by
+
+  make soutifusyntheticplot.pdf
+
+When adding noise to the simulated observations, a plot of waveform amplitudes
+can be helpful:
+
+  make soutifuamp.pdf
+
+The data simulation can be controlled by the following make variables:
+
+SRCDUR      source wavelet duration
+SRCDEPTH    source depth
+NOISEAMP    noise rms-amplitude
+STFPER      low-pass eigenperiod (in seconds) for source time function 
+STFFAC      scaling factor for source time function simulation
+STFDELAY    delay (in seconds) to simulate a trigger advance
+
+To start a new test case from scratch (without recalculation of the
+reflectivity run) first execute
+
+  make soutifuclean
+
+For example the effect of a larger delay, a smaller low-pass period and
+additional noise can be studied by
+
+  make soutifuclean soutifudataplot.pdf NOISEAMP=7.e-6 STFPER=0.001 STFDELAY=0.3
+
+The noise amplitude can be adjusted by
+
+  make soutifuclean soutifuamp.pdf NOISEAMP=2.e-5
+
+and varying the value of NOISEAMP.
+
+Using the toy examples
+----------------------
+
+The above mentioned test cases can well be used as toy examples to study the
+effect of processing parameters. Just call 
+
+  make soutifuclean soutifu1_report.pdp
+
+to receive a display of the result for testcase 1 in the PDF previewer. If you
+like to change the default PDF previewer to e.g. okular, call
+
+  make soutifuclean soutifu1_report.pdp PDFPREVIEWER=okular
+
+instead. Testcase 1 uses identical wave propagation for simulated data and
+synthetics. In this case it is always possible to reproduce data from
+synthetics by the appropriate correction filter, as well as it is possible to
+reproduce the actual source time function. This is displayed by
+
+  make soutifuclean soutifu1_add_report.pdp
+
+which adds test time series, which are filtered by the source time function as
+used in producing simulated data as well as with the correction filter derived
+by soutifu. Both operations should provide identical results.
+
+Noise added to the data will result in a noise correction filter:
+
+  make soutifuclean soutifu1_add_report.pdp NOISEAMP=5.e-5
+
+A finite waterlevel in the deconvolution reduces high-frequency noise without
+noticable deterioration of waveform simulation. However in the additional test
+time series the lack of low-frequency energy in the signals use to optimize
+the correction filter becomes apparent:
+
+  make soutifuclean soutifu1_add_report.pdp NOISEAMP=5.e-5 \
+    SOUTIFU1='fdlsq:tshift=0.4:waterlevel=0.01'
+
+The deterioration becomes stronger with increasing waterlevel:
+
+  make soutifuclean soutifu1_add_report.pdp NOISEAMP=5.e-5 \
+    SOUTIFU1='fdlsq:tshift=0.4:waterlevel=2.'
+
+Test case 3 uses slightly different wave propagation for the synthetics
+compared to the simulated observations. This way it is impossible to reproduce
+all recordings with one single correction filter. Without offset dependent
+scaling the near-source traces dominate the misfit, such that the correction
+filter will be adjusted to reproduce the near-offset traces:
+
+  make soutifuclean soutifu3x_report.pdp STFPER=0.04 
+
+This will be the desired result in most cases of practical relevance.
+
+An extreme increase of weight with offset can be used adjust the fit to the
+trace with the largest offset:
+
+  make soutifuclean soutifu3x_report.pdp STFPER=0.04 SOUTIFU3EXP=40.
+
+An intermediate value for the exp-parameter will produce a kind of compromise:
+
+  make soutifuclean soutifu3x_report.pdp STFPER=0.04 SOUTIFU3EXP=2.5
+
+============================================================================
+Testing special features
+============================================================================
+
+Taper applied to impulse response
+=================================
+All procedures operating in the Fourier domain accept the option "irtap" to
+apply a taper to the impulse response of the source time function corrections
+filter:
+
+  irtap=t1,t2,t3,t4  taper impulse response of correction filter
+
+See the output of "soutifu -phelp fdlsq" (or "onlinehelp -p fdlsq" in the
+source directory of libstfinv) for details. Here are some examples to test
+this feature.
+
+Tests to fail
+-------------
+
+Must fail because taper times must increase monotonically:
+
+  make soutifuclean soutifu1_report.pdp \
+    SOUTIFU1='fdlsq:tshift=0.4:irtap=0.1,0.2,0.1,0.4'
+
+However accepted is:
+
+  make soutifuclean soutifu1_report.pdp \
+    SOUTIFU1='fdlsq:tshift=0.4:irtap=-0.1,-0.1,0.2,0.2'
+
+Tapers longer than the duration of the time series are not accepted:
+
+  make soutifuclean soutifu1_report.pdp \
+    SOUTIFU1='fdlsq:tshift=0.4:irtap=-0.5,-0.1,0.2,2.6'
+
+Tests to demonstrate action
+---------------------------
+
+For 
+
+  make soutifuclean soutifu1_report.pdp NOISEAMP=1.e-5 \
+    SOUTIFU1='fdlsq:tshift=0.4:waterlevel=2.:exp=4.'
+
+the impulse response of the correction filter contains acausal artefacts. They
+and an unwanted coda in the correction filter as well as in the convolved
+synthetics are removed by
+
+  make soutifuclean soutifu1_report.pdp NOISEAMP=1.e-5 \
+    SOUTIFU1='fdlsq:tshift=0.4:waterlevel=2.:exp=4.:irtap=0.,0.05,0.1,0.15'
+
+Similarly for an intentionally acausal correction filter:
+
+  make soutifuclean soutifu2a_report.pdp NOISEAMP=1.e-6 \
+    SOUTIFU2='fdlsq:tshift=0.4:exp=2.5'
+
+Which can be used to demonstrate the applicability of negative taper
+definition times: 
+
+  make soutifuclean soutifu2a_report.pdp NOISEAMP=1.e-6 \
+    SOUTIFU2='fdlsq:tshift=0.4:exp=2.5:irtap=-0.12,-0.1,-0.02,0.02'
+
+----- END OF README.soutifu ----- 

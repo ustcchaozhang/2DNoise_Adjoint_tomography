@@ -1,0 +1,57 @@
+# this is <Makefile.residuals>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2015 by Thomas Forbriger (BFO Schiltach) 
+# 
+# calculate time series residuals
+# 
+# REVISIONS and CHANGES 
+#    12/05/2015   V1.0   Thomas Forbriger
+# 
+# ============================================================================
+#
+#----------------------------------------------------------------------
+# residuals
+%.LZ.res.bin: %.LZ.bin %.LZ.dup.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LT.res.bin: %.LZ.bin %.PZ.LT.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+
+%.LZ.LS.res.bin: %.LZ.bin %.PZ.LS.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LSA.res.bin: %.LZ.bin %.PZ.LSA.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LSP.res.bin: %.LZ.bin %.PZ.LSP.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LSF.res.bin: %.LZ.bin %.PZ.LSF.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LSG.res.bin: %.LZ.bin %.PZ.LSG.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LZ.LST.res.bin: %.LZ.bin %.PZ.LST.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+
+%.LR.res.bin: %.LR.bin %.LR.dup.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LT.res.bin: %.LR.bin %.PR.LT.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+
+%.LR.LS.res.bin: %.LR.bin %.PR.LS.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LSA.res.bin: %.LR.bin %.PR.LSA.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LSP.res.bin: %.LR.bin %.PR.LSP.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LSF.res.bin: %.LR.bin %.PR.LSF.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LSG.res.bin: %.LR.bin %.PR.LSG.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.LR.LST.res.bin: %.LR.bin %.PR.LST.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+
+# check effect of swapping convolution and tapering
+%.Z.TL.res.bin: %.PZ.LS.bin %.PZ.LSA.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+%.R.TL.res.bin: %.PR.LS.bin %.PR.LSA.bin
+	gatherdiff -v -o --type bin --Type bin $^ $@
+
+# ----- END OF Makefile.residuals ----- 

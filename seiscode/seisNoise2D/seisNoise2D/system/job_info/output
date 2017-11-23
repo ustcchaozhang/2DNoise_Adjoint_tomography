@@ -1,0 +1,64 @@
+----------------------------------------
+Begin PBS Prologue Wed Sep  7 18:15:03 EDT 2016 1473286503
+Job ID:		37739710.gpc-sched-ib0
+Username:	zhang18
+Group:		liuqy
+Nodes:		gpc-f108n064-ib0 gpc-f108n072-ib0
+End PBS Prologue Wed Sep  7 18:15:04 EDT 2016 1473286504
+----------------------------------------
+SUBMIT_DIR /scratch/l/liuqy/zhang18/seisDD/seisDD/system
+mpirun test
+
+       This is to check your system: pbs 
+**********************************************************
+
+start time is :  18:15:05
+
+wrapper.sh iproc=0
+wrapper.sh iproc=1
+Not running again
+wrapper.sh iproc=2
+Not running again
+wrapper.sh iproc=3
+Not running again
+wrapper.sh iproc=4
+wrapper.sh iproc=5
+Not running again
+wrapper.sh iproc=6
+Not running again
+wrapper.sh iproc=7
+Not running again
+ Hello!
+ Hello!
+wrapper.sh iproc=8
+wrapper.sh iproc=9
+Not running again
+wrapper.sh iproc=10
+ Hello!
+Not running again
+wrapper.sh iproc=11
+Not running again
+wrapper.sh iproc=12
+ Hello!
+wrapper.sh iproc=13
+Not running again
+wrapper.sh iproc=14
+Not running again
+wrapper.sh iproc=15
+Not running again
+----------------------------------------
+Begin PBS Epilogue Wed Sep  7 18:35:10 EDT 2016 1473287710
+Job ID:		37739710.gpc-sched-ib0
+Username:	zhang18
+Group:		liuqy
+Job Name:	test_job.sh
+Session:	10991
+Limits:		neednodes=2:ppn=8,nodes=2:ppn=8,walltime=00:20:00
+Resources:	cput=00:00:00,mem=10524kb,vmem=152812kb,walltime=00:20:01
+Queue:		batch_ib
+Account:		
+Nodes:	gpc-f108n064-ib0 gpc-f108n072-ib0
+Killing leftovers...
+
+End PBS Epilogue Wed Sep  7 18:35:11 EDT 2016 1473287711
+----------------------------------------

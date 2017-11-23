@@ -1,0 +1,268 @@
+this is <README.pgplot>
+============================================================================
+Quick installation instructions for PGPLOT
+============================================================================
+
+This is a copy of
+https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc/PGPLOT  
+to support offline usage.
+
+Purpose
+=======
+PGPLOT (http://www.astro.caltech.edu/~tjp/pgplot/) is a Fortran graphics
+library for scientific data display. Many programs in this repository make use
+of PGPLOT either directly in Fortran or through the C++ API (libpgplotxx).
+PGPLOT supports output to many different devices, including interactive screen
+plots als well as Postscript files. In the early days PGPLOT was attractive in
+particular due to his ability to produce interactive screen plots from Fortran
+77 on Tektronix terminals.
+
+Installation 
+============
+
+PGPLOT home 
+-----------
+Detailed installation instructions are provided at
+ 
+  http://www.astro.caltech.edu/~tjp/pgplot/install.html
+
+with specific notes for Unix systems:
+
+  http://www.astro.caltech.edu/~tjp/pgplot/install-unix.html
+
+Quick installation guide for use with Seitosh
+---------------------------------------------
+  1. Download pgplot5.2.tar.gz
+     from http://www.astro.caltech.edu/~tjp/pgplot/ (download address is 
+     ftp://ftp.astro.caltech.edu/pub/pgplot/pgplot5.2.tar.gz)
+
+  2. Copy `pgplot5.2.tar.gz` to `~/repo/pgplot`
+
+  3. Extract tar file:
+
+       tar xvfpsz  pgplot5.2.tar.gz 
+
+  4. Rename directory
+
+       mv pgplot pgplot5.2.2
+
+     The contents of the archive now are available in:
+
+       ~/repo/pgplot/pgplot5.2.2/
+
+     We call this the ''source-code directory''. Any other directory name or
+     path for the ''source-code directory'' will do as well, just use its name
+     consistently throughout the installation process.
+
+  5. PGPLOT does not come with `gfortran` support. 
+     To use `gfortran` to compile PGPLOT, you might like to copy one of the
+     files in contrib/pgplot to
+     `~/repo/pgplot/pgplot5.2.2/sys_linux`:
+       gfortran_gcc.conf      uses standard system library paths
+       gfortran_gcc_64.conf   uses path names `lib64` to refer to X11 
+                              and TK libraries (it is necessary on 64bit
+                              systems to link against the 64bit version of
+                              the binary library instead of the 32bit
+                              version).
+     Edit the files to match your system configuration
+
+  6. Create the library directory
+
+       mkdir -pv ~/repo/pgplot/linuxgfortran
+
+     We call this the ''installation directory''. This will be the initial
+     place for the readily compiled binary libraries, binary executables, font
+     files, and documentation. Any other directory name or path for the
+     ''installation directory'' will do as well, just use its name
+     consistently throughout the installation process.
+
+  7. Change your working directory to the ''installation directory'':
+
+       cd ~/repo/pgplot/linuxgfortran
+
+  8. Copy driver list from the ''source-code directory'' to the ''installation
+     directory'':
+
+       ~/repo/pgplot/linuxgfortran> cp -vpd ~/repo/pgplot/pgplot5.2.2/drivers.list .
+
+  9. Activate drivers by removing exclamation mark in first column for the
+     following drivers in the copy of 'drivers.list':
+
+       NUDRIV 0 /NULL      Null device (no output)                     Std F77
+       PSDRIV 1 /PS        PostScript printers, monochrome, landscape  Std F77
+       PSDRIV 2 /VPS       Postscript printers, monochrome, portrait         Std F77
+       PSDRIV 3 /CPS       PostScript printers, color, landscape       Std F77
+       PSDRIV 4 /VCPS      PostScript printers, color, portrait        Std F77
+       TTDRIV 5 /XTERM     XTERM Tektronix terminal emulator                 Std F77
+       XWDRIV 1 /XWINDOW   Workstations running X Window System        C
+       XWDRIV 2 /XSERVE    Persistent window on X Window System        C
+
+     Further drivers may be activated but some of them require special
+     prerequisites. See comments in the ''source-code directory'' for details.
+
+ 10. Call
+
+       ~/repo/pgplot/pgplot5.2.2/makemake ~/repo/pgplot/pgplot5.2.2 linux gfortran_gcc
+
+     Use different option if required by your system (like `gfortran_gcc_64`).
+     This and the following steps have to be done with the ''installation
+     directory'' being the current working directory! If you miss to do so and
+     for example issue the commands in the ''source-code directory'' the
+     installation apparently will procede, but will be incomplete at the
+     end.
+
+ 11. Run `make` to compile Fortran library.
+
+ 12. Edit `~/repo/pgplot/pgplot5.2.2/makehtml` to use correct path to perl
+     binary.
+
+ 13. Run `make pgplot.html` compile HTML documentation.
+
+ 14. Run `make cpg` to prepare C bindings.
+
+ 15. Run `make clean` to remove binary object files.
+
+ 16. Install library files in place
+
+       /bin/cp -vpd lib* $LOCLIBDIR
+       /bin/cp -vpd cpgplot.h $LOCINCLUDEDIR
+
+ 17. Edit `~/.TFbashrc` to contain
+
+       export PGPLOT_DIR=$HOME/repo/pgplot/linuxgfortran
+
+     such that PGPLOT_DIR points to your ''installation directory''.
+     See also README.compile for comments on `~/.SeitoshBashrc`.
+
+ * You may use any other path alterantively to `~/repo/pgplot/pgplot5.2.2` 
+   for ''source-code directory'' and `~/repo/pgplot/linuxgfortran` for the
+   ''installation directory'', respectively. Just adjust all path names in
+   the above commands consistently.
+
+ * For more details see `install-unix.txt` and other files in the
+   ''source-code directory''.
+
+Environment variables
+---------------------
+At least two environment variables (PGPLOT_DIR and TF_LINK_PGPLOT)
+must be set appropriately to use PGPLOT together with source code from the
+Seitosh repository. See also README.compile. A template bashrc is provided
+in contrib/SeitoshBashrc.
+
+PGPLOT_DIR
+  This variable contains the path of the PGPLOT ''installation directory''.
+  This variable is required to pass the location of the binary library to the
+  linker and the location of the 'pgxwin_server' binary executable as well as
+  the location of the font file to the programs at run-time. See also the last
+  item in the quick installation guide above.
+
+TF_LINK_PGPLOT
+  This variable is required for all programs making use of graphical output
+  through the PGPLOT library. It is passed to the linker in cases where
+  binaries have to be linked against PGPLOT. Use this variable to pass the
+  location of your X11 libraries as well as the names of additional libraries
+  that might be needed for the PGPLOT drivers in your installation (like
+  libpng.a by adding -lpng for example). 
+    In case you are in doubt regaring additional libraries, the makefile in
+  your PGPLOT installation directory can be helpful. The variable PGPLOT_LIB
+  in the makefile contains settings required in TF_LINK_PGPLOT too.
+  TF_LINK_PGPLOT should additionally contain the X11 library (variable LIBS in
+  the PGPLOT makefile) and the path to your PGPLOT installation directory (as
+  provided by variable PGPLOT_DIR). 
+    Example:
+
+    export TF_LINK_PGPLOT="-lpgplot -lX11 -L/usr/X11/lib -L$PGPLOT_DIR"
+
+TF_LINK_FORTRAN
+  This variable is required when C or C++ programs must be linked against
+  Fortran libraries. It defines the linker option for interlanguage linking.
+  If you use g77, you will have to link against libg2c.a here (use -lg2c then
+  instead of -lgfortran). Since PGPLOT is a Fortran library, this variable is
+  used wherever a C oder C++ program uses PGPLOT.
+    Example:
+
+    export TF_LINK_FORTRAN=-lgfortran
+
+PGPLOT driver configuration 
+===========================
+
+PGPLOT comes with many different drivers to produce graphics on screen or in a
+file. These drivers can be configured. The collection of drivers is documented
+at http://www.astro.caltech.edu/~tjp/pgplot/devices.html Some general
+configurations options can be selected through environment variables. Some of
+these settings are prepared in 'TFbashrc'.
+
+X Window driver
+---------------
+The X window driver can be configured by settings in `~/.Xdefaults`.
+See http://www.astro.caltech.edu/~tjp/pgplot/xwdriv.html for details.
+
+Postscript driver 
+-----------------
+The postscript driver can be configured by setting environment variables.
+Appropriate settings are prepared in 'TFbashrc'.
+See http://www.astro.caltech.edu/~tjp/pgplot/psdriv.html for details.
+
+PGPLOT_PS_WIDTH (default 7800)
+PGPLOT_PS_HEIGHT (default 10500)
+PGPLOT_PS_HOFFSET (default 350)
+PGPLOT_PS_VOFFSET (default 250)
+  These variables tell PGPLOT how big an image to produce. The defaults are
+  appropriate for 8.5 x 11-inch paper. The maximum dimensions of a PGPLOT
+  image are WIDTH by HEIGHT, with the lower left corner offset by HOFFSET
+  horizontally and VOFFSET vertically from the lower left corner of the paper.
+  The units are milli-inches. The ``top'' of the paper is the edge that comes
+  out of the printer first. 
+
+PGPLOT_IDENT
+  If this variable is defined (with any value), the user name, date and time
+  are written in the bottom right corner of each page. If you want to get rid
+  of the ident marker in the bottom right corner you have to issue
+
+    unset PGPLOT_IDENT
+
+  in your shell before prior to calling the plot program.
+
+PGPLOT_PS_BBOX
+  Normally, PGPLOT computes the bounding box for the entire plot (the smallest
+  rectangle that includes all the graphics) as it creates the PostScript
+  file, and writes this information in a %%BoundingBox comment in the file
+  trailer. Some programs that read encapsulated PostScript files expect to
+  find the %%BoundingBox comment in the file header, not the trailer, and may
+  not display the plot correctly. To fix this problem, you may need to move
+  the comment from the trailer to the header with a text editor or special
+  program. Alternatively, you can define PGPLOT_PS_BBOX = MAX. This tells
+  PGPLOT to put a %%BoundingBox comment in the header of the PostScript
+  file; the bounding box is one which encompasses the whole plottable area,
+  not a minimal one, because PGPLOT does not know the correct bounding box
+  until it has finished writing the file. 
+
+PGPLOT_PS_DRAW_BBOX
+  If this variable is set, the bounding box (the smallest rectangle that
+  includes all the graphics) is drawn on each page. 
+
+PGPLOT_PS_VERBOSE_TEXT
+  If this variable is set, the text of each plotted character string is
+  included in the PostScript file as a comment before the sequence of vectors
+  that represents the string. This makes the file slightly larger, but it can
+  be useful if you want to edit the PostScript file. 
+
+PGPLOT_PS_EOF
+  Normally the output file does not contain special end-of-file characters.
+  But if environment variable  PGPLOT_PS_EOF is defined (with any value)
+  PGPLOT writes a control-D job-separator character at the beginning and at
+  the end of the file. This is appropriate for Apple LaserWriters using the
+  serial interface, but it may not be appropriate for other PostScript
+  devices. 
+
+PGPLOT_PS_MARKERS
+  Specify NO to suppress use of a PostScript font for the graph markers;
+  markers are then emulated by line-drawing. If this option is not requested,
+  PGPLOT graph markers are scaled geometrically with the character-height
+  attribute and the line-width attribute is ignored. This is different from
+  most of the other drivers, where the line-width used for markers is set by
+  the line-width attribute rather than the character-height attribute.
+  Requesting this option makes the PostScript driver behave like the other
+  drivers, but it also makes the PostScript files larger. 
+
+----- END OF README.pgplot ----- 

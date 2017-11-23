@@ -1,0 +1,235 @@
+/*! \file libgsexx/doxygen.txt
+\brief GSE++ library (documentation)
+
+----------------------------------------------------------------------------
+
+$Id$
+\author Thomas Forbriger
+\date 16/03/2002
+
+GSE++ library (implementation)
+
+Copyright (c) 2002 by Thomas Forbriger (IMG Frankfurt) 
+
+Installation instructions are placed in Makefile
+
+Example code is placed in gsexx_write_example.cc
+
+In this file you will find general information in Doxygen format.
+
+REVISIONS and CHANGES 
+- 16/03/2002   V1.0   Thomas Forbriger
+- 18/07/2013   V1.1   tmetz (renamed file)
+============================================================================
+
+*/
+
+/*! \mainpage
+\author Thomas Forbriger
+\since March 2002
+\date $Date$
+\version $Id$
+
+GSE++ library: reading and writing %GSE waveforms
+
+Copyright (c) 2002 by Thomas Forbriger (IMG Frankfurt) 
+
+libgsexx is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+\section history Revisions and changes 
+  - 16/03/2002   V1.0   Thomas Forbriger
+  - 25/01/2006   V1.1   added section \ref using
+
+\section goal Goal of the library
+  This library supports reading and writing of waveforms as defined by the
+  %GSE2.1 standard (Provisional %GSE2.1 Formats and Protocols, May 1997).
+
+  The library defines a module GSE2::waveform. This module containes classes
+  (TWID2, TCHK2) that hold %GSE2 format elements and can handle their input
+  and output to data files. Further it contains functions to read and write
+  waveform data in subformat CM6.
+  A major advantage of the design of this module is, that it supports sample
+  by sample reading and writing.
+  The library does not need or use an intermediate character buffer for
+  encoding or decoding waveform data in CM6 format.
+
+  The library has the primary purpose to supply the CM6 time series
+  input/output layer for reading and writing SFF data. But it is designed to
+  be supplemented with other %GSE2.1 elements and functionality in the future.
+
+\section using Using the library
+  Please have a look at Makefile to find installation instructions.
+
+  Example code is provided by gsexx_write_example.cc
+
+  The simplest way of writing %CM6 encoded %GSE data is
+  \code
+  // open output file
+  std::ofstream os("data.gse"); 
+
+  // number of samples to be written
+  const int nsamples=2300; 
+
+  // prepare WID2 line with the bare minimum of information required
+  GSE2::waveform::TWID2 wid2line; 
+  wid2line.Fsamps=nsamples; 
+  wid2line.Fsamprate=1.; 
+  wid2line.Fsubformat=GSE2::waveform::SF_CM6; 
+
+  // write WID2 line to data file
+  os << wid2line.line();
+
+  // create CM6 encoding data writer for appropriate number of samples
+  GSE2::waveform::TDAT2writeCM6 writer(nsamples);
+
+  // write data
+  int i=0;
+  while (writer.hot())
+  {
+    // calculate synthetic sample
+    int sample=int(1.2e5*(std::sin(i*2.*3.141592653*5./(nsamples-35))
+                        +std::cos(i*2.*3.141592653*5.5/(nsamples-35))));
+    // output sample to data file
+    os << writer(sample);
+    i++;
+  }
+  \endcode
+
+  Corresponding code for reading %GSE waveform data can be found in
+  gsexx_tests.cc.
+
+  \code
+  // open input stream
+  std::ifstream is("date.gse");
+    
+  // set maximum number of samples
+  const int nsamples=2300; 
+  // create array to read data to
+  int indata[msamples];
+
+  // create WID2 line instance and read from file
+  GSE2::waveform::TWID2 wid2line;
+  wid2line.read(is);
+  if (wid2line.Fsamps > msamples)
+  {
+    std::cerr << "ERROR: too many samples in file!" << std::endl;
+    abort();
+  }
+
+  // create instance of reader class for appropriate number of samples
+  GSE2::waveform::TDAT2readCM6 freader(wid2line.Fsamps);
+
+  int i=0;
+  while (freader.hot())
+  {
+    if (i >= wid2line.Fsamps)
+    {
+      std::cerr << "ERROR: missed last sample!" << std::endl;
+      abort();
+    }
+    indata[i] =freader(is);
+    i++;
+  }
+  \endcode
+
+\section design Design Decisions
+\subsection services Services and header files
+  The primary aim of the library is to provide reading and writing of %GSE2
+  data subformats (mainly %CM6).
+
+  Since the main goal is reading and writing, the \c iostream header file will
+  always be included together with the \c libgsexx.h header.
+
+  For ease of implementation the \c gsexx.h always includes the string module.
+  This is an integral part of the TWID2 class. It may not easily be omitted.
+
+\subsection GSEandSFF %GSE2.1, %GSE2.0 and SFF
+  With %GSE2.0 the straight concept was to write a full waveform at once,
+  consisting of a WID2 line, a DAT2 identifier, the actual waveform data in
+  any sub-format encoding and a CHK2 line. This was totally compatible to the
+  SFF (Stuttgart File Format). With %GSE2.1, however, a new STA2 line was
+  introduced. This %GSE2.1 this line is mandatory. But it doesn't appear in the
+  SFF specification and is thus not allowed with in SFF data.
+
+  There are many reasons for reading and writing the full waveform set at
+  once. The main reason is, that the WID2 line holds crucial information about
+  the actual waveform data (i.e. the sub-format specification and the number
+  of samples).
+
+\subsection classes Classes
+
+  TDAT2read and TDAT2write are the interface classes to the core of this
+  module. They are abstract classes. Implementations of this conecpt are
+  TDAT2readCM6, TCM6writeCM6, TDAT2readCM8, TCM6writeCM8, TDAT2readINT, and
+  TCM6writeINT of which only the %CM6 types will be implemented in a first
+  version.
+  The TWID2 class provides member functions to return an appropriate
+  implementation for reading or writing the %GSE waveform sub-format selected
+  in the WID2 line.
+
+  Two classes Tremove_diff and Tapply_diff are helper classes. They remove or
+  apply differences from/to the integer data stream, respectively.
+  They are used within the reader and writer classes.
+  Particular helpers remove2nddiffT and apply2nddiffT for second differences
+  are provided through typedefs.
+
+  The classes TWID2 and TSTA2 simply hold the data of the corresponding %GSE2
+  format lines. Further, there are input/output operators that provide reading
+  and writing from/to streams.
+
+  A class TCHK2 deals with the checksum. It accepts sample values through a
+  member function and builds up the checksum from them. Or it may be set by
+  reading a CHK2 line from an input stream. Further there is a stream
+  input/output provided to read/write a CHK2 line from/to a stream.
+
+  \sa GSE2::waveform::TCHK2, GSE2::waveform::TWID2,
+      GSE2::waveform::differences::Tapply_diff,
+      GSE2::waveform::differences::Tremove_diff,
+      GSE2::waveform::remove2nddiffT,
+      GSE2::waveform::apply2nddiffT
+
+\par The reader classes
+
+  The reader classes take the number of expected input samples through their
+  constructor. Reading is accomplished sample by sample. After the last sample
+  the CHK2 line is read automatically by the reader class and checked against
+  the checksum calculated for the samples read. The member function hot()
+  indicates further samples to be read.
+
+  \sa GSE2::waveform::TDAT2read, GSE2::waveform::TDAT2readCM6
+
+\par The writer classes
+
+  The writer classes take the number of output samples through their
+  constructor. Writing is accomplished sample by sample. After the last sample
+  the CHK2 line is written automatically by the writer class with the checksum
+  calculated for the samples just written. The member function hot() indicates
+  further samples to be written.
+
+  \sa GSE2::waveform::TDAT2write, GSE2::waveform::TDAT2writeCM6
+
+\todo 
+  Provide a check for the DAT2 specifier in the constructor for TDAT2read.
+
+\todo 
+  Provide a writing of the DAT2 specifier in the constructor for TDAT2write.
+
+\todo 
+  Provide a check function to look for the next identifier in the file.
+
+\todo 
+  Integer overflow could be checked in the class that applies differences.
+*/
+/* ----- END OF doxygen.txt ----- */

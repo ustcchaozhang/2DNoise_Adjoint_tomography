@@ -1,0 +1,38 @@
+this is <flsphernote.txt>
+============================================================================
+notes concerning flspher
+------------------------
+$Id$
+============================================================================
+
+flgevas:
+  this directory contains the flgevas code
+  flgevas computes Fourier Bessel expansion coefficients
+  based on GEMINI algorithms
+  
+  this code currently is not maintained
+
+flmodes:
+  this directory contains the flspher code together with code
+  for conversion programs for flspher output
+  I tried to migrate the code to gfortran (3.2.2010) but did
+  not succeed. This code is in an undefined state
+
+flsphertrad:
+  this directory contains the flspher code to calculate eigenmodes for a flat
+  and shallow subsurface model
+  the Makefile is set up to use f2c. This does not work properly on 64bit
+  CPUs but still appears to perform correctly on 32bit machines
+  Compile the code on 32bit machines and link to target flspherstatic
+  (statically linked with f2c library) copy the binary to your 64bit machine
+  and that should work
+  Since there are almost no 32bit systems available, I started the transition
+  to gfortran compilation on 29.11.2011. This appears to be more elaborate
+  than expected. Common blocks in the code are not in sync. f2c appears to
+  have tolerated this. The situation must be resolved for gfortran compilation
+  properly.
+
+scanflspherfile and flspherplot
+  are located in directory disper and should compile and perform correctly
+
+----- END OF flsphernote.txt ----- 

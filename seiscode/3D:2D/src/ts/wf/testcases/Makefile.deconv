@@ -1,0 +1,70 @@
+# this is <Makefile.deconv>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2011 by Thomas Forbriger (BFO Schiltach) 
+# 
+# test deconv
+#
+# ----
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version. 
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# ----
+#
+# 
+# REVISIONS and CHANGES 
+#    24/06/2011   V1.0   Thomas Forbriger
+# 
+# ============================================================================
+#
+
+# test deconvolution
+# ------------------
+#
+# DECODAMP: damping parameter for deconv
+DECODAMP=0.1
+# COSINE: cosine taper for deconv
+COSINE=0.1
+#
+# produce a set of test signals
+deco.tesiff.sff: ; tesiff $@
+# produce a signal filter description
+#deco.fil.xxx: ; printf "lpb  25.,2\ndel  30\nend\n" > $@
+deco.fil.xxx: ; printf "lpb  25.,2\nend\n" > $@
+# filter test signals
+deco.out.sff: deco.tesiff.sff deco.fil.xxx
+	stufi $(word 2,$^) -v -o $<; /bin/mv -fv $<.sfi $@
+#
+# actual deconvolution should produce filter characteristic
+# the number in the file name selects a trace from the set of test signals
+deco%.resp.sff: deco.tesiff.sff deco.out.sff
+	deconv -v -o -transform=$(patsubst %.sff,%.coeff.xxx,$@) \
+        -damping=$(DECODAMP) \
+        -cosine=$(COSINE) $@ \
+        $(word 1,$^) t:$(patsubst deco%.resp.sff,%,$@) \
+        $(word 2,$^) t:$(patsubst deco%.resp.sff,%,$@) 
+# the coefficients are produced along with the filter response
+deco%.resp.coeff.xxx: deco%.resp.sff; echo $< $@
+#
+# plot the resulting impulse response
+deco%.ps: deco%.resp.sff deco.tesiff.sff deco.out.sff
+	stuplo -d $@/ps -Y 0.8 \
+        $< $(word 2,$^) t:$(patsubst deco%.ps,%,$@) \
+        $(word 3,$^) t:$(patsubst deco%.ps,%,$@) 
+# plot the frequency response
+codeco%.ps: deco.gpt deco%.resp.coeff.xxx
+	sed -e 's/<BASE>/$(patsubst deco%.resp.coeff.xxx,deco%,$(word 2,$^))/g' \
+        $< > $(patsubst codeco%.ps,decoco%.gpt.xxx,$@)
+	gnuplot $(patsubst codeco%.ps,decoco%.gpt.xxx,$@)
+
+# ----- END OF Makefile.deconv ----- 

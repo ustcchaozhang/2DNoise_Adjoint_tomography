@@ -1,0 +1,28 @@
+/*! \file README
+ * \brief library with tools for irragularly sampled data (implementation)
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * $Id$
+ * \author Thomas Forbriger
+ * \date 04/02/2011
+ * 
+ * library with tools for irragularly sampled data (implementation)
+ * 
+ * Copyright (c) 2011 by Thomas Forbriger (BFO Schiltach) 
+ * 
+ * REVISIONS and CHANGES 
+ *  - 04/02/2011   V1.0   Thomas Forbriger
+ * 
+ * ============================================================================
+ */
+
+/*! \mainpage 
+
+ This library contains tools to support the handling of data which is sampled
+ with uneven intervals.
+ Such data is provided by FG-5 absolute gravimeters for example.
+
+ */
+
+/* ----- END OF README ----- */

@@ -1,0 +1,30 @@
+----------------------------------------
+Begin PBS Prologue Sun Sep  4 04:23:39 EDT 2016 1472977419
+Job ID:		37705369.gpc-sched-ib0
+Username:	zhang18
+Group:		liuqy
+Nodes:		gpc-f124n084-ib0
+End PBS Prologue Sun Sep  4 04:23:40 EDT 2016 1472977420
+----------------------------------------
+SUBMIT_DIR /scratch/l/liuqy/zhang18/seisDD/seisDD/system
+mpirun test
+ Hello_mpi from process            0  of            3
+ Hello_mpi from process            1  of            3
+ Hello_mpi from process            2  of            3
+ Hello_mpi from process            3  of            3
+----------------------------------------
+Begin PBS Epilogue Sun Sep  4 04:23:47 EDT 2016 1472977427
+Job ID:		37705369.gpc-sched-ib0
+Username:	zhang18
+Group:		liuqy
+Job Name:	test_job.sh
+Session:	13939
+Limits:		neednodes=1:ppn=8,nodes=1:ppn=8,walltime=00:20:00
+Resources:	cput=00:00:00,mem=0kb,vmem=0kb,walltime=00:00:03
+Queue:		batch_ib
+Account:		
+Nodes:	gpc-f124n084-ib0
+Killing leftovers...
+
+End PBS Epilogue Sun Sep  4 04:23:49 EDT 2016 1472977429
+----------------------------------------

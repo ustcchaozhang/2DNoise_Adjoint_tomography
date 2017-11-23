@@ -1,0 +1,111 @@
+this is <README.history>
+============================================================================
+history of the TFSoftware repository
+------------------------------------
+2015-01-17
+============================================================================
+Brief history
+-------------
+
+This software repository originally was meant for personal use (by Thomas
+Forbriger) only. In 2010 it was made available to others in order to share the
+code, bug fixes, and extensions (respository TFSoftware). Parts of the
+repository were not yet tailored to be used by a team of developers.
+Nevertheless others contributed to the contents, notably Daniel Armbruster.
+As part of the project TOAST (Toolbox for Applied Seismic Tomography,
+www.opentoast.de) software licensing and software installation support was
+resolved for major parts of the code. In 2015 these parts of the repository
+were published through the gitlab project Seitosh (Seismologists Tool Shed).
+
+----------------------------------------------------------------------------
+Milestones
+----------
+
+2000-02-09 Initial import to CVS/thof repository
+           tag: thof_initial_commit
+
+           Until 2000-02-09 the files were handled without software supported
+           source code management. Existing files then were taken under
+           revision control in a CVS (Concurrent Versions System) repository.
+
+2002-12-06 Initial import to CVSaff
+           tag: libaff_initial_commit
+
+           The C++ array container library libaff first was developed
+           in a separate CVS respository. This seperate line of development
+           is no longer apparent in the repository. Both CVS repositories
+           where later merged into one subversion repository, placing all
+           commits to the CVS repositories in a single commit ancestry chain.
+
+2010-08-08 Conversion to subversion
+           tag: cvs-svn_conversion
+
+           Source code management was moved to a subversion repository.
+           Repository Root: 
+             http://gpitrsvn.gpi.uni-karlsruhe.de/repos/TFSoftware
+           Repository UUID: 67feda4a-a26e-11df-9d6e-31afc202ad0c
+
+           The initial import was accomplished by application of the tool
+           cvs2svn as provided together with subversion. The import merged
+           parts of three CVS repositories into one subversion repository:
+           CVS/thof/src -> trunk/src
+           CVS/thof/scr -> trunk/scr
+           CVSaff/libaff -> trunk/libaff
+
+           The complete contents of the CVS repository CVS (which originally
+           contained CVS/thof/src and CVS/thof/scr) continue to exist in a
+           separate subversion repository, called TFtexte. Contents of
+           directories CVS/thof/src and CVS/thof/scr are discontinued in this
+           successive repository.
+
+           Revision numbers of milestone-commits in TFSoftware:
+           r1164 is the initial commit to CVSaff/libaff
+           r3069 is the youngest commit present in svnbuild/tfsoftware at
+                 gpitrsvn i.e. the last commit to CVS/thof/src 
+           r3070 moved libaff from the repositories root (where it was placed
+                 by cvs2svn) to src/libs
+           Most of the imported branches and tags were later moved to old_tags
+
+2014-01-01 Check-out with git-svn creating a gatekeeper repository
+           tag: git-svn_gatekeeper_clone
+
+2014-01-02 Published git repository on gpitrsvn and gitserver at GPI
+
+           Code development primarily took place in several git repositories
+           which were kept synchronous. The subversion repository was kept
+           synchronous with them through the git-svn gatekeeper repository,
+           making bidirectional code transfer.
+  
+2015-03-01 Creation of git repository Seitosh (Seismologists Tool Shed)
+           tags: surgery_*
+
+           By a repository surgery (application of git filter-branch) larger
+           contents of the TFSoftware repository were discarded, leaving only
+           those relevant for publication. In particular third party source
+           code for which licensing was not properly resolved was removed from
+           the history. The files of libaff from the original CVS repository
+           were moved to their location in src/libs/libaff (thus altering the
+           original commits).
+
+           As a consequence of the operation commits in the legacy history may
+           be incomplete and inconsistent. Respective comments were added to
+           the commit messages as well as to the contents of each commit. The
+           old stock of the repository should be regarded as being provided
+           only for the purpose of documenting the source code history of
+           those programs still being present in the Seitosh repository.
+           
+           Author and committer names (previously created by git-svn from the
+           login names in the subversion repository) were rewritten to their
+           full names. 
+           
+           Further all branch tips of the local repository as well as the
+           authoritative remote repository were tagged.
+
+           The resulting repository is called Seitosh (Seismologists Tool
+           Shed) and is published through a gitlab project of the same name
+           (at https://git.scc.kit.edu/Seitosh/Seitosh).
+
+           The rest of the contents of TFSoftware remain in its original
+           repository, being continued for private use.
+
+----- END OF README.history ----- 

@@ -1,0 +1,38 @@
+# this is <stfinvfdleastsquares_description_usage.txt>
+# ----------------------------------------------------------------------------
+#
+Procedure: Least squares in the frequency domain
+------------------------------------------------
+This procedure calculates a least squares fit in the Fourier domain, which
+equals a waterlevel-deconvolution. A waterlevel as a fraction of the signal
+energy of the input synthetics is applied. If selected, offset dependent
+weights will be applied to the signals from different receivers.
+
+Options and parameters:
+  waterlevel=l  waterlevel to be applied for regularization.
+
+The procedure is implemented in the Fourier domain. Fourier coefficients for
+the correction filter are constructed such that the residual between Fourier
+coefficients of recorded signals and Fourier coefficients of synthetic signals
+after application of the correction filter are minimized in a least-squares
+sense. The least-squares solution is subject to a damping constraint. If the
+weighted power spectral density of the synthetics at a given frequency drops
+below the l-th fraction (waterlevel parameter) of the average (over all
+frequencies) power spectral density, the filter coefficients are damped
+(artificially made smaller) by the damping constraint (i.e. waterlevel as seen
+from the perspective of deconvolution). 
+
+Start with l=0.01 as a reasonable initial value for the waterlevel. The best
+fitting waterlevel must be searched by trial and error and depends of signal
+noise and on how well the synthetics describe the actually observed wave
+propagtion.
+
+The theory behind the Fourier domain least squares procedure is outlined by
+Lisa Groos (2013, Appendix F, page 146). She also describes a way to find an
+approrpiate waterlevel by application of the L-curve criterion (Groos, 2013,
+Appendix G, page 148).
+
+Lisa Groos. 2013. 2D full waveform inversion of shallow seismic Rayleigh waves.
+  Dissertation, Karlsruhe Institute of Technology.
+  http://nbn-resolving.org/urn:nbn:de:swb:90-373206
+# ----- END OF stfinvfdleastsquares_description_usage.txt ----- 

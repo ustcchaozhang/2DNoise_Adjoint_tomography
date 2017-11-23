@@ -1,0 +1,49 @@
+## specfem2d
+# Configure time
+specfem2d/aclocal.m4
+specfem2d/autom4te.cache
+specfem2d/config.log
+specfem2d/config.status
+specfem2d/Makefile
+specfem2d/setup/config.h
+specfem2d/setup/constants.h
+specfem2d/setup/precision.h
+# Build time
+specfem2d/obj/*
+specfem2d/mod/*
+specfem2d/bin/*
+specfem2d/*.mod
+specfem2d/*__genmod.f90
+# Trash files
+specfem2d/.*swp
+specfem2d/.*swo
+specfem2d/*~
+# scotch 
+specfem2d/src/meshfem2D/scotch_5.1.12b/*
+specfem2d/src/meshfem2D/scotch_5.1.12b/lib/*
+specfem2d/src/meshfem2D/scotch_5.1.12b/src/*
+
+#EXAMPLES
+specfem2d/EXAMPLES/*
+
+# lib 
+seisDD/lib/*
+!seisDD/lib/src
+
+# system 
+seisDD/system/job_info
+seisDD/system/test/*exe
+
+# user private EXAMPLES folder
+EXAMPLES/*
+!EXAMPLES/readme
+
+# GJI2016 
+GJI2016/Exp1/submit_job
+GJI2016/Exp2/submit_job
+GJI2016/Exp3/submit_job
+GJI2016/Exp4/submit_job
+GJI2016/Exp5/submit_job
+
+# visualize
+auxiliaries/visualize/plot_bin

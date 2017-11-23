@@ -1,0 +1,23 @@
+this is <README>
+============================================================================
+ts/plot
+============================================================================
+
+This is a collection of plotting-tools for seismic an other data.
+
+damplo
+  Plot amplitude decay with offset
+
+pamo
+  Plot particle motion
+
+splot
+  Quick plot of Fourier amplitude spectrum
+
+stuplo
+  Plot seismic time series
+
+susplo
+  Plot stacked Fourier amplitude spectra
+
+----- END OF README ----- 

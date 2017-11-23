@@ -1,0 +1,68 @@
+# this is <stfinvfourier_description_usage.txt>
+# ----------------------------------------------------------------------------
+#
+# Procedures in the Fourier domain
+# --------------------------------
+Options and parameters in common for procedures in the Fourier domain:
+  fpow2              use power of two for number of coefficients
+  fdiv=d             use integer multiple of d for number of coefficients
+  fpad=f             padding factor
+  tshift=d           delay source correction filter wavelet by d (in seconds)
+                     this is applied only to the waveform of the impulse
+                     response of the correction filter after application to
+                     synthetic data (has no effect on convolved data)
+  irtap=t1,t2,t3,t4  taper impulse response of correction filter
+                     this is applied to the correction filter before
+                     application to synthetic data (affects convolved data)
+
+These options define the number of samples N used for the FFT (Fast Fourier
+Transform). This number N should be larger than the number of samples M in the
+original input time series to avoid wrap-around. If fpow2 is set, N will be
+the next power of 2 larger than M*f. Else if fdiv is set, N will be the next
+integer multiple of d larger than M*f. If fdiv is not set explicitely, a
+default value for d (commonly 100) is used. If option fpad ist used, N will be
+f times larger than without padding. Without explicitely setting fpad, a
+default value for f is used (which commonly equals 1.5). When defining the
+number of samples N, first padding is considered (fpad), then the either
+selection of a power of two (pow2) or the divisor criterion (fdiv) is applied.
+The latter is only applied, if pow2 ist not selected.
+
+Input time series with M samples will be padded with (N-M) zeros to create the
+time series which actually will be transformed to the Fourier domain. Upon
+inverse FFT the additional (N-M) samples of the resulting time series will be
+discarded before returning the M remaining samples to the caller. Note, that
+this is a form of implicite taper. In particular the caller will not obtain
+exactly the filter response, which was used for convolution internally.
+
+The derived correction filter in some cases can contain acausal components.
+This means that the impulse response is non-zero for negative time values.
+Since by definition, the impulse response is output for the time interval of
+the input data, these acausal components can remain unnoticed. The option
+tshift can be used to shift the impulse response as obtained by inverse FFT in
+order to expose acausal components. The time shift is only applied to the
+impulse response of the correction filter before returning the impulse
+response to the caller. It does not affect the convolved synthetics. If the
+output impulse response is discussed with respect to the input synthetics, the
+option tshift effectively shifts the temporal origin away from the origin time
+specified in the input data.
+
+A time domain taper can be applied to the impulse response of the correction
+filter by using option irtap. Four time values are given in units of seconds:
+t1, t2, t3, and t4. They must be in increasing order and (t4-t1) must be
+smaller than the total duration of the time series used to represent signals
+internally. Times value are allowed to be negative. Time series are understood
+to be periodic (due to discrete Fourier transformation). Prior to application
+of the correction filter to the time series passed to the algorithm, the
+correction filter is transformed to the time domain, tapered, and then
+transformed to the Fourier domain again. The values of the taper are:
+  0                              if       t <  t1
+  0.5-0.5*cos(pi*(t-t1)/(t2-t1)) if t1 <= t <= t2
+  1                              if t2 <  t <  t3
+  0.5+0.5*cos(pi*(t-t3)/(t3-t4)) if t3 <= t <= t4
+  0                              if       t >  t4
+
+Time values are given in the same unit in which the sampling interval is given
+in the input time series. I.e. if sampling interval is specified as a fraction
+of seconds (which is standard) then all time values passed as parameters are
+also given as fractions or multiples of seconds.
+# ----- END OF stfinvfourier_description_usage.txt ----- 

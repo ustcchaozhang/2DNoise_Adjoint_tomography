@@ -1,0 +1,37 @@
+# this is <stfinvany_description_usage.txt>
+# ----------------------------------------------------------------------------
+# This file should address the selection of the different procedures. The
+# overall concept of the library is explained in the base class.
+How to control the procedure
+----------------------------
+A specific procedure is selected by passing a parameter string. This string
+may further contain parameters to control the way the procedure will be
+applied.
+
+The parameter string starts with an ID-sequence identifying the desired
+procedure. See the list available procedures for ID strings. In the parameter
+string the ID-sequence is terminated by a colon (:).
+
+After selecting the desired procedure, the interface function strips off the
+ID-sequence as well as the first colon from the parameter string. The
+remainder may consist of several control parameters being separated by colons
+(:). Each control parameter may just be a flag (switch to turn on an option)
+or may come along with a parameter value. The value is separated from the
+parameter by an equal sign (=).
+
+Where several values in an argument to a parameter must be separated (like in
+the 'irtap' option of the Fourier domain procedures) white space ( ), commas
+(,), and semicolons (;) are allowed as field delimiters, at your convenience.
+
+Examples:
+- To select Fourier domain least squares and shift the returned source
+  correction filter wavelet by 0.4s and switch on verbose mode, pass the
+  following parameter string:
+    fdlsq:tshift=0.4:verbose
+- To select the identity procedure and switch on debug level 4:
+    ident:DEBUG=4
+- To select Fourier domain least squares, apply offset dependent weights and
+  use a power of two to speed up the FFT:
+    fdlsq:pow2:exp=1.4
+#
+# ----- END OF stfinvany_description_usage.txt ----- 

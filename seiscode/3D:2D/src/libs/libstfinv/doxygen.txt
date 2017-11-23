@@ -1,0 +1,153 @@
+/*! \file libstfinv/doxygen.txt
+ * \brief STFINV library: seek source wavelet correction filter (libstfinv)
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Copyright (c) 2011 by Thomas Forbriger (BFO, Schiltach)
+ *
+ * The source code in this directory is part of libstfinv which compiles to
+ * libstfinv.a
+ *
+ * ----
+ * libstfinv is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * STFINV library: seek source wavelet correction filter (libstfinv)
+ *
+ * This file contains:
+ *  - documentation of namespace stfinv
+ *  - mainpage text
+ * 
+ * REVISIONS and CHANGES 
+ *  - 05/05/2011   V1.0   Thomas Forbriger
+ *  - 05/10/2011   V1.1   added code fragments for using waveform pairs
+ *  - 18/07/2013   V1.2   tmetz (renamed file)
+ * ============================================================================
+ */
+
+/*! \brief Root namespace of library
+  
+ */
+namespace stfinv {
+} // namespace stfinv
+
+/*======================================================================*/
+
+/*! \mainpage
+
+\author Thomas Forbriger
+\since May 2011
+\date October 2015
+\version V1.0
+
+\par Purpose
+This library provides methods for the derivation of source
+wavelet correction filters in approaches to full waveform inversion.
+
+\par Table of contents
+- \ref page_end_users
+  - \ref page_eu_sec_users
+    - \ref page_eu_subsec_introduction
+    - \ref page_eu_subsec_parameters
+  - \ref page_eu_sec_texts
+- \ref page_users
+  - \ref page_u_sec_users 
+    - \ref page_u_subsec_introduction
+    - \ref page_u_subsec_libraries
+- \ref page_implementers
+  - \ref page_i_sec_implementers
+    - \ref page_i_subsec_cusers
+    - \ref page_i_subsec_cxxusers
+  - \ref page_i_sec_design
+    - \ref page_i_subsec_design_initialization
+
+Currently implemented \ref engines as well as parameters to control the
+processing are described in the \ref page_help.
+
+\todo
+  Engines I consider to implement:
+  - stf which just applies a scalar factor:
+    stfinv::STFEngineIdentity
+  - stf read from file (always the same stf, independent of data and
+                        synthetics):
+    stfinv::STFEngineFixedWavelet
+  - stf which normalizes the synthetics in the Fourier domain; this ensures
+    that data and synthetic always contain the same signal energy; this avoid
+    a zero stf during the first iterations starting from a new inappropriate
+    initial model:
+    stfinv::STFEngineNormalize
+  - causal and time limited stf as found by convolution condition in the time
+    domain; this is a solution to a system of linear equations and will
+    requires LAPACK:
+    stfinv::STFEngineFiniteCausal
+  
+\todo
+  Replace reference \ref page_help by verbatim display of usage texts
+
+\date 04.10.2015
+
+*/
+
+/*======================================================================*/
+
+/*! \brief Engines implemented in libstfinv
+
+\defgroup group_engines Engines
+
+\todo
+  A detailed description for implementers is still missing
+
+\date 05.05.2011
+ */
+
+/*======================================================================*/
+
+/*! \brief Tools and utilities used by the libstfinv engines
+
+\defgroup group_tools Internal tools and utilities
+
+\todo
+  A detailed description for implementers is still missing
+
+\date 05.05.2011
+ */
+
+/*======================================================================*/
+
+/*! \brief Error handling module
+
+\defgroup group_error Error handling module
+
+\todo
+  A detailed description for implementers is still missing
+
+\date 04.10.2015
+ */
+
+/*======================================================================*/
+
+/*! \brief Debug tools
+
+\defgroup group_debug Debugging module
+
+\todo
+  Selection of debug statements in most parts of the code is done by bits in
+  the value of the debug variable. E.g∵ The value 16 (bit 4) selects debugging
+  of the taper function. This is not yet properly documented.
+
+\date 04.10.2015
+ */
+
+// ----- END OF doxygen.txt ----- 

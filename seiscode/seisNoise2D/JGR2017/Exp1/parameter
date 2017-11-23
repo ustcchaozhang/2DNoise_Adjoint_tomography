@@ -1,0 +1,108 @@
+#!/bin/bashi
+
+# paper GJI,2016, Experiement I, figure 1-3
+
+### job info
+Job_title='Exp1'
+system='pbs'  # slurm, lsf or pbs
+#system='slurm'
+queue='sandy'   # serial,tiger(princeton) ...
+max_nproc_per_node=8 # max number of processors per node
+ntasks=48
+NPROC_SPECFEM=4
+WallTime=00:30:00
+compiler='ifort'
+GPU_MODE=false
+job='invesion' # modeling,kernel,inversion
+solver='specfem2D' # specfem2D, specfem3D
+ReStart=true   # true--Relaunch all files; false--Start from current status
+
+### paths
+package_path="$seisNoise2D/seisDD"
+specfem_path="$seisNoise2D/specfem2d"
+
+### observations 
+ExistDATA=true
+# if exist provide path, otherwise ignore
+DATA_DIR="$seisNoise2D/GJI2016/Exp1/data"
+
+### model paths
+target_velocity_dir="$seisNoise2D/GJI2016/Exp1/model_true_bin"
+initial_velocity_dir="$seisNoise2D/GJI2016/Exp1/model_init_bin"
+
+### forward modeling
+# number of samples in data
+NSTEP=12000
+# sample rate
+deltat=0.02 #s  
+f0=0.2
+# number of receivers
+NREC=49
+# number of sources
+NSRC=48
+# measurement (x,y,z,p)
+data_list='z'
+
+### kernel construction
+# measurement type (CC WD ET ED IP MT MA) 
+measurement_list=MT
+# misfit_type (AD, DD, AD+DD)
+misfit_type_list=AD
+# similarity threshold for DD 
+cc_threshold=0.90
+
+## inversion parameters
+kernel_list='beta_kernel,alpha_kernel,rho_kernel'
+precond=true
+precond_list='hessian2_kernel'
+z_precond=0.0
+model_list='vs'
+
+
+# empire_function
+empire_function=true
+
+initial_step_length=0.005
+max_step=10
+
+
+
+# optimization(SD CG QN)
+opt_scheme=QN
+
+# iteration limit
+iter_start=1
+iter_end=1
+
+### preprocessing
+MUTE_NEAR=false
+offset_near=100000    
+
+Wscale=0
+wavelet_path="$seisNoise2D/seisDD/lib/WT_basis"
+
+TIME_WINDOW=true
+VEL_TOP=3500
+VEL_BOT=2900
+
+
+IS_BANDPASS=true
+Fmin2=35
+Fmax2=20
+Fmin3=30
+Fmax3=15
+Fmin4=20
+Fmax4=10
+Fmin5=15
+Fmax5=6
+#### postprocessing
+# smooth
+smooth=true
+sigma_x=30000
+sigma_z=10000
+sigma_x_rate=0.0
+sigma_z_rate=0.0
+
+## Display details
+DISPLAY_DETAILS=true
+DISPLAY_TRACES=false

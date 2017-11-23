@@ -1,0 +1,30 @@
+this is <COPYING>
+============================================================================
+Copyright statement for libraries
+============================================================================
+
+Seitosh libraries provide several modules used by Seitosh application
+programs. They cover functionality of graphical output, time series
+processing, data input/output, etc. Most of the code is published under terms
+of the GNU General Public License. To a few source code files different
+licensing conditions apply. Each of the libraries source code directories
+contains a specific COPYING file. Please check these files for copyright and
+copying conditions.
+
+----
+Seitosh libraries are free software; you can redistribute them and/or modify
+them under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+Seitosh libraries are distributed in the hope that they will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+----
+
+----- END OF COPYING ----- 

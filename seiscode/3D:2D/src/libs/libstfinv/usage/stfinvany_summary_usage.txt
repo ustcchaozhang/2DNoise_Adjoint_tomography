@@ -1,0 +1,11 @@
+# this is <stfinvany_summary_usage.txt>
+# ----------------------------------------------------------------------------
+#
+How to control the procedure
+----------------------------
+Procedures can be selected by passing the procedures ID together with options
+an parameters controlling the algorithm used.
+
+Syntax of parameter string:
+  ID:option:option=value:option=value
+# ----- END OF stfinvany_summary_usage.txt ----- 

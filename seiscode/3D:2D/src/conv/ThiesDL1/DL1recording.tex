@@ -1,0 +1,394 @@
+% this is <DL1recording.tex>
+% ----------------------------------------------------------------------------
+% $Id$
+% 
+% Copyright (c) 2008 by Thomas Forbriger (BFO Schiltach) 
+% 
+% Recording data from the DL1 data logger
+% 
+% REVISIONS and CHANGES 
+%    22/12/2008   V1.0   Thomas Forbriger
+%    15/10/2010   V1.1   comment on message() versus match() filter in
+%                        syslog-ng
+%    18/04/2011   V1.2   added logrotate documentation
+%    01/04/2014   V1.3   update to current version of DL1logger
+% 
+% ============================================================================
+%
+\documentclass[twoside]{article}
+%\usepackage{ngerman}
+\usepackage{pslatex}
+\usepackage{anysize}
+\usepackage{amsmath}
+%\usepackage[slantedgreek]{mathtime}
+\usepackage{graphicx}
+\usepackage{textfit}
+\usepackage{fancyhdr}
+\usepackage{pepigerm}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage[bf,small]{caption}
+\usepackage{xspace}
+\bibliographystyle{pepigerm}
+%----------------------------------------------------------------------
+\newcommand{\mytitle}{Recording data from the Thies DL1 pluviometer}
+%----------------------------------------------------------------------
+\marginsize{2.5cm}{1.5cm}{1.5cm}{1.5cm}
+\pagestyle{fancy}
+\rhead[\mytitle]{\thepage}
+\lhead[\thepage]{\mytitle}
+\chead{}
+\rfoot[Black Forest Observatory, \today]{Thomas Forbriger}
+\lfoot[Thomas Forbriger]{Black Forest Observatory, \today}
+\cfoot{}
+\sloppy
+\columnsep20pt
+\parindent0pt
+\parskip 10pt
+%======================================================================
+% macros
+\newcommand{\DTDL}{Thies DL1 data logger}
+\newcommand{\Dlaunchscript}{\texttt{launchDL1logger.sh}}
+\newcommand{\Dlogscript}{\texttt{DL1logger.sh}}
+\newcommand{\Dntpscript}{\texttt{ntpreport.sh}}
+\newcommand{\DLdirect}{\texttt{DL1direct}}
+\newcommand{\DLlogger}{\texttt{DL1logger}}
+\newcommand{\Dloggerhost}{\textsc{flocke}}
+\newcommand{\DloggerhostIP}{\texttt{192.168.1.34}}
+\newcommand{\Dstoragehost}{\textsc{pinatubo}}
+\newcommand{\DstoragehostIP}{\texttt{192.168.1.17}}
+\newcommand{\Ddisplayhost}{\textsc{stromboli}}
+\newcommand{\DdisplayhostIP}{\texttt{192.168.1.41}}
+\newcommand{\Dserialdevice}{\texttt{/dev/ttyUSB0}}
+\newcommand{\Dloggeruser}{\texttt{dl1}}
+\newcommand{\Dloggeruserhome}{\texttt{/home/dl1}}
+\newcommand{\Dchannel}{\texttt{WR1}}
+%======================================================================
+\begin{document}
+\mbox{ }\par
+\vspace{-1.5cm}
+%\hrule
+\medskip
+{\noindent\Large\textbf{\mytitle}\vspace{-14pt}\par}
+%\smallskip\hrule
+\rule{\textwidth}{0.5pt}
+%\bigskip
+\par
+\vspace{-\parskip}
+Technical Documentation
+\hfill
+\begin{raggedleft}
+Thomas Forbriger\\
+Black Forest Observatory (BFO)\\
+Heubach 206,
+D-77709 Wolfach\\
+\vspace{3pt}
+\today\ (\mbox{\texttt{$$Revision$$}})\\
+\input{version.xxx}
+\par
+\end{raggedleft}
+\bigskip
+\thispagestyle{plain}
+%-------------------------------------------------------------
+\begin{multicols}{2}
+\parindent10pt
+\parskip 0pt
+\tableofcontents
+%\listoftables
+%\listoffigures
+\parindent0pt
+\parskip 10pt
+%======================================================================
+\section{Pluviometer data acquisition}
+\subsection{Hardware components}
+The rain gauge (a tiping bucket) in front of the BFO laboratory building
+produces an eletrical pulse for each 0.1\,mm of precipitation.
+These pulses are counted by a \DTDL.
+The \DTDL\ maintains a data ring-buffer.
+Its contents can be accessed through the local display, a memory card, or the
+RS-232 serial port.
+We use a Linux host (\Dloggerhost) connected to the serial port to control
+the \DTDL\ and to collect precipitation data.
+
+\subsection{Data acquisition program}
+Two programs are currently available to control the \DTDL.
+They are \DLdirect\ (Section~\ref{sec:prog:dldirect}) and \DLlogger\
+(Section~\ref{sec:prog:dllogger}).
+The first supports manual control of the \DTDL\ and should not be used while
+the second is in operation.
+The second (\DLlogger) is the actual data acquisition program.
+It controls the \DTDL, synchronizes its internal clock to the system clock of
+the logger host (\Dloggerhost), and maintains an archive of data.
+See Section~\ref{sec:prog:dllogger} for a detailed description in particular
+for information on data sampling, poll cycles, message logging, and so on.
+
+The data acquisition program (\DLlogger) is started from a shell script
+(\Dlogscript, see Section~\ref{sec:prog:dlogscript}).
+This shell script sets the correct patterns for data file path names
+and initializes the serial port prior to execution of \DLlogger.
+The script \Dlogscript\ itself is executed from the launch-script
+\Dlaunchscript\ (see Section~\ref{sec:prog:dlaunchscript}).
+The latter first checks whether an instance of the logger is in operation. 
+If not, the logger is executed in background operation mode.
+The launch-script \Dlaunchscript\ should be executed periodically by the cron
+deamon. 
+See Section~\ref{sec:conf:crontab:logger} for an example of an entry in the
+crontab.
+This ensures that the data acquisition is resumed automatically upon
+unexpected termination of the acquisition program.
+
+\subsection{Diagnostics}
+The data acquisition program writes its diagnostic messages to the system's
+syslog facility. 
+The messages are tagged \DLlogger.
+See Section~\ref{sec:prog:dllogger} for information on log levels used for
+different diagnostic messages.
+A simple configuration that maintains local publically readable log files
+is given in Section~\ref{sec:conf:syslog:logger}.
+This configuration also sends messages to a second system for monitoring
+purposes.
+Two files are maintained. 
+One contains all messages that are tagged \DLlogger.
+These messages comprise also purely informational messages that are issued in
+each poll cycle to indicate the activity of \DLlogger. 
+This log stream is also exported to the display host \Ddisplayhost\ for
+monitoring purposes.
+A second log file contains only messages with level notice and higher (all
+levels except level info). 
+This log file is meant to be archived together with the data to support error
+analysis.
+Log messages with tag \DLlogger\ are excluded from the usual system log.
+
+\subsection{Data archive}
+The data archive maintained by \DLlogger\ contains two types of data files.
+The first are called dump-files and are simply literal copies of the data
+received from the \DTDL\ together with some diagnostics.
+The second kind of data files use formats supported by libdatrwxx for outputs,
+contains diagnostics too and might be more convenient for routine processing.
+The second kind of data contains data in counts, not mm.
+Both data archives contain files for completed days that provide the date in
+the path name (as well as in the file's header).
+The current data for uncompleted days is stored in files called
+separate files, usually not indicating the date in the path name.
+The latter are updated in periodic poll intervals.
+Data is copied to the data storage host \Dstoragehost\ by \texttt{csback}
+controlled by the \texttt{cron} daemon on \Dstoragehost.
+The data archive can be provided to other hosts via network file system (NFS).
+See Section~\ref{sec:prog:dllogger} for further comments.
+
+\subsection{Timing}
+Once in a day the data logger \DLlogger\ synchronizes the \DTDL\ to the system
+clock of \Dloggerhost.
+See Section~\ref{sec:prog:dllogger} for further comments on timing accuracy.
+The system clock of \Dloggerhost\ must by disciplined by NTP (network time
+protocol). 
+To support easy monitoring of the system's state of health a shell script
+\Dntpscript\ (Section~\ref{sec:prog:dlntpscript}) is executed once a day by
+the cron deamon (see Section~\ref{sec:conf:crontab:logger}).
+This script polls the state of NTP peers and writes it to the system log
+stream with tag \DLlogger.
+The system's time zone is selected to be UTC.
+This way the time stamps in the system's log files are synchronous with the
+times provided in the messages from \DLlogger.
+
+\subsection{Data acquisition account}
+The logger program \DLlogger\ runs in userspace of user \Dloggeruser\ on
+\Dloggerhost. 
+The home directory of \Dloggeruser\ is \Dloggeruserhome.
+Binaries \DLlogger\ and \DLdirect\ are installed in
+\Dloggeruserhome\texttt{/bin/linux}.
+Shell scripts \Dlogscript, \Dlaunchscript, and \Dntpscript\ are installed in 
+\Dloggeruserhome\texttt{/bin/scripts}.
+The \DLlogger\ memory file, the data files, and logs of the launch script go
+to \Dloggeruserhome\texttt{/DL1/data} and subdirectories therein.
+
+\subsection{Data stream}
+\DLlogger\ uses the following identifiers for the data stream in data files:
+\vspace{-12pt}
+\begin{description}
+\parskip0pt
+\itemsep0pt
+\item[channel:] \Dchannel
+\item[station:] is read from \DTDL
+\item[instype:] is read from \DTDL
+\end{description}
+The channel ID is defined according to the SEED reference manual (Appendix~A):
+\vspace{-12pt}
+\begin{description}
+\parskip0pt
+\itemsep0pt
+\item[Band code W:] Weather/Environmental
+\item[Instrument Code R:] Rainfall
+\item[Orientation Code:] unkown
+\end{description}
+
+%----------------------------------------------------------------------
+\section{Data monitoring}
+Data storage takes place on a second host (\Dstoragehost).
+A third host (\Ddisplayhost) may be used for the purpose of monitoring and
+data quality control. and data backup.
+Log messages are made available through syslog in a local file
+(Section~\ref{sec:conf:syslog:display}).
+
+\subsection{Data graph monitor}
+The data files are made available through \texttt{csback} and NFS.
+Quality control plots are maintained through the monitor suite at BFO.
+The processing and plotting mechanism is described elsewhere in a difference
+document.
+
+\subsection{Data file monitor}
+For calibration purposes in particular a direct display of the current data
+file can be useful.
+The file can be displayed in a local terminal window by using the command
+\begin{quote}
+\texttt{less /data/BFO/DL1/data/thiesdl1/DL1current.thiesdl1}
+\end{quote}
+The display will be updated upon pressing the \texttt{R}-key.
+
+\subsection{Message file monitor}
+A permanent display of diagnostic messages can be maintained in a local
+terminal window by the command
+\begin{quote}
+\texttt{less /var/log/dl1log}
+\end{quote}
+Pressing the \texttt{F}-key will activate automatic updates of the displayed
+contents.
+To use the file content navigation facilities of \texttt{less} press
+\texttt{Ctrl-C}.
+To return to automatic updates press the \texttt{F}-key again.
+
+%----------------------------------------------------------------------
+\end{multicols}
+%\pagebreak
+%======================================================================
+\appendix
+\section{Configuration}
+\subsection{\texttt{crontab} on \Dloggerhost}
+\label{sec:conf:crontab:logger}
+\begin{verbatim}
+# this is <crontab>
+# ============================================================================
+# crontab for netrunner
+# ---------------------
+# 
+10 * * * * /home/dl1/bin/scripts/launchDL1logger.sh 1>>/dev/null 2>&1
+50 0 * * * /home/dl1/bin/scripts/ntpreport.sh 1>>/dev/null 2>&1
+# ----- END OF crontab ----- 
+\end{verbatim}
+%----------------------------------------------------------------------
+%\subsection{\texttt{/etc/exports} on \Dloggerhost}
+%\label{sec:conf:exports:logger}
+%\begin{verbatim}
+%[...]
+%/home/dl1/data/DL1     *(ro,root_squash,sync,no_subtree_check)
+%[...]
+%\end{verbatim}
+%----------------------------------------------------------------------
+\subsection{\texttt{/etc/fstab} on \Ddisplayhost}
+\label{sec:conf:fstab:display}
+\begin{verbatim}
+[...]
+pinatubo:/data/BFO     /data/BFO    nfs     defaults,auto,ro 0 0
+[...]
+\end{verbatim}
+%----------------------------------------------------------------------
+\subsection{\texttt{syslog} configuration on \Dloggerhost}
+The \texttt{syslog} daemon on \Dloggerhost\ should configured appropriately 
+to maintain local log files and send messages to \Ddisplayhost\ and
+\Dstoragehost.
+Two local files are maintained. 
+One of them collects all messages while the other only collects messages that
+are not at level info.
+If \texttt{rsyslog} is used, make sure that
+\begin{verbatim}
+[...]
+#
+# Include config files, that the admin provided? :
+#
+$IncludeConfig /etc/rsyslog.d/*.conf
+[...]
+\end{verbatim}
+is present in \texttt{/etc/rsyslog.conf}.
+
+\subsection{\texttt{/etc/syslog-ng/syslog-ng.conf} on \Dloggerhost}
+\label{sec:conf:syslog:logger}
+The following excerpt is from the syslog configuration file on the logger host
+\Dloggerhost\ if \texttt{syslog-ng} is used.
+\verbatiminput{DL1logger_syslog-ng_local.conf}
+
+\subsection{\texttt{/etc/rsyslog.d/DL1logger\_rsyslog\_local.conf} on
+\Dloggerhost}
+The following file should be copied to \texttt{/etc/rsyslog.d}
+on the logger host \Dloggerhost\ if \texttt{rsyslog} is used.
+\verbatiminput{DL1logger_rsyslog_local.conf}
+%----------------------------------------------------------------------
+\subsection{\texttt{/etc/syslog-ng/syslog-ng.conf} on \Dstoragehost\ and
+\Ddisplayhost}
+\label{sec:conf:syslog:display}
+The following excerpt is from the syslog configuration file on the 
+storage host \Dstoragehost\  and display host \Ddisplayhost\ if
+\texttt{syslog-ng} is used.
+\verbatiminput{DL1logger_syslog-ng_remote.conf}
+
+\subsection{\texttt{/etc/rsyslog.d/DL1logger\_rsyslog\_remote.conf} on
+\Dstoragehost\ and \Ddisplayhost}
+\label{sec:conf:rsyslog:display}
+The following file should be copied to \texttt{/etc/rsyslog.d}
+on the storage host \Dstoragehost\  and display host \Ddisplayhost\ if
+\texttt{rsyslog} is used.
+\verbatiminput{DL1logger_rsyslog_remote.conf}
+
+%----------------------------------------------------------------------
+\subsection{\texttt{/etc/logrotate.d/DL1\_logrotate.conf}}
+\label{sec:conf:syslog:logrotate}
+The log files will grow unlimited.
+For this reason on each host maintaining a local copy of the log files,
+a \texttt{logrotate} configuration file should be installed in 
+\texttt{/etc/logrotate.d}:
+\verbatiminput{DL1_logrotate.conf}
+
+%----------------------------------------------------------------------
+\section{Programs}
+Source code is not documented here. 
+You can find the source code at
+\begin{quote}
+\verb+https://git.scc.kit.edu/Seitosh/Seitosh+
+\end{quote}
+There you will find a link to
+documentation for the DL1 software as well as a small
+library for serial port access.
+Use the instructive source code of well performing software to understand how
+the \DTDL\ should be controlled via a serial line RS232 connection.
+
+\subsection{\DLdirect}
+\label{sec:prog:dldirect}
+The program \DLdirect\ supports manual communication with the \DTDL.
+Upon invocation it sends one command and displays the response on standard
+output.
+It might be unwise to use \DLdirect\ while an instance of \DLlogger\ is in
+operation on the same serial port.
+\verbatiminput{DL1direct.xxx}
+%----------------------------------------------------------------------
+\subsection{\DLlogger}
+\label{sec:prog:dllogger}
+The program \DLlogger\ is the actual data acquisition program.
+\verbatiminput{DL1logger.xxx}
+%----------------------------------------------------------------------
+\subsection{\Dlogscript}
+\label{sec:prog:dlogscript}
+\verbatiminput{DL1logscript.xxx}
+%----------------------------------------------------------------------
+\subsection{\Dlaunchscript}
+\label{sec:prog:dlaunchscript}
+\verbatiminput{DL1launchscript.xxx}
+%----------------------------------------------------------------------
+\subsection{\Dntpscript}
+\label{sec:prog:dlntpscript}
+\verbatiminput{DL1ntpscript.xxx}
+%----------------------------------------------------------------------
+
+
+\end{document}
+
+% ----- END OF DL1recording.tex ----- 

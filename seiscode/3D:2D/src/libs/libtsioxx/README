@@ -1,0 +1,100 @@
+this is <README>
+============================================================================
+libsioxx C++ time series file input/ouput
+============================================================================
+
+Purpose
+-------
+This library is based on libtsxx which provides tools and utilities for time
+series analysis and processing which refer to a given sampling interval of the
+time series. libtsxx for this reason provides a ts::TimeSeries class template,
+for objects storing sample values along with the sampling interval. The
+current library (libtsioxx) inherits from this template to provide a
+ts::sff::SFFTimeSeries class template for objects storing sample values along
+with full qualified SFF headers (stored in ts::sff::TraceHeader objects) and
+which are valid ts::TimeSeries objects at the same time.
+
+Based on ts::sff::SFFTimeSeries libtsioxx provides ts::sff::TraceVector with
+publically inherits from the STL vector and provides an object to store
+several ts::sff::SFFTimeSeries objects. This, together with
+ts::sff::FileHeader, is used to compile the class template ts::sff::File,
+which is able to store complete data files.
+
+Further libtsioxx provides input/output operators for the above mentioned
+classes to be read from or written two libdatrwxx streams. Reading functions
+wich provide a rangelist selection for input traces are provided too.
+
+At the highest level of complexity, classes ts::sff::SFile and ts::sff::DFile
+are provided together with file reading functions. These classes are meant to
+store a complete set of data files as defined on the command line of
+application programs together with file specific parameters. A set of such
+files can be stored in ts::sff::TSFileList and ts::sff::TDFileList objects,
+which basically are typedefs referring to the STL list container. File input
+for these objects is supported for reading from libdatrwxx input streams.
+
+Interfaces
+----------
+sfftimeseries.h
+  ts::sff::SFFTimeSeries class template
+
+sfftsfile.h
+  ts::sff::File class template
+
+inputoperators.h
+outputoperators.h
+  input and output operators for ts::sff::SFFTimeSeries and ts::sff::File
+
+SFFoutputoperators.h
+  deprecated output operators to SFF files (still provided for backward
+  compatibility)
+
+cmdlinefiles.h
+  ts::sff::SFile and ts::sff::DFile and reading functions
+
+Installation instructions
+-------------------------
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+The command make all will compile and install the binary executables 
+as well as the doxygen documentation.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+
+  LOCLIBDIR           defines location of binary libraries
+  LOCINCLUDEDIR       defines location of C/C++ header files (prototypes)
+  LOCBINDIR           defines location of binary executables
+  TF_WWWBASEDIR       defines location of doxygen output
+
+Dependencies:
+-------------
+  Compilers required to build the programs:
+    C++ compiler
+    C/C++ preprocessor
+    doxygen (required to process source code documentation)
+
+  Seitosh libraries required to compile the code:
+    external dependencies:
+      libgsl libboost (through libtfxx)
+      libgsl (through libtsxx)
+    direct dependencies:
+      libtsxx, libaff, libsffxx, libtime, libgsexx, libtfxx,
+      libdatrwxx
+    indirect dependency:
+      libseife (through libtsxx)
+
+  Further non-standard libraries required to compile the code:
+    - the C++ standard template library (STL)
+
+Source code documentation is provided through doxygen. 
+See target doxydoc in the Makefile.
+
+The home of this software suite is
+https://git.scc.kit.edu/Seitosh/Seitosh
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+----- END OF README ----- 
