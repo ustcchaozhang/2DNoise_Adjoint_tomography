@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-This is providing the final models and REGFs in the paper: Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton
-=======
 # 2DNoise_Adjoint_tomography
 This is providing the final models and REGFs in the paper: Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton
 
 
-Zhang C.#, Yao H.*, Liu Q., Zhang P., Yuan Y., Feng J., Fang L.. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton. submitted to J. Geophys. Res.
+Zhang C.#, Yao H.*, Liu Q., Zhang P., Yuan Y., Feng J., Fang L.. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton. J. Geophys. Res. (in press)
 
 This is providing the final models, REGFs and codes in the paper:
 
