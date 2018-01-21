@@ -1,7 +1,0 @@
-linear spread of 500 receivers (2cm to 100m offset)
-
-mode, Vred, Tl, Tr, Nr
-2, 0., 0., 0., 500
-
-rmin, rmax, phi
-0.0002, 0.100, 0.
