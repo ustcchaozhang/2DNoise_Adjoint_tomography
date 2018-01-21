@@ -1,0 +1,51 @@
+this is <COPYING>
+============================================================================
+libseife
+--------
+$Id$
+============================================================================
+
+The source code in this directory is part of libseife which compiles to
+libseifa. and libcseife.a
+
+Copyright (C) 1984 by Erhard Wielandt
+Copyright (C) 1996 by Wolfgang Friederich
+Copyright (C) 2013 by Thomas Forbriger 
+
+----
+libseife is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+----
+
+This library contains code which was extracted from the program seife.f
+by Erhard Wielandt. The original version was written in 1984 at ETH Zurich.
+The code can be obtained through 
+http://www.software-for-seismometry.de/
+
+The frontpage of http://www.software-for-seismometry.de/ tells (Jan. 2013):
+
+  Welcome to Erhard Wielandt's website for free seismological software
+
+  This website offers free software for practical use, especially for the
+  design, calibration, and testing of seismographs. It also contains
+  educational software and other material used in courses and workshops on
+  seismometry. Special problems of seismometry and theoretical seismology are
+  treated in the 'misc. texts'.
+  If you are interested in software, please start from the software overview. 
+
+The code from seife.f was extracted to a library by Wolfgang Friederich in
+1996. The current version of libseife is a an extended code collection based
+on the abovementioned code.
+
+----- END OF COPYING ----- 

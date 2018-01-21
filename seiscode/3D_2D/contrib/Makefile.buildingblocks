@@ -1,0 +1,393 @@
+# this is <Makefile.buildingblocks>
+# ----------------------------------------------------------------------------
+# $Id$
+# 
+# Copyright (c) 2010 by Thomas Forbriger (BFO Schiltach) 
+# 
+# some building blocks for Makefiles
+#
+# The code in this file should be used by copy and paste operations to be
+# added to individual Makefiles. Include operations are not appropriate, since
+# this complicates reading dependencies across directories.
+# 
+# REVISIONS and CHANGES 
+#    16/08/2010   V1.0   Thomas Forbriger
+#    27/07/2011   V1.1   give precedence to $LOCINCLUDEDIR over 
+#                        $SERVERINCLUDEDIR 
+# 
+# ============================================================================
+ 
+PROGRAMS=fidase fidasex
+
+.PHONY: all
+all: install
+
+.PHONY: install
+install: $(addprefix $(LOCBINDIR)/,$(PROGRAMS))
+$(LOCBINDIR)/%: %
+	mkdir -pv $(dir $@)
+	/bin/mv -fv $< $@
+
+#
+# This is the sequence of standard targets
+# ----------------------------------------
+# created by the template generator "new"
+
+all:
+
+flist: Makefile
+	echo $^ | tr ' ' '\n' | sort > $@
+
+.PHONY: edit
+edit: flist; vim $<
+
+.PHONY: clean
+clean: ; 
+	-find . -name \*.bak | xargs --no-run-if-empty /bin/rm -v
+	-/bin/rm -vf flist *.o *.d *.a $(PROGRAMS) *.xxx
+
+# ----------------------------------------------------------------------------
+# advanced setup of flist
+
+EDITFILES=$(MAINSRC) Makefile README $(wildcard *.cfg contrib/*.h) COPYING
+EDITALL=$(EDITFILES) $(LIBHEADERS) $(LIBSRC) $(TESTSRC) $(EDITFILES)
+EDITFORMATHEADERS=$(filter $(patsubst %/,%.h,$(SUBDIRS)),$(LIBHEADERS))
+EDITROOT=$(filter-out $(EDITFORMATHEADERS),$(wildcard *.cc *.h))
+EDITFIRST=$(filter-out $(LIBHEADERS) $(LIBSRC) $(TESTSRC),$(EDITALL))
+EDITSECOND=$(filter-out $(TESTSRC) $(EDITROOT) $(EDITFIRST),$(EDITALL))
+
+flist: $(LIBHEADERS) $(LIBSRC) $(TESTSRC) $(EDITFILES) 
+	echo $(filter $(EDITFIRST),$^) | tr ' ' '\n' | sort > $@
+	echo "----" >> $@
+	echo $(filter $(EDITROOT),$^) | tr ' ' '\n' | sort >> $@
+	echo "----" >> $@
+	echo $(sort $(filter $(EDITSECOND),$^)) | tr ' ' '\n' >> $@
+	echo "----" >> $@
+	echo $(filter-out $(EDITSECOND) $(EDITROOT) $(EDITFIRST),$^) \
+	  | tr ' ' '\n' | sort >> $@
+	echo "----" >> $@
+	echo $(TF_EDIT) | tr ' ' '\n' | sort >> $@
+
+# ============================================================================
+# a variable definition to check variable settings
+# ------------------------------------------------
+
+# if you want to check whether variable TF_PUBLICATIONPATH is non-empty,
+# insert line
+#
+## $(call CHECKVAR,TF_PUBLICATIONPATH)
+#
+# in your Makefile
+#
+# if you want to check whether variable AVAR, BVAR, and CVAR are non-empty,
+# insert line
+#
+## $(call CHECKVARS,AVAR BVAR CVAR)
+#
+# in your Makefile
+#
+# check mandatory environment variable settings
+# ---------------------------------------------
+
+CHECKVAR=$(if $($(1)),,$(error ERROR: missing variable $(1)))
+CHECKVARS=$(foreach var,$(1),$(call CHECKVAR,$(var)))
+
+$(call CHECKVARS,LOCINCLUDEDIR LOCLIBDIR LOCBINDIR)
+$(call CHECKVARS,TF_BROWSER TF_WWWBASEDIR)
+
+#----------------------------------------------------------------------
+
+FLAGS += $(MYFLAGS) -fPIC
+FFLAGS += -ff2c -Wall -ffixed-line-length-0 -fno-backslash $(FLAGS)
+CFLAGS += $(FLAGS)
+CXXFLAGS+=-Wall $(FLAGS)
+LDFLAGS=$(addprefix -L,$(LOCLIBDIR) $(subst :, ,$(SERVERLIBDIR)))
+CPPFLAGS=$(addprefix -I,$(LOCINCLUDEDIR) $(subst :, ,$(SERVERINCLUDEDIR))) \
+  $(FLAGS)
+
+#======================================================================
+# Fortran dependencies
+# --------------------
+%.d: %.f
+	echo $< $(patsubst %.f,%.o,$<): \
+	  $(shell cat $< | egrep '^ +include' | cut -f 2 -d \' | sort | uniq) > $@
+include $(patsubst %.f,%.d,$(wildcard *.f))
+
+#======================================================================
+# dependencies
+# ------------
+#
+# The compiler is used to create dependency files, which are included below.
+
+%.d: %.cc
+	$(SHELL) -ec '$(CXX) -M $(CPPFLAGS) $< \
+      | sed '\''s,\($(notdir $*)\)\.o[ :]*,$(dir $@)\1.o $@ : ,g'\'' \
+        > $@; \
+      [ -s $@ ] || rm -f $@'
+
+%.d: %.c
+	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
+      | sed '\''s,\($(notdir $*)\)\.o[ :]*,$(dir $@)\1.o $@ : ,g'\'' \
+        > $@; \
+      [ -s $@ ] || rm -f $@'
+
+include $(patsubst %.cc,%.d,$(SRCFILES)) 
+
+#======================================================================
+# source code generators
+# ----------------------
+
+# description and online texts
+# ----------------------------
+OBJ=$(patsubst %.cc,%.o,$(SRC) $(patsubst %.txt,%.cc,$(DESCRIPTIONTXT)))
+%.cc %.h: %.txt
+	echo "// DO NOT EDIT: this file is automatically derived from $<" \
+	  > $(patsubst %.txt,%.h,$<)
+	echo "extern char $(patsubst %.txt,%,$<)[];" >> $(patsubst %.txt,%.h,$<)
+	echo "// DO NOT EDIT: this file is automatically derived from $<" \
+	  > $(patsubst %.txt,%.cc,$<)
+	echo "#include \"$(patsubst %.txt,%.h,$<)\"" >> $(patsubst %.txt,%.cc,$<)
+	echo "char $(patsubst %.txt,%,$<)[]=" >> $(patsubst %.txt,%.cc,$<)
+	echo "{" >> $(patsubst %.txt,%.cc,$<)
+	cat $< | egrep -v '^#' | sed -e 's/\\/\\\\/g' | sed -e 's/"/\\"/g' \
+	  | sed -e 's/$$/\\n"/' | sed -e 's/^/  "/'\
+	  >> $(patsubst %.txt,%.cc,$<)
+	echo "};" >> $(patsubst %.txt,%.cc,$<)
+include $(patsubst %.txt,%.d,$(DESCRIPTIONTXT))
+
+	-/bin/rm -fv $(patsubst %.txt,%.h,$(DESCTXT))
+	-/bin/rm -fv $(patsubst %.txt,%.cc,$(DESCTXT))
+
+#======================================================================
+# header files
+# ------------
+#
+#  ATTENTION:
+#  Comment stripping is deprecated!
+#  Reasons:
+#  - the gain in preprocessing speed is hardly significant
+#  - it make snapshot package installtion for a first-time user unnecessary
+#    complicated
+#  - many users don't use it anyway for this reason and set REMCMMNT=cat
+#
+# Since we extensively document the class structures within the header files,
+# these should be stripped for the production version (otherwise the compiler
+# has to scan all comments on each compile). Stripping is done by the rule
+# below and is controlled by the variables REMCMMNT and EMPTYPRINT (see
+# above).
+
+# comment stripping
+# -----------------
+EMPTYPRINT=0
+$(call CHECKVARS,TF_REMCMMNT EMPTYPRINT)
+
+# awk rule assumes that the first non-comment line starts with '#'
+# and that the first (copyright) comment end with pattern "^ */"
+%.h.strip: %.h
+	awk 'BEGIN {hot=1;} /^ \*\// { if (hot) { hot=2; print; next;} }\
+        /^#/ { hot=0; } \
+        { if (hot==2) { print ""; } else if (hot) { print; } }' $< > $@
+	$(TF_REMCMMNT) $< | awk 'BEGIN {hot=0;} \
+        /^ *$$/ { if ((hot) && ($(EMPTYPRINT))) { print ""; } next; } \
+        /^#/ { hot=1; } { if (hot) print; }' >> $@
+
+#----------------------------------------------------------------------
+.PRECIOUS: %.h.strip
+      
+$(call CHECKVAR,INCINSTALLPATH)
+$(INCINSTALLPATH)/%.h: %.h.strip
+	mkdir -vp $(dir $@)
+	-rm -fv $@
+	/bin/cp -vpd $< $@
+
+# install header files
+# INSTHEADER contains full qualified paths to library header files
+# like /home/thof/include/aff/series.h
+# usually then INCINSTALLPATH=/home/thof/include/aff
+.PHONY: install-include
+install-include: $(INSTHEADER)
+
+#======================================================================
+# create the binary library
+# -------------------------
+LIBOBS=$(ALLOBS) $(patsubst %.cc,%.o,$(SRC))
+LIBOBS=$(patsubst %.cc,%.o,$(SRC))
+
+# INSTHEADER contains full qualified paths to library header files
+# like /home/thof/include/aff/series.h
+libaff.a: $(INSTHEADER) $(LIBOBS)
+	ar rcv $@ $(LIBOBS)
+	ranlib $@
+
+libdatrwxx.so: $(patsubst %.cc,%.o,$(LIBSRC))
+	$(CXX) $(CXXFLAGS) -shared -o $@ $^
+
+LIBRARIES=libaff.a libdatrwxx.so
+
+.PHONY: install
+install: $(addprefix $(LOCLIBDIR)/,$(LIBRARIES))
+$(LOCLIBDIR)/%: install-include %
+	mkdir -pv $(dir $@)
+	/bin/mv -fv $(word 2,$^) $@
+
+# install-include where no header files are to be installed
+.PHONY: install-include
+install-include:
+
+#======================================================================
+# reinstall target
+# is necessary in case of header file problems (e.g. remcmmnt not installed)
+.PHONY: clean-include
+clean-include: 
+	/bin/rm -fv $(INSTHEADER)
+
+.PHONY: reinstall
+reinstall:
+	$(MAKE) clean
+	$(MAKE) clean-include
+	$(MAKE) install
+
+#======================================================================
+# documentation part
+# ------------------
+#
+# targets commonly used:
+# ----------------------
+#
+# make doxyclean        removes all documentation
+# make doxydoc          creates doxygen documentation in the DOXYWWWPATH
+# make doxyview         creates doxygen documentation and launches netscape to
+#                       browse in the documentation
+# make doxyconf         edit the doxygen configuration file
+#
+# If you launch "make doxydoc" the documentation will be written to
+# DOXYWWWPATH (see below). This is meant to export the documentation through
+# your homepage. The doxyfull directory is just a symbolic link to this
+# directory.
+#
+
+$(call CHECKVARS,TF_WWWBASEDIR TF_BROWSER)
+
+DOXYWWWPATH=$(TF_WWWBASEDIR)/libaff
+
+.PHONY: doxyclean doxyview doxydoc doxyconf
+
+doxyclean: ;/bin/rm -rfv $(DOXYWWWPATH) doxydoc.xxx
+
+DOXYSRC=$(README) $(HEADERS) $(SRC) \
+  tests/f77procs.P tests/f77procs.f \
+  tests/f77common.inc tests/f77common_com.P
+
+# create doxygen intermediate configuration
+PWD=$(shell env pwd)
+doxydoc.xxx: doxydoc.cfg
+	sed 's,<OUTPUTDIRECTORY>,$(DOXYWWWPATH),g;s,<STRIPFROMPATH>,$(PWD),g' \
+	  $< > $@
+# create commented version of doxygen configuration
+doxycomm.xxx: doxydoc.cfg
+	/bin/cp -vf $< $@; doxygen -u $@
+
+$(DOXYWWWPATH)/html/index.html: doxydoc.xxx $(DOXYSRC)
+	mkdir -vp $(DOXYWWWPATH)
+	doxygen $<
+
+doxydoc: $(DOXYWWWPATH)/html/index.html
+
+doxyview: $(DOXYWWWPATH)/html/index.html
+	$(TF_BROWSER) file:$< &
+
+#======================================================================
+# ASCII documentation (Fortran and C code)
+# ----------------------------------------
+%.doc:
+	/usr/bin/awk 'BEGIN{ hot=0; } \
+        /^cS/ { hot=1; \
+          print "  c"; \
+	    print FILENAME; \
+          print "  c"; \
+          next; } \
+        /^cE/ { hot=0; } \
+        { if (hot==1) { print "  " $$0; } }' $^ > $@
+
+%.doc: 
+	/usr/bin/awk 'BEGIN{ hot=0; } \
+        /^\/\*S\*\// { hot=1; next; } \
+        /^\/\*E\*\// { hot=0; } \
+        { if (hot==1) { print "  " $$0; } }' $^ > $@
+
+#======================================================================
+# comments
+# --------
+#
+# Installation instructions
+# -------------------------
+# The command
+#   make all
+# will compile and install the binary executables as well as the doxygen
+# documentation.
+#
+# Environment variables control where the results are stored and where
+# libraries and library header files are expected:
+#   LOCLIBDIR		defines location of binary libraries
+#   LOCINCLUDEDIR 	defines location of C/C++ header files (prototypes)
+#   LOCBINDIR		defines location of binary executables
+#   TF_WWWBASEDIR 	defines location of doxygen output
+#
+# Dependencies:
+#   Compilers required to build the programs:
+#     C++ compiler
+#     C/C++ preprocessor
+#     doxygen (required to process source code documentation)
+#
+#   Seitosh libraries required to compile the code:
+#     libgsexx
+#     libaff
+#     libtime
+#     libsffxx
+#     libdatrwxx
+#     libtfxx
+#
+#   Further non-standard libraries required to compile the code:
+#     libboost_regex
+#   
+# Tests and examples are provided in subdirectory tests
+#  
+# Source code documentation is available in the output files of doxygen
+ 
+#======================================================================
+# reports
+# -------
+
+.PHONY: list-programs
+list-programs:
+	echo $(PROGRAMS) | tr ' ' '\n' | sort
+
+.PHONY: list-libraries
+list-libraries:
+	grep ' -l' Makefile | tr ' ' '\n' | egrep '^-l' | sort | uniq
+	
+#
+#======================================================================
+# create package
+# --------------
+# is delegated to Makefile.packages
+ifdef TF_MAKEPKG
+.PHONY: package
+# export PACKAGELINKSFORTRAN=yes
+# export PACKAGENEEDSPGPLOT=yes
+package: $(TF_MAKEPKG)
+	$(MAKE) -f $< \
+	  PACKAGE=convsff \
+	  PACKAGEEXPORT="trunk/src/conv/sff:src" \
+	  PACKAGETARGETS="src:all" \
+	  PACKAGELIBS="-"
+.PHONY: fullpackage
+fullpackage: $(TF_MAKEPKG)
+	$(MAKE) -f $< \
+	  PACKAGE=convsffwithlibs \
+	  PACKAGEEXPORT="trunk/src/conv/sff:src" \
+	  PACKAGETARGETS="src:all" \
+	  PACKAGELIBS="libsff libtf libsffu libts libaff libtime libgsexx libsffxx libdatrwxx libtfxx libtsxx"
+endif
+
+# ----- END OF Makefile.buildingblocks ----- 

@@ -1,0 +1,306 @@
+/*! \file libfapidxx/doxygen.txt
+ * \brief documentation for fapi (prototypes)
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 17/11/2010
+ * 
+ * documentation for fapi 
+ * 
+ * Copyright (c) 2010 by Thomas Forbriger (BFO Schiltach) 
+ *
+ * ----
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * REVISIONS and CHANGES 
+ *  - 17/11/2010   V1.0   Thomas Forbriger
+ *  - 18/07/2013   V1.1   tmetz (renamed file) 
+ * ============================================================================
+ */
+
+/*! \mainpage
+\author Thomas Forbriger
+\since November 2010
+
+The aim of this library is to provide Fortran 77 code written to be linked
+against libsff.a with the full functionality in libdatrwxx.a.
+
+libdatrwxx support input and output of (increasingly) many seismic data
+formats.
+Fortran programs which are designed to read and write seismic data in SFF
+format through libsff can now benefit from the full functionality of
+libdatrwxx.
+libfapidxx provides a Fortran API (application programming interface) to
+libdatrwxx which mimics the API of libsff.
+This way programs originally written to use libsff can make use of the full
+functionality of libdatrwxx with only minor modifications to the source code.
+
+\sa
+  http://gpitrsvn.gpi.uni-karlsruhe.de/~tforb/doc/libdatrwxx/,
+  http://gpitrsvn.gpi.uni-karlsruhe.de/~tforb/doc/libsffxx/,
+  https://git.scc.kit.edu/Seitosh/Seitosh/wikis/src_libs_libfapidxx
+
+Issues covered by this documentation:
+  \li \ref implemented_functions
+  \li \ref page_fileunits
+  \li \ref page_comments
+  \li \ref page_interlanguage_programming
+
+ */
+
+/*======================================================================*/
+
+/*! \brief Group of implemented functions
+ * \defgroup implemented_functions Implemented functions
+ * Not all libsff functions are already implemented in libfapidxx.
+ *
+ * Some Fortran functions are just copied:
+ *  - fapid_sff_getwid2values.f:      subroutine sff_GetDate(wid2line,date)
+ *  - fapid_sff_getwid2values.f:      subroutine sff_GetTime(wid2line, time)
+ *  - fapid_sff_getwid2values.f:      subroutine sff_GetStation(wid2line, sta)
+ *  - fapid_sff_getwid2values.f:      subroutine sff_GetChannel(wid2line, channel)
+ *  - fapid_sff_getwid2values.f:      integer function sff_GetN(wid2line)
+ *  - fapid_sff_getwid2values.f:      real function sff_GetDt(wid2line)
+ *  - fapid_sff_trimlen.f:      subroutine sff_TrimLen(string,ntrim)
+ */
+
+/*======================================================================*/
+
+/*! \page page_interlanguage_programming Interlanguage programming
+
+In the case of this library Fortran programs will call C++ functions.
+A simple example is given here.
+
+\section sec_pip_code The code 
+The C++ header file \c cxxfunc.h contains:
+\code
+#include <string>
+namespace fapidxx {
+  int cxxfunction(const std::string& s);
+} // namespace fapidxx
+\endcode
+The corresponding definition of the function is provided in
+\c cxxfunc.cc:
+\code
+#include <cxxfunc.h>
+namespace fapidxx {
+  int cxxfunction(const std::string& s)
+  {
+    int retval=s.size();
+    return(retval);
+  } // int cxxfunction(const std::string& s)
+} // namespace fapidxx
+\endcode
+The Fortran interface function is declared in \c cxxiface.h:
+\code
+extern "C" int interfacesub_(float *value);
+\endcode
+The body of the function is defined in \c cxxiface.cc:
+\code
+#include <cxxfunc.h>
+#include <cxxiface.h>
+int interfacesub_(float *value)
+{
+  int retval=0;
+  std::string chars="hi there 12345678";
+  *value=int(fapidxx::cxxfunction(chars));
+  return(retval);
+} // int interfacesub_(float *value)
+\endcode
+In the Fortran main program \c fprog.f this function is called:
+\code
+      program fapidtest
+      real a
+      call interfacesub(a)
+      print *,a
+      stop
+      end
+\endcode
+
+\section sec_pip_compiling Compiling and linking the code 
+Compiling the library:
+\verbatim
+P> g++ -c -o cxxfunc.o cxxfunc.cc
+P> g++ -c -o cxxiface.o cxxiface.cc
+P> ar rc libiface.a cxxfunc.o cxxiface.o
+P> gfortran -ff2c -Wall -c -o fprog.o fprog.f
+P> gfortran -o fprog fprog.o -liface ­lstdc++
+\endverbatim
+Calling \c fprog will produce the output:
+\verbatim
+P> fprog
+   17.000000
+\endverbatim
+ */
+
+/* ========================================================================= */
+
+/*! \page page_comments Comments on libfapidxx implementation
+ *
+ * Contents of this page:
+ * - \ref sec_comments_wid2
+ *   - \ref subsec_comments_wid2functions
+ *   - \ref subsec_comments_wid2handling
+ * - \ref sec_comments_prepwid2
+ *
+ * <HR>
+ * \section sec_comments_wid2 How WID2 data is handled internally
+ *
+ * The WID2 line character string used in libsff is not able to hold the
+ * full content of an ::sff::WID2 structure without loss of information.
+ * libfapidxx provides interfaces to other data formats than SFF which
+ * are able to represent the full ::sff::WID2 structure content in their
+ * trace headers.
+ * However libsff requires WID2 data to be encoded in ASCII representation in
+ * a WID2 line character string and be passed this way to the wrinting
+ * function.
+ * we therefore use the fapidxx::WID2container to pass WID2 data
+ * internally.
+ *
+ * \sa \ref sec_comments_prepwid2
+ *
+ * \subsection subsec_comments_wid2functions How each function handles WID2 data
+ * Not all functions implemented in libfapidxx are able to handle the binary
+ * encoded WID2 line.
+ *
+ * \subsubsection subsubsec_comments_wid2_reading Trace reading functions 
+ * Reading functions return data ASCII encoded (SFF standard).
+ * They are expected to provide WID2 data to a Fortran program, which expects
+ * the WID2 data fields within the character string as defined by ths SFF
+ * definition.
+ *
+ * \sa sff_rtrace__, sff_rtracefi__, sff_rtracei__
+ *
+ * \subsubsection subsubsec_comments_wid2_writing Trace writing functions 
+ * Writing function are able handle the received character sequence either as
+ * binary encoded or as standard SFF.
+ * The actual encoding is determined automatically.
+ *
+ * \sa sff_wtrace__, sff_wtracefi__, sff_wtracei__
+ *
+ * \subsubsection subsubsec_comments_wid2_prepwid2 sff_PrepWid2() function
+ * The function preparing the WID2 line for the writing functions always
+ * returns a binary encoded string.
+ *
+ * \sa \ref sec_comments_prepwid2
+ *
+ * \subsubsection subsubsec_comments_wid2_Fortran Functions implemented in Fortran
+ * Functions implemented in Fortran also handle both encodings.
+ * Prior to any action they call function #sff_helper_decode_wid2__
+ * to ensure ascii encoding in the character sequence.
+ *
+ * \sa \ref implemented_functions, sff_helper_decode_wid2__
+ *
+ * \subsubsection subsubsec_comments_wid2_mod Modifcation functions
+ * Modification functions are implemented such that they are able to receive
+ * WID2 in both encodings (either SFF type ASCII encoding or binary encoding).
+ * fapidxx::WID2container remembers the original type of encoding such that
+ * these functions will return the WID2 data in the encoding used to pass the
+ * data.
+ *
+ * \sa sff_modwid2samprat__, sff_modwid2samps__, sff_modwid2date__, sff_modwid2time__, sff_modwid2shift__
+ *
+ * \subsection subsec_comments_wid2handling How functions should handle WID2 data (for implementers)
+ *
+ * Here is an example from sff_modwid2samps__:
+ * \code
+  fapidxx::WID2container wid2c(wid2line, wid2line_len);
+  wid2c.wid2.nsamples=(*samps);
+  wid2c.encode(wid2line, wid2line_len);
+ * \endcode
+ * In this case WID2 data is received in a Fortran character sequence 
+ * \c wid2line. 
+ * The \c WID2container::wid2 member field provides all data fields.
+ * After adjusting them, the data is encoded into the Fortran character
+ * sequence either in binary or ascii form, depending on its original
+ * encoding.
+ *
+ * fapidxx::WID2container alternatively can be initialized from an ::sff::WID2
+ * structure.
+ *
+ * If a specifc encoding shall be used upon return from the function,
+ * this can be selected by setting the member data field
+ * fapidxx::WID2container::wasascii or by explicitely calling either
+ * #fapidxx::WID2container::encodebinary or
+ * #fapidxx::WID2container::encodeascii.
+ *
+ * <HR>
+ * \section sec_comments_prepwid2 How function sff_PrepWid2 encodes WID2 line data
+ *
+ * The standard sequence for writing data with libsff is, to call
+ * sff_PrepWid2() first to encode all WID2 data in a WID2 character line.
+ * This WID2 string then is passed to the subroutine which is actually writing
+ * the data. This is an undesired step for libfapidxx, since WID2 data has to
+ * be extracted from the WID2 line again, to be passed as a WID2 struct to
+ * libdatrwxx. The step of encoding and decoding WID2 data is not only
+ * unnecessary, it can also degrade WID2 data since round-off errors can occur
+ * when passing the sampling interval or a mircosecond offset might get lost,
+ * since in cannot be represented in the WID2 line format.
+ *
+ * libfapidxx uses the following workaround:
+ * Store the WID2 struct in binary form in
+ * the character sequence of the WID2 line by the mimiciking function
+ * sff_prepwid2__().
+ * 
+ * The WID2 data comprises:
+ * <TABLE>
+ *  <TR>
+ *    <TH>item</TH>
+ *    <TH>size</TH>
+ *    <TH>total size</TH>
+ *  </TR><TR>
+ *   <TD>date</TD><TD>7*4 bytes in libtime++ format</TD><TD>28 bytes</TD>
+ *  </TR><TR>
+ *   <TD>1 int</TD><TD>4 bytes</TD><TD>4 bytes</TD>
+ *  </TR><TR>
+ *   <TD>5 double</TD><TD>5*4 bytes</TD><TD>20 bytes</TD>
+ *  </TR><TR>
+ *   <TD>character sequences</TD><TD> </TD><TD>18 bytes</TD>
+ *  </TR><TR>
+ *   <TD>station</TD><TD>5 bytes</TD><TD> </TD>
+ *  </TR><TR>
+ *   <TD>channel</TD><TD>3 bytes</TD><TD> </TD>
+ *  </TR><TR>
+ *   <TD>auxid</TD><TD>4 bytes</TD><TD> </TD>
+ *  </TR><TR>
+ *   <TD>instype</TD><TD>6 bytes</TD><TD> </TD>
+ *  </TR><TR>
+ *   <TD>total</TD><TD> </TD><TD>70 bytes</TD>
+ *  </TR>
+ * </TABLE>
+ *
+ * The WID2 line has a size of 132 characters.
+ *
+ * The library actually uses a struct fapidxx::WID2container::WID2struct
+ * which uses 82 bytes to store all necessary data.
+ *
+ * This concept is provided by fapidxx::WID2container.
+ * All WID2 data should be passed only within a WID2container.
+ * If WID2 data is received in form of a character sequence it has to be
+ * passed to a WID2 container which is able to decode it.
+ * All character strings which have to be produced in order to represent the
+ * WID2 data should be created by WID2container::encode.
+ *
+ * WID2container::WID2struct is used to pass WID2 data internally in binary
+ * format. This means that the string created by sff_prepwid2__() is not a
+ * character string representation of the WID2 data. It is the memory
+ * representation of WID2container::WID2struct struct.
+ * 
+ * \sa sff_PrepWid2(), sff_prepwid2__(), fapidxx::WID2container
+ */
+
+/* ----- END OF doxygen.txt ----- */

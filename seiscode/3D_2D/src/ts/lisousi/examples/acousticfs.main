@@ -1,0 +1,16 @@
+Control file for acoustic case in homogeneous full space
+
+Model taken from
+fullspace.dmod
+
+Source taken from
+exp0.src
+
+Receivers taken from 
+lin.rcv
+
+umin, uwil, uwir, umax, Nu
+0., 0., 2.0, 3., 5000
+
+fmin, fwil, fwir, fmax, dt, T
+0., 0., 200., 200., 0.0010, 2.0

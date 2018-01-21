@@ -1,0 +1,8 @@
+# this is <crontab>
+# ============================================================================
+# crontab for DL1 data logger
+# ---------------------------
+# 
+10 * * * * /home/dl1/bin/scripts/launchDL1logger.sh 1>>/dev/null 2>&1
+50 0 * * * /home/dl1/bin/scripts/ntpreport.sh 1>>/dev/null 2>&1
+# ----- END OF crontab ----- 

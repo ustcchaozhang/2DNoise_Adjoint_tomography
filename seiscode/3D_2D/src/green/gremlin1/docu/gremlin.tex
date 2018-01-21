@@ -1,0 +1,741 @@
+% this is <gremlin.tex>
+% ----------------------------------------------------------------------------
+% $Id: gremlin.tex,v 1.7 2010/02/12 09:56:38 tforb Exp $
+% 
+% Copyright (c) 2006 by Thomas Forbriger (BFO Schiltach) 
+% 
+% Definition der Least-Squares Aufgabe, die von gremlin gelöst wird
+% 
+% REVISIONS and CHANGES 
+%    24/08/2006   V1.0   Thomas Forbriger
+%    17/12/2012   V1.1   x2c Darstellung im Programm ge"andert
+% 
+% ============================================================================
+%
+\documentclass{article}
+\usepackage{ngerman}
+\bibliographystyle{plain}
+\usepackage{pslatex}
+\usepackage{anysize}
+\marginsize{20mm}{15mm}{15mm}{15mm}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\sloppy
+\parindent0pt
+\parskip10pt
+%----------------------------------------------------------------------
+\newcommand{\EHHz}{\text{Hz}}
+\newcommand{\EHkm}{\text{km}}
+\newcommand{\EHm}{\text{m}}
+\newcommand{\EHs}{\text{s}}
+\newcommand{\EHms}{\text{ms}}
+\newcommand{\EHg}{\text{g}}
+\newcommand{\EHccm}{\text{cm}^3}
+\newcommand{\EHspkm}{\frac{\EHs}{\EHkm}}
+\newcommand{\EHkmps}{\frac{\EHkm}{\EHs}}
+\newcommand{\EHgpccm}{\frac{\EHg}{\EHccm}}
+\newcommand{\EHTspkm}{\EHs/\EHkm}
+\newcommand{\OFourier}[1]{\tilde{#1}}
+\newcommand{\intii}{\int\limits_{-\infty}^{+\infty}}
+\newcommand{\intni}{\int\limits_{0}^{+\infty}}
+\DeclareMathOperator{\dd}{\text{d}}
+\DeclareMathOperator{\Dd}{\Delta}
+\newcommand{\Su}{u}
+\newcommand{\SFu}{\OFourier{\Su}}
+\newcommand{\SFupw}{\OFourier{\Su}^{\text{pw}}}
+\newcommand{\Sus}{U}
+\newcommand{\SFus}{\OFourier{\Sus}}
+% use p_wave everywhere
+\newcommand{\Spref}{p_{\text{wave}}}
+%\newcommand{\Spwave}{p_{\text{wave}}}
+\newcommand{\SG}{G}
+\newcommand{\SGd}{\SG_\delta}
+\newcommand{\SGpw}{\SG^{\text{SLS}}}
+\newcommand{\SGbtr}{\SG^{\text{BTR}}}
+\newcommand{\SGhop}{\SG^{\text{HOP}}}
+\newcommand{\Sop}{\ensuremath{(\omega,p)}}
+\newcommand{\Sokpl}{(\omega_k,p_l)}
+\newcommand{\Sokpj}{(\omega_k,p_j)}
+\newcommand{\Sor}{(\omega,r)}
+\newcommand{\Sopr}{(\omega p r)}
+\newcommand{\Seta}{\eta}
+\newcommand{\Scbkj}{\{k,j\}}
+\newcommand{\Scbkl}{\{k,l\}}
+\newcommand{\Sseta}{_{\Seta}}
+\newcommand{\SGpwop}{\SGpw\Sop}
+\newcommand{\Stop}{\text{\ensuremath{\omega},\ensuremath{p}}}
+\newcommand{\SslN}{\sum\limits_{l=1}^{N}}
+\newcommand{\Sorl}{(\omega,r_l)}
+\newcommand{\Soprl}{(\omega p r_l)}
+\newcommand{\Soprrl}{(\omega \Spref r_l)}
+\newcommand{\Skappa}{\beta}
+\newcommand{\SHa}{H^{(1)}}
+\newcommand{\SHb}{H^{(2)}}
+\newcommand{\STcirc}[1]{\textcircled{\raisebox{-1pt}{#1}}}
+\newcommand{\STa}{\STcirc{1}}
+\newcommand{\STb}{\STcirc{2}}
+\newcommand{\STc}{\STcirc{3}}
+\newcommand{\SHM}{M}
+\newcommand{\SHP}{\Theta}
+\newcommand{\Snorm}[1]{\lVert #1 \rVert}
+\newcommand{\Stnorm}[1]{\smash{\lVert\smash{#1}\rVert}}
+\newcommand{\Stabs}[1]{\smash{\lvert\smash{#1}\rvert}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+% figures annotations
+\newcommand{\Stred}{t_{\text{red}}}
+\newcommand{\Svred}{v_{\text{red}}}
+\newcommand{\Sxkappa}{\kappa}
+% Hilbert space 
+\newcommand{\HIvek}[1]{\mathbf{#1}}
+\newcommand{\HIsprod}[2]{(#1,#2)}
+\newcommand{\HImod}{\HIvek{m}}
+\newcommand{\HIrep}[1]{\HIvek{g}_{#1}}
+%
+% elements of the inverse problem
+\newcommand{\Scc}{^{\ast}}
+\newcommand{\Mtransp}{\mathsf{T}}
+\newcommand{\Madjung}{\dagger}
+%\newcommand{\Mat}[1]{\ensuremath{\mathsf{#1}}}
+%\newcommand{\Mat}[1]{\ensuremath{\mitbf{#1}}}
+\newcommand{\Mat}[1]{\textsf{\textbf{#1}}}
+\newcommand{\MatT}[1]{\ensuremath{\Mat{#1}^\Mtransp}}
+\newcommand{\MatTcc}[1]{\ensuremath{\Mat{#1}^\Madjung}}
+\newcommand{\Matinv}[1]{\ensuremath{\Mat{#1}^{\scriptscriptstyle{-1}}}}
+\newcommand{\MatTinv}[1]{\ensuremath{\Mat{#1}^{-\Mtransp}}}
+%\newcommand{\vek}[1]{\ensuremath{\vec{#1}}}
+%\newcommand{\vek}[1]{\ensuremath{\mitbf{#1}}}
+\newcommand{\vek}[1]{\textrm{\textbf{#1}}}
+\DeclareMathOperator{\Mdiag}{diag}
+\DeclareMathOperator{\Mtrace}{Tr}
+\newcommand{\SSd}{d}
+\newcommand{\SSe}{e}
+\newcommand{\SSm}{m}
+% resolution analysis: test parameter index
+\newcommand{\SSPK}{L}
+\newcommand{\SSmK}{m_{\SSPK}}
+\newcommand{\SSDmK}{\Delta m_{\SSPK}}
+\newcommand{\SSdm}{\delta m}
+\newcommand{\SSs}{s}
+% notice: equals \SSW now
+\newcommand{\SSw}{W}
+\newcommand{\SSsigma}{\sigma}
+\newcommand{\SSr}{r}
+\newcommand{\SSvs}{\ensuremath{v_{\text{S}}}}
+\newcommand{\SSvp}{\ensuremath{v_{\text{P}}}}
+\newcommand{\SSvph}{\ensuremath{v_{\text{Ph}}}}
+% Poisson's ratio 
+\newcommand{\SSnu}{\nu}
+% resolution test damping factor
+\newcommand{\SSdamp}{\lambda}
+\newcommand{\SSD}{D}
+\newcommand{\SSW}{W}
+\newcommand{\SSS}{S}
+\newcommand{\SSQ}{Q}
+\newcommand{\SSQp}{\SSQ_{\text{p}}}
+\newcommand{\SSQs}{\SSQ_{\text{s}}}
+\newcommand{\SSK}{K}
+\newcommand{\SSM}{M}
+\newcommand{\SSMr}{R}
+\newcommand{\SSMrp}{R^{\prime}}
+\newcommand{\SSsrc}{S}
+\newcommand{\SSsrcok}{\SSsrc(\omega_k)}
+\newcommand{\Sve}{\vek{\SSe}}
+\newcommand{\Svd}{\vek{\SSd}}
+\newcommand{\Svs}{\vek{\SSs}}
+\newcommand{\Svm}{\vek{\SSm}}
+\newcommand{\Svmopt}{\vek{\SSm}_{\text{opt}}}
+\newcommand{\Svdm}{\delta\vek{\SSm}}
+\newcommand{\SvDm}{\Delta\vek{\SSm}}
+\newcommand{\SvDmKmax}{\Delta\vek{\SSm}_{\SSPK\,\text{max}}}
+\newcommand{\SMM}{\Mat{\SSM}}
+\newcommand{\SMMr}{\Mat{\SSMr}}
+\newcommand{\SMMrp}{\Mat{\SSMr}^{\prime}}
+\newcommand{\SMD}{\Mat{\SSD}}
+\newcommand{\SMDTcc}{\MatTcc{\SSD}}
+\newcommand{\SMW}{\Mat{\SSW}}
+\newcommand{\SMWT}{\MatT{\SSW}}
+\newcommand{\SMS}{\Mat{\SSS}}
+\newcommand{\SMST}{\MatT{\SSS}}
+\newcommand{\Sesq}{E^2}
+\newcommand{\Sesqmax}{E^2_{\text{max}}}
+\newcommand{\Smifi}{\chi^2}
+%----------------------------------------------------------------------
+\newcommand{\Sbalance}{\beta}
+\newcommand{\SnormG}{n^{(G)}}
+\newcommand{\SnormT}{n^{(T)}}
+\newcommand{\SweightG}{w^{(G)}}
+\newcommand{\SweightT}{w^{(T)}}
+\newcommand{\STerror}{e^{(T)}}
+\newcommand{\SGerror}{e^{(G)}}
+\newcommand{\Snu}{\nu}
+%----------------------------------------------------------------------
+\newcommand{\Szb}{\ensuremath{z_{\text{b}}}}
+\newcommand{\Szt}{\ensuremath{z_{\text{t}}}}
+\newcommand{\Szm}{\ensuremath{z_{\text{m}}}}
+\newcommand{\Sxt}{\ensuremath{x_{\text{t}}}}
+\newcommand{\Sxb}{\ensuremath{x_{\text{b}}}}
+%----------------------------------------------------------------------
+% Befehl
+\newcommand{\B}[1]{\texttt{#1}}
+% Programm
+\newcommand{\Prog}[1]{\texttt{#1}}
+\newcommand{\Func}[1]{\texttt{#1}}
+\newcommand{\Rdistel}{F2001}
+\newcommand{\RpaperII}{F2003}
+%----------------------------------------------------------------------
+\begin{document}
+\title{Inversion von Wellenfeldspektren mit \texttt{gremlin}}
+\author{Thomas Forbriger (BFO, Schiltach)}
+\date{\today \\ 
+{\tiny\texttt{
+  $ $Date: 2010/02/12 09:56:38 $ $
+  $ $Revision: 1.7 $ $
+}}}
+\twocolumn[\maketitle]
+%======================================================================
+\section{Formale Beschreibung}
+Die Arbeit von Forbriger \cite{forbriger2001} beschreibt nicht genau die
+Funktionsweise von \Prog{gremlin}, sondern geht dar"uber hinaus.
+An einigen Stellen, k"onnen die Ausf"uhrungen aber unmittelbar auf
+\Prog{gremlin} "ubertragen werden.
+Eine h"ohere "Uberstimmung zwischen \Prog{gremlin} und den theoretischen
+Formulierungen besteht im Artikel von Forbriger \cite{forbriger2003b}.
+Im Folgenden bezeichnet \Rdistel\ die Dissertation von Forbriger
+\cite{forbriger2001} und \RpaperII\ die Publikation von Forbriger
+\cite{forbriger2003b}.
+Die Notationen in beiden Publikationen ist leicht unterschiedlich.
+
+\subsection{Das Least-Squares System}
+Das Programm \texttt{gremlin} l"ost das Least-Squares Problem das in der Gl.\
+(4) von \RpaperII\ als lineares Gleichungssystem
+\begin{multline}
+\Re\left\{\bigl(\SMDTcc\SMWT\SMW\SMD\bigr)+
+          \SSdamp\SMST\SMS\right\}\,\Svdm_n\\
+   = \Re\left\{\SMDTcc\SMWT\SMW\,\bigl(\Svd-\Svs(\Svm_n)\bigr)\right\}
+\label{eq:LSQ:system}
+\end{multline}
+definiert ist.
+Dabei bezeichnet $\Svd$ den Vektor der Messdaten mit den weiter unten in
+Gl.~\eqref{eq:gdata} und Gl.~\eqref{eq:tdata} definierten Zuordnungen zu
+$\Sop$-Koeffizienten aus der Analyse mit \Prog{greda} und den mit
+\Prog{refract} abgelesenen Laufzeiten der Ersteins"atze.
+Die synthetisch vorhergesagten Messdaten werden mit $\Svs(\Svm_n)$ bezeichnet,
+wobei
+$\Svm_n$ die Beschreibung des Untergrundmodells nach der $n$ten Iteration ist.
+Entsprechend ist $\Svm_0$ das Startmodell der iterativen Inversion, das aus
+anderen Informationen (z.B.\ Laufzeitinversion) gewonnen werden muss.
+In der Matrix $\SMW$ stehen Gewichte f"ur die Messdaten.
+Diese sind weiter unten
+in den Gln.~\eqref{eq:gweight} und \eqref{eq:tweight} definiert.
+$\SMWT$ bezeichnet die Transponierte von $\SMW$.
+Hier ist $\SMWT=\SMW$, weil $\SMW$ in \Prog{gremlin} eine Diagonalmatrix ist.
+$\SMD$ ist die Matrix der partiellen Ableitungen und $\SMDTcc$ die dazu
+komplex konjugiert transponierte Matrix.
+Die Berechnung der partiellen Ableitungen "uber Differenzenquotienten wird in
+Kapitel~IV.1.3 von \Rdistel\ beschrieben.
+In der Diagonalmatrix $\SMS$ und $\SMST$ stehen die Kehrwerte der sogenannten
+Suchbereiche wie weiter unten in Gl.~\eqref{eq:searchrange} definiert.
+$\Re$ bedeutet, dass der Realteil genommen wird.
+$\SSdamp$ ist ein Regularisierungs- oder Stabilisierungsparameter der
+Inversion.
+Er wird weiter unten in Gl.~\eqref{eq:def:nu} definiert.
+
+Die L"osung des Gleichungssystems \eqref{eq:LSQ:system} ergibt den Vektor der
+Modell"anderungen $\Svdm_n$.
+Das n"achste (verbesserte) Modell nach der $n$ten Iteration ist
+\begin{equation}
+\Svm_{n+1}=\Svm_n+\Svdm_n.
+\label{eq:modelupdate}
+\end{equation}
+
+\subsection{Behandlung der Daten}
+\subsubsection{Misfit}
+Der quadratische Anpassungsfehler
+\begin{equation}
+    \Smifi(\Svm)=\abs{\SMW\,\bigl(\Svd-\Svs(\Svm)\bigr)}^2,
+\end{equation}
+der durch die Inversion minimiert werden soll, wird auch als \emph{Misfit}
+bezeichnet.
+Bei gegebenem Startmodell $\Svm_0$ kann der Misfit 
+\begin{equation}
+\Smifi(\Snu)=\Smifi(\Svm_1(\Snu))
+\label{eq:mifi:nu}
+\end{equation}
+als Funktion des in Gl.~\eqref{eq:stabfacnu} definierten
+Stabilisierungsfaktors $\Snu$ aufgefasst werden, da das Modell
+\begin{equation}
+\Svm_{1}(\Snu)=\Svm_0+\Svdm_0(\Snu)
+\end{equation}
+von $\Snu$ abh"angt, wenn $\Svdm_0(\Snu)$ durch das L"osen des
+Gleichungssystems \eqref{eq:LSQ:system} f"ur ein
+\begin{equation}
+\SSdamp=\Snu/N_m
+\label{eq:stabfacnu}
+\end{equation}
+gem"a"s Gl.~\eqref{eq:def:nu} gefunden wird.
+
+\subsubsection{Gewichtung}
+Vom Programm wird ein $\Sop$-Spektrum mit $N_f$ Frequenzen und $N_p$
+Langsamkeiten in das Feld 
+\begin{equation}
+G_{kl} \quad\text{mit}\quad k=1\ldots N_p, l=1\ldots N_f
+\end{equation}
+eingelesen.
+Beim Einlesen wird ein Feld
+\begin{equation}
+\SweightG_{kl}=1 \quad\text{mit}\quad k=1\ldots N_p, l=1\ldots N_f
+\end{equation}
+gesetzt, das im Bedarfsfall Gewichte f"ur die einzelnen $\Sop$-Koeffizienten
+enthalten kann.
+In ein zweites Feld
+\begin{equation}
+T_{k} \quad\text{mit}\quad k=1\ldots N_t
+\end{equation}
+werden $N_t$ Laufzeiten eingelesen.
+Beim Einlesen wird ein Feld
+\begin{equation}
+\SweightT_{k}=1 \quad\text{mit}\quad k=1\ldots N_t
+\end{equation}
+gesetzt, dass im Bedarfsfall Gewichte f"ur die einzelnen Laufzeiten 
+enthalten kann.
+Dem Datenvektor $\Svd$ werden die eingelesenen Felder gem"a"s
+\begin{align}
+d_{l+(k-1)N_f}&=G_{kl} & \text{f"ur }& k=1\ldots N_p, l=1\ldots N_f\\
+\label{eq:gdata}
+\intertext{und}
+d_{(N_{f}N_p)+k}&=T_k & \text{f"ur }& k=1\ldots N_t
+\label{eq:tdata}
+\end{align}
+zugewiesen.
+Die Gewichtungsmatrix $\SMW=\Mdiag(W_k)$ besteht aus den Elementen
+\begin{gather}
+\label{eq:gweight}
+W_{l+(k-1)N_f}=
+  \sqrt{\frac{\Sbalance\; (\SweightG_{kl})^2}{\SnormG {\SGerror}^2}}
+  \quad\text{f"ur } k=1\ldots N_p, l=1\ldots N_f\\
+\intertext{mit}
+\SnormG=\sum\limits_{kl}(\SweightG_{kl})^2\\
+\intertext{und}
+\label{eq:tweight}
+W_{(N_{f}N_p)+k}=
+  \sqrt{\frac{(1-\Sbalance)\,(\SweightT_{k})^2}{\SnormT {\STerror}^2}}
+ \quad\text{f"ur } k=1\ldots N_t\\
+\intertext{mit}
+\SnormT=\sum\limits_{k}(\SweightT_{k})^2.
+\end{gather}
+Dabei haben die Gr"o"sen in \texttt{gremlin} folgende Bezeichnungen:\\
+\begin{tabular}{lll}
+$\Sbalance$ & \texttt{bala} & balance \\
+$\STerror$ & \texttt{terr} & travel time error \\
+$\SGerror$ & \texttt{gerr} & green amplitude error \\
+\end{tabular}
+
+Weitere Hinweise zur Wahl der Gewichte $W_k$ f"ur die Daten findet man 
+in Abschnitt~2.2 von \RpaperII\ und Kapitel~V.1.4.1 von \Rdistel.
+
+\subsection{Behandlung der Modellparameter}
+\subsubsection{Terminologie}
+\label{sec:mod:term}
+  \paragraph{Freie Modellparameter:}
+  Es wird zwischen freien und nicht-freien Modellparameter unterschieden.
+  Die Modellparameter sind alle Parameter, die das Untergrundmodell
+  beschreiben. 
+  Dazu geh"oren die Polynomkoeffizienten der seismischen Gesschwindigkeiten,
+  der Dichte und der G"utefaktoren, aber auch die Werte der Tiefe der
+  Unterkante der einzelnen Polynomsektionen.
+  Nur ein Teil dieser Parameter wird in der Inversion ver"andert.
+  Welcher Teil ver"andert wird, muss vom Benutzer ausgew"ahlt werden. 
+  Diesen sogenannten \emph{freien Modellparametern} m"ussen Suchbereiche
+  zugewiesen werden.
+  Nur diese Parameter werden in den Modellvektor $\Svm$ "ubertragen.
+  Alle anderen Parameter des Modells k"onnen durch die Inversion nicht
+  ver"andert werden, behalten damit ihren Startwert und sind in diesem Sinne
+  \emph{nicht-frei}.
+
+  \paragraph{Named model parameters:} Das Programm unterscheidet zwischen
+  \emph{namend model parameters} und \emph{anonymous model parameters}.
+  \emph{namend model parameters} sind die Modellparameter in einer
+  Beschreibung der Untergrundstruktur, in der klar zwischen physikalischen
+  Parameter wie \SSvp, \SSvs, Dichte, etc.\ unterschieden wird.
+  Die freien Modellparameter, die im Modellvektor $\Svm$ behandelt werden,
+  sind \emph{anonymous model parameters} in dem Sinne, dass deren
+  physikalische Natur f"ur den Inversionsalgorithmus unerheblich ist und die
+  Gr"o"sen nach Gewichtung mit den Suchbereichen einheitenlos werden.
+  Der Befehl \B{tpc} zeigt die Zuordnung der anonymen Modellparameter an.
+
+  \paragraph{Suchbereiche:} Die Suchbereiche werden im Programm auch
+  \emph{model parameter weights} genannt.
+
+\subsubsection{Suchbereiche und Regularisierung}
+Alle Modellparameter, die in die Inversion einbezogen werden (Tiefe von
+Diskontinuit"aten, seismische Geschwindigkeiten, etc.) werden in einen Vektor
+$\Svm$ eingetragen.
+Die Suchbereiche $r_k$, die mit dem Kommando \texttt{spc} gesetzt werden,
+definieren entsprechend der Gl.\ (9) in \RpaperII\
+die Matrix 
+\begin{equation}
+\SMS=\Mdiag\left(\frac{1}{r_k}\right)
+\quad\text{mit}\quad k=1\ldots N_m,
+\label{eq:searchrange}
+\end{equation}
+wobei $N_m$ die Anzahl der in der Inversion aktivierten Modellparameter ist.
+Der D"ampfungsparameter in Gl.\ \eqref{eq:LSQ:system} ist
+\begin{equation}
+\label{eq:def:nu}
+\SSdamp=\Snu/N_m.
+\end{equation}
+Dabei hat die Gr"o"se $\Snu$ in \texttt{gremlin} folgende Bezeichnung:
+\begin{tabular}{lll}
+$\Snu$ & \texttt{nu} & nu \\
+\end{tabular}
+
+\subsection{Parametrisierung}
+
+Grunds"atzliche "Uberlegungen zur Entwicklung des Untergrundmodells nach
+Basisfunktionen werden in Kapitel~IV.1.2 von \Rdistel\ angestellt.
+In Kapitel~V.2.1 von \Rdistel\ wird die Orthogonalit"atsforderung f"ur die
+Basisfunktionen der Modellparametriesierung beschrieben.
+Diese "Uberlegungen wurden aber in \Prog{gremlin} nicht in voller
+Allgemeinheit umgesetzt.
+Die Parameter des Untergrunds, also die Kompressionswellengeschwindigkeit
+$\SSvp$, die Scherwellengeschwindigkeit $\SSvs$, die Dichte $\rho$ und die
+G"utefaktoren f"ur die Geschwindigkeiten sind abschnittsweise (in Sektionen)
+nach Polynomen 2ten Grades entwickelt.
+Sie sind damit Funktionen der Tiefe $z$, die nach unten positiv gerechnet
+wird.
+Die Inversionsparameter sind die Polynomkoeffizienten und die Tiefen in denen
+eine Sektion endet und die n"achste beginnt.
+Die Bedeutung der Polynomkoeffizenten in den Modelldateien wird in
+Kapitel~A.2.2 im Anhang von \Rdistel\ definiert.
+Diese entprechen aber nicht den Polynomkoeffizienten, die in \Prog{gremlin}
+als Inversionsparameter im Vektor $\Svdm$ verwendet werden. 
+Die Inversionsparameter werden weiter unten in
+Abschnitt~\ref{sec:def:polynomial} definiert.
+
+\subsubsection{Terminologie}
+  Bei den Modelldateien wird zwischen \emph{polynomial
+  models} und \emph{discrete models} unterschieden:
+  \begin{description}
+  \item[polynomial model:] Darstellung des Untergrundmodells in Form von
+  Sektionen innerhalb derer der Verlauf der Parameter durch Polynome
+  beschrieben wird.
+  In dieser Parametriesierung wird das Inversionsproblem gel"ost.
+  Die Modelldateien, die von \Prog{gremlin} gelesen und geschrieben werden,
+  benutzen diese Darstellung.
+  \item[discrete model:] Darstellung des Untergrundmodells in Form homogener
+  Schichten.
+  Mit dieser Parametriesierung arbeitet die Refelktivit"atsmethode zur
+  Berechnung synthetischer Daten.
+  Innerhalb von \Prog{gremlin} muss das Polynommodell vor jeder
+  Vorw"artsrechnung diskretisiert werden.
+  Das Programm \Prog{mocon} ist in der Lage Dateien beider Formen der
+  Modellbeschreibung in die jeweils andere zu konvertieren.
+  \end{description}
+
+\subsubsection{Definition der Polynomparameter}
+\label{sec:def:polynomial}
+  Sei der Wert eines Parameters $p$ durch ein Polynom innerhalb einer Sektion
+  mit der Oberkante in der Tiefe $\Szt$ und der Unterkante bei $\Szb$ gegeben.
+  Die $z$-Koordinate wird dabei nach unten positiv gerechnet.
+  Die Sektion hat die M"achtigkeit
+  \begin{equation}
+  h=\Szb-\Szt
+  \end{equation}
+  und ihre Mitte liegt bei
+  \begin{equation}
+  \Szm=\frac{1}{2}\,\left(\Szb+\Szt\right).
+  \end{equation}
+  Das Polynom wir bez"uglich der Mitte \Szm\ mit den Parametern
+  \begin{equation}
+  \Sxt=\Szt-\Szm\qquad\text{und}\qquad
+  \Sxb=\Szb-\Szm
+  \end{equation}
+  definiert.
+  Der Parameter in der Tiefe $z=x+\Szm$ ist also
+  \begin{equation}
+  p(x)=p_0+p_1\,x+p_2\,x^2.
+  \end{equation}
+  Das entspricht der Darstellung in Kapitel~A.2.2 im Anhang von \Rdistel.
+  Die Funktion \Func{mod\underbar{ }chop} wertet die Polynomparameter in
+  dieser Weise aus.
+
+  Die \emph{anonymous model parameters} (siehe Abschnitt~\ref{sec:mod:term}) 
+  im Vektor $\Svdm$
+  beschreiben "Anderungen, die an die Koeffizienten $p_0$, $p_1$ und $p_2$
+  angebracht werden.
+  Sind $m_0$, $m_1$ und $m_2$ Elemente des Vektors $\Svdm$, so ergeben sich
+  die neuen Modellwerte mit
+  \begin{align}
+  p_0^{\prime}&=p_0+m_0-m_2\,\frac{h^2}{12}, \\
+  p_1^{\prime}&=p_1+m_1 \quad\text{und} \\
+  p_2^{\prime}&=p_2+m_2 \quad\text{mit}\\
+  p^{\prime}(x)&=p_0^{\prime}+p_1^{\prime}\,x+p_2^{\prime}\,x^2.
+  \end{align}
+  Basisfunktionen im Sinne von Kapitel~V.2.1 in \Rdistel\ sind damit
+  \begin{align}
+  b_0(z)&=1, \\
+  b_1(z)&=z-\Szm\quad\text{und} \\
+  b_2(z)&=(z-\Szm)^2-\frac{h^2}{12}. 
+  \end{align}
+
+  Die Funktion \Func{mod\underbar{ }parcor} setzt diese Zuordnung um.
+  Der Vorteil dieser Zuordnung besteht darin, dass die "Anderung des
+  Mittelwerts 
+  \begin{equation}
+  \overline{\Delta p}=\frac{1}{h}\int\limits_{\Sxt}^{\Sxb} 
+  p^{\prime}(x)-p(x)\,\text{d}x=m_0
+  \end{equation}
+  des Parameters in der Sektion wirklich nur von $m_0$ abh"angt.
+  Au"serdem h"angt die "Anderung des mittleren Gradienten
+  \begin{equation}
+  \overline{\Delta \delta p}=\frac{1}{h}\int\limits_{\Sxt}^{\Sxb} 
+  \frac{\text{d}}{\text{d}x}\left(p^{\prime}(x)-p(x)\right)\,\text{d}x=m_1
+  \end{equation}
+  des Parameters in der Sektion wirklich nur von $m_1$ ab.
+
+\subsubsection{Dateiformat}
+Das Dateiformat f"ur die Polynommodelle wird in Tabelle~\ref{tab:model:format}
+beschrieben.
+\begin{table*}
+\begin{centering}
+\begin{verbatim}
+Wie final0498.p.mod aber einfacheres Qp + physikalisch sinnvoller Halbraum
+
+ModVersion 2        
+    3              <-- number of sections
+
+    Vp             Vs             density        Qp             Qs
+
+      2.6643       <-- bottom of section     1 / polynomial expansion:
+           3              3              1              1              1
+
+  .374036884     .237842164    1.600000000        11.9263        32.1174
+  .132729748     .071226151     .000000000         0.0000          .0000
+ -.038238648    -.041646658     .000000000         0.0000          .0000
+
+     16.3814       <-- bottom of section     2 / polynomial expansion:
+          -2             -2              1              1              1
+
+  .601509958     .359275030    1.600000000        50.7330        32.1174
+  .017280088     .014646841     .000000000          .0000          .0000
+  .000000000     .000000000     .000000000          .0000          .0000
+
+     25.0000       <-- bottom of section     3 / polynomial expansion:
+           1              1              1              1              1
+
+ 3.702443237    2.150750911    2.300000000       200.0000       100.0000
+  .000000000     .000000000     .000000000          .0000          .0000
+  .000000000     .000000000     .000000000          .0000          .0000
+\end{verbatim}\par
+\end{centering}
+\caption{Die Datei \texttt{biet000601.p.mod.dat} f"ur das Modell
+\textsc{Bietigheim} in Tabelle~VI.1 in \Rdistel.
+Das Modell besteht aus drei Sektionen.
+Zu Beginn jeder Sektion wird die Tiefe der Unterkante der Sektion definiert.
+Unter der Unterkante der untersten Sektion wird das Modell implizit mit einem
+konstanten Wert der Parameter an der Unterkante der untersten Sektion
+fortgesetzt.
+Die f"unf physikalischen Parameter (P-Wellengeschwindigkeit $\SSvp$,
+S-Wellengeschwindigkeit $\SSvs$, Dichte $\rho$, G"ute $Q_\text{P}$ f"ur
+$\SSvp$ und G"ute $Q_\text{S}$ f"ur $\SSvs$) sind mit ihren drei
+Polynomkoeffizienten pro Sektion in Spalten nebeneinander angeordnet.
+Zu jedem Parameter in jeder Sektion wird angegeben, wie viele der
+Polynomkoeffizienten verwendet werden. 
+1 bedeutet ein Polynom 0ten Grades, also eine homogene Schicht.
+2 bedeutet ein Polynom 1ten Grades, also eine Gradientenschciht.
+3 bedeutet ein Polynom 2ten Grades.
+Die Polynomkoeffizienten in jedem Block sind von oben nach unten $p_0$, $p_1$
+und $p_2$.
+Ein Minus vor der Anzahl der Polynomkoeffizienten bedeutet, dass der
+Mittelwert der jeweiligen Sektion (Koeffizient $p_0$) automatisch so justiert
+wird, dass an der Oberkante der Sektion keine Diskontinuit"at auftritt.
+In der Inversion folgt dann der Mittelwert dieser Sektion den "Anderungen in
+der dar"uber liegenden Sektion.
+In \Prog{gremlin} wird dies durch die Angabe \texttt{follow} in der
+Parameterzuordnung angezeigt.
+}
+\label{tab:model:format}
+\end{table*}
+%======================================================================
+\section{Programmfunktionen}
+\subsection{Vorgehensweise}
+  \begin{enumerate}
+  \item
+  Vor dem Aufruf von \Prog{gremlin} sollte ein Protokollmitschrieb mit dem
+  Unix-Befehl \B{script} eingeschaltet werden.
+  \item
+  Nach Aufruf des Programms und dem Einlesen der Laufzeitdaten, des
+  \Sop-Spektrums, des Startmodells und der Programmparameter wird zun"achst
+  der Kontrollbildschirm mit \B{dda} aufgerufen und damit das Startmodell
+  "uberpr"uft.
+  Dies muss in jedem Fall der erste aufgerufene Befehl sein, da dieser Befehl
+  einige Indexwerte initialisiert, die von anderen Befehlen ben"otigt werden.
+  \item
+  Mit den Befehlen \B{dgr} und \B{dtt} k"onnen die eingelesenen Messdaten
+  dargstellt und die Auswahl der Messdaten (Frequenz-, Langsamkeits- und
+  Offsetbereich) "uberpr"uft werden.
+  \item
+  Mit dem Befehl \B{spa} wird in das Untermen"u zur Kontrolle der
+  Steuerparameter gewechselt.
+  Hier k"onnen Kontrollparameter (Gewichtung der Messdaten, Modus zur
+  Gewinnung der Fouriertransformation des Quellwavelets, etc.) justiert
+  werden.
+  \item
+  Mit dem Befehl \B{verb} wird in das Untermen"u zur Steuerung der
+  Kontrollausgaben gewechselt.
+  Hier ist insbesondere die Option \B{mod} interessant, die daf"ur sorgt, dass
+  die Zwischenergebnisse der Inversion in der Bildschirmausgabe protokolliert
+  werden.
+  \item 
+  Bevor einen Inversion durchgef"uhrt werden kann, m"ussen die Suchbereiche
+  f"ur die freien Modellparameter gesetzt werden.
+  Dies geschieht in einem Untermen"u, das mit \B{spc} erreicht wird.
+  Modellparameter, f"ur die kein Suchbereich gesetzt ist, geh"oren nicht zu
+  den \emph{freien Modellparametern} und bleiben in der Inversion
+  unver"andert.
+  Mit dem Befehl \B{wread} im Men"u \B{file} k"onnen Suchbereiche aus einer
+  Datei gelesen werden, die das gleiche Format hat, wie die
+  Polynommodelldateien.
+  \item
+  Nachdem die Suchbereich gesetzt sind, kann gepr"uft werden, ob die Gr"o"se
+  der Suchbereiche und die Auswahl der freien Modellparameter ein robustes
+  Inversionsproblem definiert.
+  Dies geschieht mit dem Befehl \B{x2c} im Hauptprogramm (siehe
+  Abschnitt~\ref{sec:cmd:x2c}).
+  Dieser Befehl sollte vor jeder Inversion aufgerufen werden, um den
+  Stabilisierungsfaktor $\Snu$ aus Gleichung \eqref{eq:def:nu} zu justieren.
+  \item Danach kann eine iterative Inversion aufgerufen werden. 
+  Dies geschieht meistens mit dem Befehl \B{ofi} (siehe
+  Abschnitt~\ref{sec:cmd:ofi}). 
+  Danach werden eventuell Steuerparameter korrigiert und eine neue Inversion
+  aufgerufen.
+  Diese Vorgehensweise der doppelten Iteration wird in Abschnitt~2.7.2 in
+  \RpaperII\ beschrieben.
+  \item 
+  Wenn mit der iterativen Inversion kein weiterer Fortschritt erzielt werden
+  kann, oder die Inversion in die Irre gegangen ist, kann es sinvvol sein,
+  manuelle "Anderungen am Modell anzubringen und diese auszuprobieren.
+  Mit dem Befehl \B{med} wird der \Prog{vim}-Editor mit dem aktuellen
+  Referenzmodell aufgerufen.
+  Das Modell kann manuell ge"andert und gespeichert werden und wird nach dem
+  Verlassen des Editors automatisch von \Prog{gremlin} wieder eingelesen.
+  \item 
+  Ist das Ergebnismodell nach mehreren Iterationen erfolgreich, kann das
+  Ergebnismodell im Untermen"u \B{file} mit dem Befehl \B{save} gespeichert
+  werden.
+  \item 
+  Manchmal ist es hilfreich den Beitrag der partiellen Ableitungen
+  abzusch"atzen, um zu "uberpr"ufen f"ur welchen Parameter die Daten am
+  sensitivsten sind.
+  Dies ist im Untermen"u \B{reso} mit dem Befehl \B{parder} m"oglich.
+  \end{enumerate}
+\subsection{Hauptmen"u}
+\subsubsection{Befehl \B{x2c}}
+\label{sec:cmd:x2c}
+  Mit diesem Befehl wird gepr"uft, ob die Suchbereiche und die freien
+  Parameter robust gew"ahlt sind.
+  Sind deren Werte gut gew"ahlt, so sollte der Misfit $\Smifi(\Snu)$ als
+  Funktion des Stabilisierungsparameters $\Snu$ gem"a"s Gl.~\eqref{eq:mifi:nu}
+  mit kleiner werdendem $\Snu$ abnehmen.
+  Zur Kontrolle berechnet der Befehl \B{x2c}
+  den Wert von $\Smifi$ f"ur mehrere Werte von
+  $\Snu$ auf einer logarithmischen Skala und stellt sie "uber
+  $\Snu$ dar (gro"se D"ampfung links, kleine D"ampfung rechts).
+  Sind die Parameter robust eingestellt, muss der Wert der Kurve im Plot nach
+  rechts abnehmen, also mit abnehmendem Wert von $\Snu$.
+  Die Berechnung der Kurve erfolgt vergleichsweise rasch, weil dazu nur einmal
+  partielle Ableitungen berechnet werden m"ussen.
+  Der Aufruf erfolgt mit
+  \begin{quote}
+    \B{x2c numin,numax,npts}
+  \end{quote}
+  \begin{description}
+  \item[\texttt{numin}:]
+  Der kleinste Wert f"ur $\Snu$ (rechter Rand des Plots)
+  \item[\texttt{numax}:]
+  Der gr"o"ste Wert f"ur $\Snu$ (linker Rand des Plots)
+  \item[\texttt{npts}:]
+  Die Anzahl von Werten f"ur die $\Smifi(\Snu)$ berechnet werden
+  soll.
+  \end{description}
+
+\subsubsection{Befehl \B{ofi}}
+\label{sec:cmd:ofi}
+  Haben sich die Suchbereiche beim Aufruf von \B{x2c} als robust erwiesen,
+  kann mit dem Befehl \B{ofi} eine iterative Inversion durchgef"uhrt werden.
+  Der Aufruf erfolgt mit
+  \begin{quote}
+    \B{ofi nu,lim,step,mode}
+  \end{quote}
+  \begin{description}
+  \item[\texttt{nu}:] 
+  Dies ist der Wert des Stabilisierungsparameters $\Snu$
+  mit dem das Gleichungssystem gel"ost werden soll. 
+  Dieser sollte noch im abfallenden Teil der \B{x2c}-Kurve liegen.
+  \item[\texttt{lim}:] 
+  Grenzwert f"ur $\Smifi$. Wird dieser Wert unterschritten, so wird die
+  Inversion als erfolgreich betrachtet und die Iteration abgebrochen.
+  \item[\texttt{step}:] 
+  Maximale Anzahl von Iterationsschritten, die durchgef"uhrt werden sollen.
+  \item[\texttt{mode}:] 
+  Anzeigemodus w"ahren der Iteration. 
+  Ich empfehle, diesen Wert auf 2 zu setzen.
+  \end{description}
+
+%======================================================================
+\section{Hilfsprogramme}
+  Folgende Hilfsprogramme stehen zur Verf"ugung:
+  \begin{description}
+  \item[\Prog{clemo}] legt entweder ein leeres Template f"ur ein Polynommodell
+  mit einer vorgegebenen Anzahl Sektionen an oder korrigiert die Formatierung
+  eines vorhandenen Modells.
+  \item[\Prog{grereso}] berechnet die Aufl"osungsmatrix f"ur die
+  \Prog{greda}-Inversion wie in Kapitel~III.3 in \Rdistel\ beschrieben.
+  \item[\Prog{moche}] pr"uft die Werte in einer Modellbeschreibung auf
+  physikalische Sinnhaftigkeit der Parameter (siehe auch Abschnitt~2.5 in
+  \RpaperII).
+  Dazu werden aus den Geschwindigkeiten elastische Moduln und die
+  dazugeh"origen G"ute-Werte, sowie die Poisson-Zahl berechnet.
+  Siehe dazu auch die Bemerkungen In Kapitel~II.2.2 in \Rdistel.
+  Beachte, dass die Definition der G"ute f"ur die Scherwellengeschwindigkeit
+  in Gl.~(II.20) in \Rdistel\ nicht mit der
+  Definition in \Prog{gremlin} "ubereinstimmt.
+  Die Definition seismischer Geschwindigkeiten und dazugeh"origer G"utewerte
+  wird von Forbriger und Friederich \cite{forbriger2005} diskutiert.
+  \item[\Prog{mocon}] dient zur Konvertierung von Polynommodellen in Modelle
+  homogener Schichten und umgekehrt. 
+  \item[\Prog{mop}] stellt Polynommodelle graphisch dar.
+  \item[\Prog{mops}] dient zur Erzeugung von Startmodellen. 
+  Wurde ein Modell der P-Wellengeschwindigkeit \SSvp\ aus der Laufzeitkurve der
+  refraktierten Wellen gewonnen, so kann mit \Prog{mops} ein
+  korrespondierendes Modell der S-Wellengeschwindigkeit
+  \begin{equation}
+  \SSvs=\frac{\SSvp}{\sqrt{3}}
+  \end{equation}
+  erzeugt werden.
+  \item[\Prog{moshift}] dient zu Parameterstudien.
+  Die Parameter eines Polynommodells k"onnen um einen gegebenen Wert
+  ver"andert werden.
+  Dieser Wert wird in einer getrennten Datei definiert (\texttt{shiftfile})
+  und mit einem skalaren Faktor (\texttt{v}) multipliziert zum Eingangsmodell
+  addiert.
+  Auf dieser Weise kann relativ einfach ein Gridsearch durchgef"uhrt werden.
+  \item[\Prog{motab}] erzeugt eine ASCII-Tabelle aus einem Polynommodell.
+  Dies dient zur Darstellung von Polynommodellen in externen Plotprogrammen.
+  \item[\Prog{moval}] dient zur Abfrage der Werte der Modellparameter in einer
+  gegebenen Tiefe f"ur ein vorgegebenes Polynommodell.
+  \item[\Prog{pmotra}] stellt das \SSvp-Modell eines Polynommodells zusammen
+  mit eingelesenen Ankunftszeiten der P-Wellen und der theoretischen
+  Laufzeitkurve der refraktieren P-Wellen graphisch  dar.
+  \item[\Prog{polex}] dient zur Berechnung der geeigneten Polynomkoeffizienten
+  bei gegebenen Werten der Modellparameter in verschiedenen Tiefen.
+  \item[\Prog{splimo}] erzeugt ein Polynommodell aus einen gegebenen
+  Polynomodell, wobei im erzeugten Polynommodell eine Sektion des
+  Eingabemodells in zwei Sektionen des Ausgabemodells zerlegt wird.
+  Dies erlaubt einen nachtr"agliche Einbau von Diskontinuit"aten.
+  \end{description}
+
+\bibliography{gremlin}
+\end{document}
+
+% ----- END OF gremlin.tex ----- 

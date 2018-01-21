@@ -1,0 +1,17 @@
+this is <README>
+============================================================================
+synthetic test data for refract
+-------------------------------
+
+This subdirectory provides means to calculate synthetic test data for refract.
+The rules in Makefile expect refmet to be installed. The reflectivity method
+as implemented in refmet is provided in Seitosh in subdirectory
+src/synt/ref/refmet
+
+----------------------------------------------------------------------------
+Test mode 2:
+
+  refract -Sm 2 -v -Sr 0.527 -p -St -0.02,0.12 -Sx 0.,150. \
+    set1.sff set2.sff set3.sff
+
+----- END OF README ----- 

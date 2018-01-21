@@ -1,0 +1,124 @@
+this is <README>
+============================================================================
+STFINV -- library for determination of source wavelet correction filter
+============================================================================
+
+Purpose
+-------
+Create and apply a source wavelet correction filter for full-waveform
+inversion of field data.
+
+Description
+-----------
+The purpose of this library (libstfinv) is to provide methods for the
+derivation of source wavelet correction filters in approaches to full waveform
+inversion. Given a set of recorded data and a set of synthetic data
+(typically, but not necessarilly the expected impulse response of the
+subsurface) a source wavelet correction filter is obtained by application of a
+user-selectable optimization citerion. The synthetic waveforms are convolved
+with this filter wavelet and the convolved synthetics as well as the wavelet
+itself are returned to the user.
+
+The effective time history of the seismic source used in field recordings is
+not well known in most cases. This applies in particular to transient sources
+(like explosives or hammer blows). The so-called 'source-time-function' might
+even vary from shot to shot. For this reason it is not possible to use an
+appropriate source-time-function in the initial simulation of synthetic data
+in an approach of full-waveform inversion. However, after synthetic data have
+been calculated using a generic source-time-function, a correction filter can
+be constructed such that an improved source-time-function will reduce the
+misfit to the recorded data.
+
+The software library libstfinv provides several constrained and unconstrained
+approaches to finding an optimized source-wavelet correction filter. It is
+flexible and capable of being extended with further approaches in the future.
+The program soutifu supports application directly to seismic time series data
+files.
+
+Software library: libstfinv
+---------------------------
+The library libstfinv provides a C++ API (application programming interface)
+as well as a C API to the user of the library. A Fortran API is not yet
+implemented but could be constructed on top of the C API without effort. The
+library provides several approaches (procedures) to finding an optimized
+source wavelet correction filter. Each of the procedures is addressed through
+the same API, such that programs using the library could immediately benefit
+from a new approach after its implementation and without need to modify
+consumer programs. The different procedures are encapsulated in so-called
+'engines'. The procedures are fully controllable by the end-user through
+configuration string sequences which are passed to the library.
+
+Stand-alone binary executable: soutifu
+--------------------------------------
+A stand-alone binary executable soutifu is provided as well, which makes use
+of this library. It can be applied directly to seismic time series data files
+and provides access to all engines and supports a variety of data file
+formats. 
+
+soutifu is provided in directory src/ts/wf within Seitosh.
+
+Documentation
+=============
+doxygen source code documentation
+---------------------------------
+Detailed documentation of concept and implementation is provided in the source
+code. doxygen can be used to create appropriate html files. See target
+doxydoc in the Makefile. The libraries API is described there.
+
+Introductory texts are provided in doxygen.txt and are used in the doxygen
+documentation.
+
+User documentation
+------------------
+The theory behind the Fourier domain least squares procedure is outlined by
+Lisa Groos (2013, Appendix F, page 146). She also describes a way to find an
+approrpiate water level by application of the L-curve criterion (Groos, 2013,
+Appendix G, page 148).
+
+Fragments of a user documentation in LaTeX are propared in subdirectory doc.
+
+Online user documentation to be output by the software itself is provided in
+*usage.txt files. End-user documentation is assembled from these text files
+and provided by the library through help() and usage() functions. The program
+tests/onlinehelp Provides access to these texts. Just issue
+
+  make onlinehelp
+  ./onlinhelp
+
+to get access.
+
+A toy example and a step-by-step introduction are provided in subdirectory
+src/ts/wf/testcases in README.soutifu
+
+A short descrpition of the library and the accompanying program soutifu is
+provided on the OpenTOAST web-page:
+http://www.opentoast.de/Data_analysis_code_soutifu_and_libstfinv.php
+
+Lisa Groos. 2013. 2D full waveform inversion of shallow seismic Rayleigh waves.
+  Dissertation, Karlsruher Institut für Technologie.
+  http://nbn-resolving.org/urn:nbn:de:swb:90-373206
+
+Installation
+============
+See README.md and INSTALL.md in the root directory of the repository for
+general installation instructions.
+
+environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+  TF_WWWBASEDIR   Defines the path to your personal homepage. That's the
+                  place where doxygen output will be written too (see
+                  in the Makefile).
+
+make all             installs headers, binary libraries and documentation
+
+Dependencies
+------------
+This library requires code from libaff and libfourierxx.
+Am external dependency is fftw3
+The testprogram requires libtfxx in addition.
+
+----- END OF README ----- 

@@ -1,0 +1,140 @@
+% this is <libstfinv.tex>
+% ----------------------------------------------------------------------------
+% 
+% Copyright (c) 2013 by Thomas Forbriger (BFO Schiltach) 
+% 
+% libstfinv
+% 
+% REVISIONS and CHANGES 
+%    13/02/2013   V1.0   Thomas Forbriger
+% 
+% ============================================================================
+%
+\documentclass{article}
+\newcommand{\version}{2013/02/13 V1.0}
+\usepackage{ngerman}
+\usepackage{pslatex}
+\usepackage{anysize}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\selectlanguage{english}
+%----------------------------------------------------------------------
+\newcommand{\libstfinv}{\texttt{libstfinv}}
+\newcommand{\Fourier}[1]{\ensuremath{\tilde{#1}}}
+\newcommand{\Fd}{\ensuremath{\Fourier{d}}}
+%\newcommand{\Fs}{\ensuremath{\Fourier{s}}}
+%\newcommand{\Sg}{\ensuremath{g}}
+%\newcommand{\Fq}{\ensuremath{\Fourier{q}}}
+\newcommand{\Fs}{\ensuremath{\Fourier{g}}}
+\newcommand{\Sg}{\ensuremath{s}}
+\newcommand{\Fq}{\ensuremath{\Fourier{c}}}
+\newcommand{\Fg}{\ensuremath{\Fourier{\Sg}}}
+\newcommand{\FQl}{\ensuremath{\Fourier{\Sg}_{l}^{\text{opt}}}}
+\newcommand{\So}{\ensuremath{\omega}}
+\newcommand{\Sf}{\ensuremath{f}}
+\newcommand{\Sr}{\ensuremath{r}}
+\newcommand{\Ssk}{\ensuremath{\sum\limits_{k=1}^{M}}}
+\newcommand{\SslN}{\ensuremath{\sum\limits_{l=0}^{N-1}}}
+\newcommand{\Silk}{\ensuremath{_{lk}}}
+\newcommand{\Scc}{\ensuremath{^{\ast}}}
+\newcommand{\SmE}{\ensuremath{\overline{E}}}
+\newcommand{\Se}{\ensuremath{\epsilon}}
+%----------------------------------------------------------------------
+\begin{document}
+\title{\libstfinv}
+\author{Thomas Forbriger\\ \texttt{\version}}
+\date{(\today, BFO Schiltach)}
+\maketitle
+\section{Internals of \libstfinv\ engines}
+While the \texttt{doxygen} generated documentation gives the relation in a
+implementation specific quantities, this document uses the end-user
+perspective.
+
+\subsection{Fourier domain least squares}
+Let $\Fd_{lk}$ be the complex Fourier expansion coefficient at frequency
+$\So_l=l\,\Delta\So$ for the time series recorded at offset $\Sr_k$ to the
+source. 
+The corresponding Fourier coefficient for the synthetic waveform is
+$\Fs\Silk$.
+The synthetic waveform is numerically simulated for
+some model of subsurface structure and a time history of the source
+used to excite the synthetic wavefield which is given by
+$N$ Fourier coefficients $\Fg_l$.
+$\Fd\Silk$, $\Fs\Silk$, and $\Fg_l$ are complex numbers.
+
+This engine returns filter coefficients 
+\begin{equation}
+\Fq_l=\frac{\Ssk\Sf^2_k\,\Fs\Silk\Scc\,\Fd\Silk}{M\,\SmE\,\Se^2+
+\Ssk\Sf^2_k\,\left|\Fs\Silk\right|^2}
+\label{eq:least:squares:solution}
+\end{equation}
+such that $\FQl=\Fq_l\,\Fg_l$
+are Fourier coefficients of an optimized time history of the source.
+Here $\Fs\Silk\Scc$ is the complex conjugate of $\Fs\Silk$
+and
+\begin{equation}
+\SmE=\frac{1}{M\,N}\SslN\Ssk\Sf^2_k\,\left|\Fs\Silk\right|^2
+\end{equation}
+is the average power of the Fourier coefficients $\Fs\Silk$ scaled by
+$\Sf_k$.
+The optimized time history of the source provides an improved fit of the
+synthetics $\Fq_l\,\Fs\Silk$ to the recorded data $\Fd\Silk$ in a
+least-squares sense.
+This is equivalent to minimizing the least-squares objective function
+\begin{equation}
+F(\Fq_l;\Se)=\SslN\Ssk\Sf^2_k\,\left|\Fd\Silk-\Fq_l\Fs\Silk\right|^2
++M\,\SmE\,\Se^2\SslN\left|\Fq_l\right|^2
+\label{eq:least:squares:error}
+\end{equation}
+with respect to the real and imaginary parts of all $\Fq_l$.
+While eq.~\eqref{eq:least:squares:error} makes the least-squares approach
+obvious, eq.~\eqref{eq:least:squares:solution} demonstrates that the solution
+is a water-level deconvolution, essentially.
+
+By means of the
+scaling coefficients $\Sf_k$ we can make sure that all receivers
+$k$ contribute to an equal average amount to
+eq.~\eqref{eq:least:squares:error}.
+The coefficients could be chosen
+\begin{equation}
+\Sf_k=\sqrt{\frac{N}{\SslN\left|\Fs\Silk\right|^2}}
+\end{equation}
+such that the average power
+\begin{equation}
+\frac{1}{N}\SslN\Sf^2_k\,\left|\Fs\Silk\right|^2=1
+\end{equation}
+for each $k$.
+In the actual implementation we prefer
+\begin{equation}
+\Sf_k=\left(\frac{\Sr_k}{1\,\text{m}}\right)^\kappa
+\end{equation}
+using $\kappa$ to adjust a compensation for a power law attenuation with
+offset $\Sr$.
+Alternatively, $\Sf_k$ can be made large for small $\Sr_k$, such that the
+source correction filter primarily is obtained from near-offset records.
+This is achieved by choosing $\kappa$ small or even negative and
+might by preferable in early stages of the inversion when the model of
+the subsurface structure is hardly able to produce waves at correct
+propagation velocity.
+
+With $\Se=0$ the $\Fq_l$ in eq.~\eqref{eq:least:squares:error} optimize the
+data fit only.
+At frequencies where $\Fs\Silk$ become small with respect to the noise in 
+$\Fd\Silk$, the solution in eq.~\eqref{eq:least:squares:solution} develops a
+singularity (for $\Fs\Silk\rightarrow0$).
+A finite $\Se$ is used to keep the least-squares solution regular
+by introducing a stabilizing penalty to the objective function in
+eq.~\eqref{eq:least:squares:error} and
+a water-level to the denominator of eq.~\eqref{eq:least:squares:solution}.
+The $\Fq_l$ are damped (kept artificially small) as the
+average power 
+\begin{equation}
+\frac{1}{M}\Ssk\Sf_k^2\left|\Fs\Silk\right|^2
+\end{equation}
+of the scaled synthetics $\Sf_k\Fs\Silk$ at frequency $\So_l$ becomes smaller
+than a fraction $\Se^2$ of the overall average power $\SmE$ of the scaled
+synthetics $\Sf_k\Fs\Silk$.
+$\Se^2$ is the waterlevel-parameter to be passed to the engine.
+\end{document}
+
+% ----- END OF libstfinv.tex ----- 

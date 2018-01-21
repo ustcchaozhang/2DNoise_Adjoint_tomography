@@ -1,0 +1,31 @@
+this is <README>
+============================================================================
+libtf - TF utilities
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+Some code in this library provides interfaces to other libraries like
+libpgplot or libgsl. All other code can be used without linking against
+additional libraries.
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+
+make all             installs headers, binary libraries and documentation
+
+Dependencies
+------------
+  language: Fortaran 77 and C
+  external dependencies: -
+  internal dependencies: -
+
+----- END OF README ----- 

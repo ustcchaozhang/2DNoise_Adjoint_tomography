@@ -1,0 +1,450 @@
+/*! \file doxygen_implementers.txt
+ * \brief Information for library implementers 
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 04/10/2015
+ * 
+ * Information for library implementers 
+ *
+ * ----
+ * libstfinv is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * Copyright (c) 2015 by Thomas Forbriger (BFO Schiltach) 
+ * 
+ * REVISIONS and CHANGES 
+ *  - 04/10/2015   V1.0   Thomas Forbriger
+ * 
+ * ============================================================================
+ */
+
+/*! \page page_implementers Information for library implementers
+
+\par Contents of this page
+- \ref page_i_sec_implementers
+  - \ref page_i_subsec_cusers
+  - \ref page_i_subsec_cxxusers
+- \ref page_i_sec_design
+  - \ref page_i_subsec_design_initialization
+- \ref page_i_sec_documentation
+  - \ref page_i_subsec_adressees
+  - \ref page_i_subsec_locations
+
+\section page_i_sec_implementers The library libstfinv for implementers
+
+  Implementers of new engines should copy files like stfinvidentity.h and
+  stfinvidentity.cc and implement a new class which inherits from
+  stfinv::STFBaseEngine.
+  Most of the framework can simply be copied.
+  The core function is the virtual function like
+  stfinv::STFEngineIdentity::exec() which actuall determines the source
+  wavelet correction filter.
+  For the implementation there are some \ref tools provided in the library.
+
+  Do not forget to provide a unique ID like stfinv::STFEngineIdentity::ID
+  and a short description like in stfinv::STFEngineIdentity::description.
+  Further an online help text like produced by
+  stfinv::STFEngineIdentity::classhelp() are recommended.
+
+  After having successfully implemented the engine, it must be made
+  available through 
+  stfinv::STFEngine::STFEngine().
+  Online help is made available through stfinv::STFEngine::help() and
+  stfinv::help().
+
+  See the stfinv::STFBaseEngine, where we explain
+  how the initialization takes place.
+
+  See \ref page_i_sec_design for details on the engine design.
+
+  See \ref page_u_subsec_introduction for a general introduction and
+  description of the libraries workflow.
+
+\subsection page_i_subsec_cusers The C application programming interface (API)
+
+  The library provides a \ref cinterface.
+  Examples for using the \ref cinterface are given in the section
+  Detailed Description of the documentation for the \ref cinterface.
+
+\subsection page_i_subsec_cxxusers The C++ application programming interface (API)
+
+  The library provides a \ref cxxinterface.
+  Examples for using the \ref cxxinterface are given in the section
+  Detailed Description of the documentation for the \ref cxxinterface.
+
+*/
+
+/*======================================================================*/
+
+/*! \page page_implementers
+ 
+  \section page_i_sec_design Design considerations
+
+  \subsection page_i_subsec_design_initialization Initialization of classes
+
+  It would have been nice to implement the classes in a way that default
+  parameters are collected automatically and that the constructors care about
+  parameter key values not matching a default parameter.
+  Without tests for matching key values typos by the user may remain
+  unnoticed.
+
+  Default values either must be provided in a static data structure or must be
+  collected in a top down manner beginning at the child class proceeding to
+  the parents.
+  Collection of default parameters must be finished before passing the actual
+  parameters to the parameter map stfinv::STFBaseEngine::Mparamap.
+  The sequence in which the constructors are called is the other way round.
+  Constructor processing naturally starts at the base class and proceeds in
+  direction of the children.
+  At the same time a base class constructor is not able to call a virtual
+  function of the child, since the child not actually is constructed at this
+  time.
+
+  Implementing a check for default parameter matches cannot easily be
+  implemented within the constructors.
+  A second sequence of initializing member function would be necessary.
+  The constructor of the derived class would have to initiate this process
+  thus ultimately terminating the chain of inheritance.
+
+  Since all other initialization takes place in the order starting at the base
+  class, I do not check the key values and prefer the simple and straight
+  forward way of implementation.
+
+  The handling of stfinv::STFBaseEngine::Mparamap is entirely encapsulated in
+  the base class. 
+  For this reason it should be possible to implement parameter keyword checks
+  in the future is desired with relatively small effort.
+
+\date 10.05.2011
+ */
+
+/*======================================================================*/
+
+/*! \page page_implementers
+ 
+\section page_i_sec_documentation Documentation of the library
+
+\subsection page_i_subsec_adressees Addressees of documentation
+\par End-users
+    These are end-users of the software. 
+    They are not concerned with the libraries API (application programming
+    interface).
+    They just apply a software which uses libstfinv to seismic data.
+    End-users require information on how to select one of the provided engines
+    and how to control these engines by parameter values.
+\par Users
+    Users of the library use libstfinv within their own software project.
+    They required detailed information regarding the API and its parameters.
+    Questions to be addressed are: How are waveform data transferred to and
+    from the library? How can user selected parameters be passed to the
+    library?
+\par Implementers
+    They aim to implement new features in libstfinv or to fix bugs.
+    Such new features could be a new engine or just new functionality for an
+    existing engine.
+    Information required concerns the general design of the library, how
+    classes interact and derive from each other.
+    Implementers must be pointed to locations, where base classes must receive
+    new lines to address a newly implemented class.
+
+\subsection page_i_subsec_locations Locations of documentation
+\par Source code
+  Within the C++ source code files all software modules and in particular
+  their implementation are described.
+  Apart from the actual classes, functions, and parameters
+  this comprises also the theory of operation and mathematics of the
+  implemented approaches.
+  These more fundamental information typically if given in the "Detailed
+  Description" sections of the class documentation.
+
+\par doxygen text files
+  Files matching name pattern doxygen*.txt contain documentation text with
+  format commands appropriate for doxygen.
+  They are processed in the creation of the html documentation of libstfinv.
+  These files contain general considerations for end-users, library users and
+  implementers.
+
+\par usage text files
+  Files matching name pattern *usage.txt in subdirectory usage contain usage
+  documentation addressing end-users.
+  End-users are not concerned with programming and library API. 
+  They use software, which is linked against libstfinv and apply those
+  programs to their time series files.
+  This documentation should contain all relevant information on how to select
+  an engine and how to control the actual processing by passing parameters to
+  the engine.
+  Contents of these files will be processed to C++ source code and will be
+  provided through help-functions of the software modules.
+
+  \par
+  *summary_usage.txt files provide a short summary of the implemented approach
+  and a summary of available parameters.
+
+  \par
+  *description_usage.txt files provide a detailed description of theory of
+  operation and detailed information regarding control parameters.
+
+  \par
+  Usage text files shall be output in two different ways:
+  -# The summary for all available engines is output together with a summary
+     for the overall library.
+     The summary for engine bases like stfinv::STFFourierDomainEngine is
+     output exactly once and after the list of operational engines.
+     This is controlled by the API.
+     It is implemented in stfinv::STFEngine::help() and called by
+     stfinv::help().
+  -# The detailed description for one selected engine is output together with
+     detailed description for the overall library.
+     This is delegated by the API to static member functions of operational
+     engine classes.
+     stfinv::STFEngine::usage(const std::string& id, std::ostream&
+                              os=std::cout) prints the detailed description of
+     the general part of the library and then calls the static member function
+     usage of the engine selected through string \p id.
+     The usage function of the engine class prints its detailed usage
+     information and, if appropriate, calls the usage function of the base
+     class.
+     Function stfinv::usage() is provided in the \ref cinterface and calls
+     stfinv::STFEngine::usage.
+
+\par LaTeX files
+  In subdirectory doc a set of LaTeX files is created.
+  These files may contain extended end-user documentation including relevant
+  mathematics.
+
+\date 4.10.2015
+ */
+
+/*======================================================================*/
+
+/*! \brief C interface to libstfinv
+
+\defgroup cinterface C interface (API) to libstfinv
+
+All data structures and function prototypes are presented in 
+\ref stfinv.h
+
+\par Overview
+
+When using libstfinv from a C program, the first step is to initialize the
+engine by calling ::initstfinvengine(). The engine will keep references to
+the memory locations where time series samples are stored. You can update
+the content of these locations as you like, e.g. by storing a new set of
+synthetic seismograms therein. Upon each call to ::runstfinvengine() a new
+source wavelet correction filter
+will be derived and stored at its place in
+memory. At the same time the synthetic waveforms are convolved with the
+filter wavelet and stored at the memory location reserved for the
+convolved synthetics. It is good style to call ::freestfinvengine() when
+you have finished. This will remove the engine from memory. This call
+should at least be issued when the pointers to the memory locations for
+time series samples as passed to ::initstfinvengine() become invalid.
+
+\par Code fragments
+
+All expressions \c [...] in the code fragments below have to be replaced with
+proper C expression appropriate for your program.
+
+Consider you like to use this interface in a C program.
+You have data for \c nrec receivers each with \c nsamp samples and \c dt
+sampling interval:
+\code
+usigned int nrec = [...];
+usigned int nsamp = [...];
+float dt = [...];
+\endcode
+Then you have to initialize a reference to your workspace:
+\code
+struct CTriples data;
+data.n=nrec;
+data.triples=(struct CWaveformTriple *)malloc(nrec*sizeof(struct CWaveformTriple));
+if (data.triples == NULL) { abort(); }
+\endcode
+You then have to fill the waveform triple structures with appropriate header
+information and pointers to your data arrays:
+\code
+for (usigned int i=0; i<nrec; ++i)
+{
+  /*
+  set pointers to your data workspace; each [...] expression is of type
+  float* (i.e. pointer to float)
+  */
+  data.triples[i].data=[...];
+  data.triples[i].synthetics=[...];
+  data.triples[i].convolvedsynthetics=[...];
+  /*
+  add header data
+  */
+  data.triples[i].header.sx=[...];
+  data.triples[i].header.sy=[...];
+  data.triples[i].header.sz=[...];
+  data.triples[i].header.rx=[...];
+  data.triples[i].header.ry=[...];
+  data.triples[i].header.rz=[...];
+  data.triples[i].header.sampling.n=nsamp;
+  data.triples[i].header.sampling.dt=dt;
+}
+\endcode
+Further prepare a reference to your workspace for the source 
+correction filter wavelet:
+\code
+struct CWaveform stf;
+/* assign pointer to float */
+stf.series = [...];
+stf.sampling.n=nsamp;
+stf.sampling.dt=dt;
+\endcode
+The you require a parameter string. For example:
+\code
+char para[]="fbd:tshift=0.4";
+\endcode
+Having prepared all these items, you can initialize the stf engine:
+\code
+initstfinvengine(data, stf, para);
+\endcode
+
+After having initialized the engine, you can call the engine repeatedly. 
+Upon each call
+\code
+runstfinvengine();
+\endcode
+the engine will read the time series data from the workspace
+\code 
+data.triples[i].data 
+\endcode 
+and 
+\code
+data.triples[i].synthetics
+\endcode
+refer to.
+It will then calculate a source wavelet correction filter
+according to the selected
+strategy and subject to the parameters passed to the engine.
+The time series referred to by 
+\code
+data.triples[i].synthetics
+\endcode
+will be convolved
+with this source correction filter wavelet
+and the resulting time series will be written
+to the workspace 
+\code
+data.triples[i].convolvedsynthetics
+\endcode
+point to.
+The source correction filter wavelet
+itself will be written to the workspace referred to
+by 
+\code
+stf.series
+\endcode
+
+Do not forget to free memory once you do not longer require the stf engine:
+\code
+freestfinvengine();
+free(data.triples);
+\endcode
+
+\par Using waveform pairs to pass additional time series
+
+The C API offers a second init function:
+\code
+void initstfinvenginewithpairs(struct CTriples triples,
+                               struct CWaveform stf,
+                               struct CPairs pairs,
+                               char* parameters);
+\endcode
+The argument \p pairs can be used to pass additional time series which will be
+convolved with the source correction filter wavelet.
+These time series however are not used in the process of finding the
+appropriate source wavelet correction filter.
+
+Consider you like to pass \c npairs time series with \c nsamp samples each and
+a sampling interval \c dt (note: \c nsamp and \c dt must be identical to those
+used for the other time series passed to libstfinv).
+\c nsamp and \c dt are already set.
+You have to adjust
+\code
+usigned int npairs = [...];
+\endcode
+Then you have to initialize a reference to your workspace:
+\code
+struct CPairs pairs;
+pairs.n=npairs;
+pairs.pairs=(struct CWaveformPair *)malloc(npairs*sizeof(struct CWaveformPair));
+if (pairs.pairs == NULL) { abort(); }
+\endcode
+You then have to fill the waveform pair structures with appropriate header
+information and pointers to your data arrays:
+\code
+for (usigned int i=0; i<npairs; ++i)
+{
+  /*
+  set pointers to your data workspace; each [...] expression is of type
+  float* (i.e. pointer to float)
+  */
+  pairs.pairs[i].synthetics=[...];
+  pairs.pairs[i].convolvedsynthetics=[...];
+  /*
+  add header data
+  */
+  pairs.pairs[i].sampling.n=nsamp;
+  pairs.pairs[i].sampling.dt=dt;
+}
+\endcode
+Having prepared this and all other items, you can initialize the stf engine:
+\code
+initstfinvenginewithpairs(data, stf, pairs, para);
+\endcode
+
+Additionally to what is dedscribed above, upon each call to
+\code
+runstfinvengine();
+\endcode
+the engine will read the time series from the area addressed by
+\code 
+pairs.pairs[i].synthetics 
+\endcode 
+will convolve this with the newly derived source correction filter wavelet.
+The resulting
+time series will be written to the workspace addressed by
+\code
+pairs.pairs[i].convolvedsynthetics
+\endcode
+
+\note
+Not every engine supports additional wavefrom pairs.
+See stfinv::STFEngine::initialize() if in doubt.
+
+\date 05.10.2011
+ */
+
+/*======================================================================*/
+
+/*! \brief C++ interface to libstfinv
+
+\defgroup cxxinterface C++ interface (API) to libstfinv
+
+The interface for C++ programs to libstfinv is provided by
+stfinv::STFEngine in stfinvany.h
+See also section Detailed Description for stfinv::STFBaseEngine where a
+description of internal workflow is given.
+
+\date 05.05.2011
+ */
+
+/* ----- END OF doxygen_implementers.txt ----- */

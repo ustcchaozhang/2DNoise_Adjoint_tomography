@@ -1,0 +1,975 @@
+/*! \file libaff/doxygen.txt
+ * \brief C++ containers for numbers (libaff)
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Copyright (c) 2002 by Thomas Forbriger (IMG Frankfurt) 
+ *
+ * ----
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * C++ containers for numbers (libaff)
+ *
+ * This file contains:
+ *  - documentation of namespace aff
+ *  - mainpage text
+ *  - documentation for pages:
+ *    - \ref page_design
+ *    - \ref page_using
+ *    - \ref page_notes
+ *    - \ref page_naming
+ * 
+ * REVISIONS and CHANGES 
+ *  - 06/12/2002   V1.0   Thomas Forbriger (copied from libcontxx)
+ *  - 20/12/2002   V1.1   (thof)
+ *                        - complete revision of this file
+ *                        - there are major gaps in
+ *                          -# \ref sec_design_multidimensional
+ *                          -# \ref page_using
+ *  - 28/12/2002   V1.2   (thof)
+ *                        - new term for containers of const elements
+ *                        - added documentation regarding the concept of 
+ *                          const correctness
+ *                        - added documentation regarding member typedefs
+ *  - 29/12/2002   V1.3   (thof)
+ *                        - added section about replicated shared heap base
+ *                          class (\ref sec_design_replicated)
+ *                        - added section about sparse interface
+ *                          (\ref sec_design_interface_sparse)
+ *                        - added section about accessing internals
+ *                          (\ref sec_design_interface_internals)
+ *                        - reflect changes to Subarray and Slice
+ *                        - tell about class hierarchies and member data vs.
+ *                          inheritance
+ *  - 04/01/2003   V1.4   (thof)
+ *                        - added section about Tcontainer typedef 
+ *                          (\ref sec_design_interface_tcontainer)
+ *  - 10/02/2004   V1.5   (thof)
+ *                        - added section about decision against interface
+ *                          base classes
+ *                          (\ref sec_design_interface_nobaseclass)
+ *  - 10/11/2010   V1.6   (thof)
+ *                        - code fragments for precompiled templates are
+ *                          removed from the library (\ref sec_design_binary)
+ *  - 14/05/2011   V1.7   (thof)
+ *                        - add info on raw-major and column-major order
+ *  - 15/05/2011   V1.8   (thof)
+ *                        - reordered documentation, movde modules to
+ *                          README.groups
+ *  - 12/06/2013   V1.9   (thof)
+ *                        - renamed file
+ * 
+ * ============================================================================
+ */
+
+/*! \brief Root namespace of library
+  
+  This namespace contains all modules of the library
+  (see \ref sec_main_modules). 
+  Here you should find all components, the user needs to work with this
+  library.
+ */
+namespace aff {
+} // namespace aff
+
+/*======================================================================*/
+
+/*! \mainpage
+
+\author Thomas Forbriger
+\author Wolfgang Friederich
+\since December 2002
+\date December 2002
+\version V1.0
+
+  Contents of this page:
+  - \ref sec_main_aims
+  - \ref sec_main_need
+  - \ref sec_main_peculiar
+  - \ref sec_main_modules
+
+  Additional information:
+  - \ref page_changelog
+  - \ref page_project_status
+  - \ref page_using
+  - \ref page_array_layout
+  - \ref page_design
+  - \ref page_naming
+  - \ref page_representation
+  - \ref page_fortran
+
+\section sec_main_aims Aims of the library
+  
+  The AFF (Array of Friederich and Forbriger) is a lightweight class library.
+  It offers a simple and easy to use container for numbers as is necessary in
+  numerical code. The offered array always has a rectangular strided layout,
+  reference semantics (through counted references) and a Fortran layout in
+  memory. The interface is intentionally kept sparse to keep compilation times
+  small. The array itself is meant to be used to pass numbers from one program
+  module to the other. If you want to exploit the power of expression
+  templates, pass the array contents to something like Blitz++.
+
+
+  Contents of this page:
+
+\section sec_main_peculiar Peculiarities of AFF
+
+\par Containers use counted references
+All containers (e.g. aff::Array, aff::Series) use counted references to access
+global memory. Assigning one container object to another just assigns the
+reference. Both will use the same data in memory afterwards. 
+\sa \ref page_representation.
+
+\par Const-correctness for array elements
+In this library we follow provide functionality to write const-correct code
+with regard to the array container and with regard to its element values.
+\sa \ref sec_design_const.
+
+\par Multidimensional arrays
+Every aff::Array of this class has aff::Strided::Mmax_dimen dimensions.
+Construction and access for lower dimensionality is provided. In the case of
+using less dimensions, the size of the unused dimensions is 1 by default and
+its index is inherently set to the first index.
+\sa \ref sec_design_multidimensional.
+
+\section sec_main_need Why do we need this array library
+  
+  One major reason for replacing Fortran77 by C++ in numerical code is the
+  convenience in expressing logistics. Data of different type and size may be
+  packed into classes and encapsulated from the outside world. Most numerical
+  results are to be stored in arrays, multi-dimensional arrays in particular.
+  This library provides the basic functionality for storing many data of the
+  same type in memory, passing them around between subroutines in an efficient
+  way and accessing them through convenient interfaces. The main purpose of
+  this library is not calculation but managing (passing between program
+  modules, selection of subsets of the data) large amounts of numbers. In the
+  future it might provide interfaces to libraries like blitz++ for finite
+  difference calculations, MTL for linear algebra calculations, and POOMA for
+  parallel computations.
+
+  \sa http://www.sophya.org/, http://www.boost.org
+
+\section sec_main_modules Modules of the library
+
+  The main module is the array class aff::Array. It provides basic
+  functionality through its interface. See the explanation there.
+  It is presented in aff/array.h
+  The object code is placed in libaff.a.
+
+  \sa \ref group_array, \ref group_array_extensions
+*/
+
+/*======================================================================*/
+
+/*! \page page_design Design decisions
+
+  Contents of this page:
+  - \ref sec_design_interface
+    - \ref sec_design_interface_sparse
+    - \ref sec_design_interface_typedef
+    - \ref sec_design_interface_tcontainer
+    - \ref sec_design_interface_internals
+    - \ref sec_design_interface_nobaseclass
+  - \ref sec_design_threeclasses
+  - \ref sec_design_hierarchy
+  - \ref sec_design_replicated
+    - \ref sec_design_replicated_fact
+    - \ref sec_design_replicated_problem
+    - \ref sec_design_replicated_solution
+  - \ref sec_design_copy
+  - \ref sec_design_namespaces
+  - \ref sec_design_binary
+  - \ref sec_design_multidimensional
+  - \ref sec_design_const
+    - \ref sec_design_const_problem
+    - \ref sec_design_const_approach
+    - \ref sec_design_const_alternatives
+    - \ref sec_design_const_general
+
+\section sec_design_interface Common interface concepts
+
+\subsection sec_design_interface_sparse Sparse interfaces
+
+  The class library is intended to be a  light-weight library. This means it
+  should offer basic functionality in terms of multidimensional containers
+  with counted references (and not more in first place). We do not like to
+  include a tremendous amount of code for specialized concepts (like subranges
+  or expression templates in Blitz++) each time we just need a small array.
+  Thus the header files providing array declarations (aff/array.h and the
+  files included therein) should be as sparse as possible. All extra
+  functionality like iterators (aff::Iterator presented in aff/iterator.h) or
+  slices (aff::Slice presented in aff/slice.h) should be external to the
+  aff::Array class. This allows us to load their definitions only where
+  needed. However, this approach requires that the internals of aff::Array are
+  exposed to the outside through appropriate functions (see 
+  \ref sec_design_interface_internals).
+
+\subsection sec_design_interface_typedef Member typedefs
+
+  Class templates like aff::Iterator may be used with any container class,
+  that provides an appropriate interface. This interface convention concerns
+  the access to the type of related objects. I will explain by example:
+
+  We use an iterator \c i which was declared
+  \code aff::Iterator<Cont> i \endcode
+  for a container of type \c Cont, it expects to find a corresponding
+  container class that promises constness of the elements through 
+  \code Cont::Tcontainer_of_const \endcode
+  or short
+  \code Cont::Tcoc \endcode
+
+  For aff::ConstArray the type aff::ConstArray::Tcoc is just the class itself.
+  However aff::Array::Tcoc gives an aff::ConstArray.
+
+  \sa aff::SharedHeap::Tcontainer_of_const
+  \sa aff::ConstSharedHeap::Tcontainer_of_const
+  \sa aff::Array::Tcontainer_of_const
+  \sa aff::ConstArray::Tcontainer_of_const
+  \sa aff::Series::Tcontainer_of_const
+  \sa aff::ConstSeries::Tcontainer_of_const
+
+  In the same way we may access the appropriate element type through
+  \code Cont::Tvalue \endcode
+  which is \c T for aff::Array<T> and \c const \T for aff::ConstArray<T>.
+  However a 
+  \code Cont::Tconst_value \endcode
+  will always provide a type with const qualifier.
+
+  \sa aff::Array::Tvalue
+  \sa aff::Array::Tconst_value
+  \sa aff::ConstArray::Tvalue
+  \sa aff::ConstArray::Tconst_value
+  \sa aff::Series::Tvalue
+  \sa aff::Series::Tconst_value
+  \sa aff::ConstSeries::Tvalue
+  \sa aff::ConstSeries::Tconst_value
+
+  In the same way we may access the type of the appropriate representation
+  by \code Cont::Trepresentation \endcode
+
+  \sa aff::Array::Trepresentation
+  \sa aff::ConstArray::Trepresentation
+  \sa aff::Series::Trepresentation
+  \sa aff::ConstSeries::Trepresentation
+
+  \b Notice: Using these typedefs (and also the typedefs for the shape class,
+  etc.) improves the maintainability of your code. Think of using the $HOME
+  variable in shell scripts. Once the name of your home directory changes, you
+  need not modify all your shell scripts. Now consider one day your shape
+  class might be renamed...
+
+\subsection sec_design_interface_tcontainer Member typedef Tcontainer
+
+  \par Design decision:
+  Every class that can be converted to a container type, should provide a
+  member typedef \c Tcontainer and an appropriate conversion operator.
+
+  \sa aff::util::Slice
+  \sa aff::util::Subarray
+  \sa aff::deepcopy
+
+  \par Background
+  aff::deepcopy is a good example for function designed to deal with any
+  container. There may be others in the future, like global arithmetic
+  operators or sum-reduction. Due to its generality the function template puts
+  no restrictions on its template arguments. You may instantiate that template
+  for any class. In some sense this is bad practice and we have to resolve
+  ambiguities and support type conversions. In particular, think of feeding a
+  subarray (class aff::util::Subarray) to one of these whole-array functions
+  (this might be one of the most interesting uses). aff::util::Subarray easily
+  matches the template parameter, but does not offer the member functions
+  necessary for element access.
+
+  \par 
+  Hence we must ensure conversion of the aff::util::Subarray to its container
+  class. In our concept this is done with in aff::deepcopy. It looks for a
+  Tcontainer typedef in the argument class definitions and converts the class
+  objects to its corresponding container class before the copy operation.
+
+  \par
+  Barton and Nackman propose another concept. Using their scheme we would
+  introduce a general Container class,
+  \code
+  template<class C>
+  class Container {
+    public:
+      typedef C& Tcontainer_reference;
+      Container(Tcontainer_reference c): M(c) { }
+      operator Tcontainer_reference() { return(M); }
+    private:
+      Tcontainer_reference M;
+  };
+  \endcode
+  that takes a special container class as
+  a template argument and initializes a member data reference to an object of
+  this class in its constructors. We would then derive aff::Array from this
+  class by
+  \code
+  template<class T>
+  class Array: public Container<Array <T> > { };
+  \endcode
+  This way any reference to a container (aff::Array, aff:Series,
+  aff::ConstArray, etc.) can be converted to a Container class object, which
+  agein offers a conversion operator to a reference to its leaf class.
+  Container-specific functions then are declared
+  \code
+  template<class S, class T>
+  void deecopy(const Container<S>& source, Container<T>& target);
+  \endcode
+  deepcopy than can only be called for objects that are derived from
+  Container.
+
+  \par Trade-offs
+  The Barton and Nackman trick involves another member data field in each
+  container class to hold the reference in the Container base class.
+  aff::Array would have to extra member data fields, because aff::Array and
+  aff::ConstArray both must inherit from Container. I regard this as a partial
+  violation to our concept of sparse interfaces. and small data types and
+  discard this option.
+
+  \par
+  However, our concept requires to create a full copy of at least the target
+  container in each whole-array operation. This would not be necessary
+  generally. Generally we would operate directly on the aff::Array reference
+  passed as target of the operation.
+
+  \par
+  With the Barton and Nackman trick this copy operation would only be
+  necessary with class objects, that are not directly derived from Container,
+  as are aff::util::Subarray and companions. However, for those we would have
+  to introduce specializations (overloaded functions) of whole-array
+  operations, that first perform the conversion (creating an aff::Array or
+  else) and then call the function that takes Container arguments.
+
+  \par Alternative
+  The cheapest alternative (with respect to runtime overhead in the
+  whole-array function and in the container classes aff::Array, etc.) is to
+  delegate the problem to aff::util::Subarray and companions. We could
+  introduce a member data field in them of type Tarray. This would allow for a
+  member function returning a reference to this member. There should be no
+  runtime overhead, since every subarray must once be converted to an array to
+  be useful (now this conversion takes place outside aff::util::Subarray).
+  But this would involve the inconvenience to call an extra member function in
+  Subarray, when passing to a whole-array function.
+  The template argument type of the corresponding whole-array function remains
+  unrestricted (totally unchecked).
+
+\subsection sec_design_interface_internals Accessing internals
+
+  Providing extended functionality outside of aff::Array (see 
+  \ref sec_design_interface_sparse) requires, that aff::Array,
+  aff::ConstArray, aff::Series, and aff::ConstSeries expose some of their
+  internals. This concerns the underlying shape as well as the represented
+  data.
+
+  aff::ConstArray and aff::ConstSeries provide a read-only reference to the
+  data (i.e. an aff::ConstSharedHeap object) through their member-functions
+  aff::ConstArray::representation and
+  aff::ConstSeries::representation, respectively.
+  In the same way aff::Array and aff::Series return an aff::SharedHeap through
+  their representation member function.
+
+  All of them return a copy of their shape through the member functions
+  aff::Array::shape, aff::ConstArray::shape, aff::Series::shape, and
+  aff::ConstSeries::shape, respectively. The type of the appropriate shape is
+  available through a member typedef (see \ref sec_design_interface_typedef).
+
+  In return all containers provide a constructor that takes a representation
+  and a shape object and checks for their consistency.
+
+\subsection sec_design_interface_nobaseclass Decision against a base class to express common interface
+
+  This library contains different classes that provide common interfaces. For
+  example all aff::ConstArray, aff::Array, aff::Series and aff::ConstSeries
+  provide the necessary interface to be used together with aff::Iterator or
+  aff::Browser. A rather elegant way to express this commonality in a template
+  context is the Barton and Nackman trick. All containers that can work
+  together with aff::Iterater sould have to inherit from a class
+  aff::Iteratable. The base class is templated, takes the iteratable class as
+  template parameter and stores a reference to the instance of the iteratable
+  class. This way each iteratable class can be converted to aff::Iteratable,
+  which again returns a reference to the classes iteratable features in the
+  appropriate context.
+
+  This way of expressing common interfaces makes the whole classes more
+  complicated than necessary to provide their elementary functionality. We
+  have to store an extra reference to the leaf class object for each feature,
+  we will express this way. And we have to include a whole bunsch of extra
+  code for each feature. Since we prefer \ref sec_design_interface_sparse this
+  method was rejected.
+
+<HR>
+\section sec_design_threeclasses Three classes for one container
+
+  One container class like aff::Array or aff::Series is made up from its class
+  definition together with two other classes like the representation in
+  aff::SharedHeap and a shape like aff::Strided or aff::LinearShape.
+  Why not put all this functionality within one class like aff::Array?
+  -# aff::Array and aff::Series are class templates because they shall be
+     provided for any element type the user desires.
+     Consequently for each element type in use a separate instantiation of
+     this template class must be compiled.
+     The code describing the shape of the memory layout and the way index
+     values to raw memory have to be calculated is completely independent from
+     the element type of the container.
+     The shapes code can be compiled once for all template instantiations
+     needed.
+     For this reason it is efficient to provide this code in a separate class.
+  -# The containers in this library use reference counted pointers to raw
+     memory.
+     This way they share data in memory.
+     The default way to copy containers is a shallow copy, where only a
+     reference is copied (see \ref page_representation).
+     Using a seperate class aff::SharedHeap to handle these reference counted
+     pointers allows us to share memory between containers of different types,
+     i.e. an aff::Series<T> and an aff::Array<T>.
+
+<HR>
+\section sec_design_hierarchy Class hierarchy: member data vs. inheritance
+
+  Containers like aff::Array rely on functionality provided by other classes.
+  They are based on shapes like aff::Strided and memory representations like
+  aff::SharedHeap (see \ref page_representation).
+
+  \par An array isn't a shape. 
+    Thus it would look like better design to use shapes as member data.
+    We prefer, \b however, to derive privately from the shape classes. 
+    This hides them from the outside (apart from explicit access - 
+    see \ref sec_design_interface_internals).
+    At the same time we make use of using declarations to provide access to
+    member functions like aff::Strided::size() that make also sense as a member
+    of aff::Array.
+
+  \par An array is some kind of memory representation.
+    Thus it would look like proper design to derive an array from a
+    representation class.
+    We prefer, \b however, to use the memory representation as a private
+    member. 
+    We think of the representation as an individual and independent object
+    that can be passed (e.g.) from an aff::Array to and aff::Series.
+    Also due to the replication of the representation in aff::Array 
+    (see \ref sec_design_replicated) and the distinction between containers
+    that allow data modification and containers that allow only read access
+    this leads to a clearer design.
+    This is reflected by the conciseness of the array constructors.
+    Use the representation class as member data should introduce no runtime
+    overhead. 
+    The full class specification including member data is available at
+    compile-time. 
+    This should enable compilers to do excessive inlining.
+
+<HR>
+\section sec_design_replicated Replicated ConstSharedHeap 
+
+\subsection sec_design_replicated_fact Design decision
+  aff::Array has a member of type aff::SharedHeap (which is exposed to the
+  outside through aff::Array::representation), which itself inherits from
+  aff::ConstSharedHeap. 
+  At the same time aff::ConstArray has a member of type aff::Array and
+  inherits itself from aff::ConstSharedHeap (which is exposed to the outside
+  through aff::ConstArray::representation).
+  Thus the class aff::ConstSharedHeap is replicated in aff::Array and it
+  is not replicated by deriving from virtual base classes a virtual base
+  class.
+
+  The same applies to aff::Series and aff::ConstSeries.
+
+\subsection sec_design_replicated_problem Where is the problem?
+  Having an array object \c a declared
+  \code aff::Array<T> a; \endcode where \c T is any type, we want to pass this
+  object to a function that promises constness of the elements (see 
+  \ref sec_design_const). The function is thus declared
+  \code void func(const aff::ConstArray<T>&); \endcode
+  and we want to use it like
+  \code func(a) \endcode
+  Consequently we must offer a way to convert an
+  \code aff::Array<T>& \endcode
+  to an
+  \code aff::ConstArray<T>& \endcode
+  implicitely.
+  This is done by deriving aff::Array<T> publicly from aff::ConstArray<T>.
+
+  The memory representation is needed by both, aff::Array<T> and its base
+  class. Hence aff::ConstArray<T> has to inherit from the representation. It
+  would be natural for aff::ConstArray<T> to inherit from aff::ConstSharedHeap
+  only. However, since the derived aff::Array<T> needs full access to an
+  aff::SharedHeap<T> (to expose the representation to the outside), we might
+  tend to derive aff::ConstArray<T> from aff::SharedHeap<T> privately,
+  allowing only read access and conversion to aff::ConstSharedHeap.
+
+  Why is this a problem?
+  Consider the inside of the above function. We might know, that the columns
+  of the passed array contain seismogram waveforms. And we might like to
+  access them in an appropriate way (i.e. through an interface that provides
+  waveform operations), though just reading - not modifying - the data. Then
+  we would like to code something like
+  \code
+  template<class T>
+  void func(const aff::ConstArray<T>& a)
+  {
+    // cycle all seismograms
+    for (Tsubscript iseis=a.f(1); iseis<=a.l(1); iseis++)
+    {
+      // extract shape
+      aff::Strided shape(a.shape());
+      // collapse to waveform iseis
+      shape.collapse(1,iseis);
+      // create a time series
+      aff::ConstSeries<T> waveform(a.representation(),
+                            shape.size(), shape.first_offset());
+      // operate on time series (e.g. recursive filter)
+      some_waveform_operation(waveform);
+    }
+  }
+  \endcode
+
+  The above example requires that we can construct an aff::ConstSeries<T> from
+  an aff::ConstSharedHeap<T> (which is returned by
+  aff::ConstArray::representation). The same problem appears together with
+  aff::ConstArray, when creating a subarray or slice from an aff::ConstArray
+  with aff::subarray or aff::slice and aff::ConstArray itself knowing nothing
+  about slices, etc.
+
+  Constructing aff::ConstArray from an aff::ConstSharedHeap sounds a natural
+  operation. However, aff::ConstArray will ask for an aff::SharedHeap, if we
+  derive from aff::SharedHeap (as sketched above). Conclusion: aff::ConstArray
+  must use an aff::ConstSharedHeap only. At the same time we must hold
+  the full aff::SharedHeap together with the aff::Array object, since this must
+  return an aff::SharedHeap through aff::Array::representation to allow the
+  above operation (accessing data through aff::Series or constructing a
+  slice - see \ref sec_design_interface_sparse).
+
+\subsection sec_design_replicated_solution Solution
+  The most convincing solution (IMHO) to this problem is to use an
+  (additional) member of type aff::SharedHeap<T> in aff::Array<T> which
+  inherits from aff::ConstArray<T>.
+  In consequence aff::ConstSharedHeap<T> is then a replicated within
+  aff::Array<T>. For a proper design we might consider to make
+  aff::ConstSharedHeap a virtual base, thus avoiding member data duplication.
+  This would, however, introduce an extra level of indirection (additional to
+  the indirection when accessing the heap data through the pointer to the
+  aff::util::SHeap struct in aff::ConstSharedHeap). On the other hand, fully
+  replicating the base aff::ConstSharedHeap just adds one member data pointer
+  (the pointer to the aff::util::SHeap struct) to the data block in aff::Array
+  (which already contains many bytes from the aff::Strided base). This
+  overhead is not considered significant. 
+
+  \b But \b notice: We now must take care to synchronize the aff::SharedHeap
+  base of aff::Array and the aff::ConstSharedHeap base of aff::ConstArray
+  during construction. This is no major concern, but it is error-prone to some
+  degree. It is, however, much easier to keep them synchronous when using
+  member data instead of inheritance.
+
+<HR>
+\section sec_design_copy Copy constructor and copy operator
+  
+  Usually we would expect the copy operator and the copy constructor to have
+  the same semantics. Here the copy constructor of aff::Array must have
+  reference semantics (it does a shallow copy). This is necessary to allow
+  arrays as return values from functions. In this case the copy constructor is
+  automatically invoked. Reference semantics ensure a minimal overhead. in
+  terms of memory usage and execution time.
+
+  In the case of the copy (assignment) operator things are less clear: 
+  If we define the
+  copy operator to have reference semantics, it has the same behaviour as the
+  copy constructor. That is what we usually would expect. An expression like
+  \code
+  A=B;
+  \endcode
+  means that array \c A drops its reference to the memory location it was
+  pointing to and forgets its previous shape. Following this statement array
+  \c A will refer to the same memory location as array \c B and will have the
+  same shape. Both are indistinguishable.
+
+  However, in many cases (most cases?) we will use the copy (assignment)
+  operator in the
+  sense of a mathematical equation. This may read like
+  \code
+  A=B+C;
+  \endcode
+  although expressions like this are not yet supported by the library
+  features. In this case we do not mean that \c A should drop it reference. 
+  \c A may refer to an array in memory which is also referred by other array
+  instances. And we want these values to be set to the result of the operation
+  \c B + \c C. In that case the copy operator should have deep copy semantics.
+
+  \par Design decision
+  The classes aff::Array and aff::Series provide copy (assignment) operators
+  with shallow copy semantics. 
+  The automatically created copy constructor and copy operator do just right
+  for this.
+  This is sensible, because we are not offering mathematical array operations.
+  This operations may be delegated to a wrapper class in the future, which
+  then also may provide expression templates and an appropriate assignment
+  operator.
+
+<HR>
+\section sec_design_namespaces Namespaces
+
+  We group all code in two namespaces. Major modules which will be accessed by
+  the user are placed in namepsace aff. Modules meant to be used internally are
+  placed in aff::util.
+  Use directives like
+  \code
+  using namespace aff;
+  \endcode
+  or
+  \code
+  using aff::Array;
+  \endcode
+  for convenient access.
+
+<HR>
+\section sec_design_binary Binary library
+
+\note
+  The option to provide precompiled templates is finally removed from the
+  library. 
+\date 10/11/2010
+
+<HR>
+\section sec_design_multidimensional Multidimensional arrays
+
+  \todo
+  Explain Wolfgangs idea of multidimensional arrays.
+
+<HR>
+\section sec_design_const Notes on the const-correctness of arrays
+
+\subsection sec_design_const_problem Where is the problem?
+  When passing a container (i.e. an array) to a function, we would like to
+  promise that the values in the container are not modified, in case the
+  function uses only read-access. Consider a declaration
+  \code void func(const int& v) \endcode
+  of a function that takes and argument of type \c int an promises that this
+  will not be modified. Passing by reference is used, because this is more
+  efficient than passing by value (in particular for large objects - which is
+  not the case for \c int, but for an array).
+  And qualifying the type \c const promises that the
+  value passed by reference will not be changed.
+
+  A declaration
+  \code void func(const Array<int>& v) \endcode
+  does not what we want (see \ref sec_design_const_general). It just
+  promises the constness of the container, not of the data. Within the
+  function the passed reference may be assigned to a non-const \c Array<int>,
+  which allows modification of the data (see \ref page_representation).
+
+  Thus we must use something like
+  \code void func(const ConstArray<int>& v) \endcode
+  where \c ConstArray<int> does not allow modification of the data (be no
+  means - copying and conversions included) and may be derived from an 
+  \c Array<int> by a trivial conversion (like a conversion to a public base
+  class).
+
+\subsection sec_design_const_approach The approach used in this library
+
+  We distinguish between the constness of the array and the constness of the
+  elements. A definition
+  \code
+  aff::Array<int> A(12,12);
+  const aff::Array<int> B(A);
+  \endcode
+  means that array \c B is a constant array initialized to array \c A. This
+  means, that the container is constant. Its shape and reference may not be
+  changed.
+
+  If you want to define constness of the contained values (e.g. when passing
+  an array to a function), you have to use
+  \code
+  aff::ConstArray<int> C(A);
+  \endcode
+  which defines that the contents of \c C may not be changed (i.e. they are of
+  type \c const \c int. 
+  They are still refering to the same data in memory. 
+  If you modify data elements through \c A, this will be visible through \c C.
+
+  An array for elements of type \c T is derived from an array for elements of
+  type \c const \c T. 
+  Functions that only need read access to arrays should be declared like
+  \code
+  void func(const aff::ConstArray<int>& array);
+  \endcode
+  and may be called like
+  \code
+  aff::Array<int> A(12,12);
+  func(A);
+  \endcode
+  The type conversion from \code aff::Array<int> \endcode to 
+  \code const aff::ConstArray<int>& \endcode is trivial and has no runtime
+  overhead.
+
+  Each container class must deal with this issue on its own. Sorry...
+
+  \sa aff::ConstSharedHeap
+  \sa aff::ConstArray
+  \sa aff::ConstSeries
+
+\par Restrictions for containers with const qualifier
+  In 7/2005 we changed the design decision of not allowing data modification
+  through containers that are declared const.
+  Strictly distinguishing between constness of the container and constness of
+  the contained data allows to modify data through an object \c c that
+  was declared
+  \code const Array<int> c; \endcode
+  The containers in this library (aff::Array, etc.) allow data modification 
+  through instances declared const. This may appear surprising to users of the
+  library. However, since it is possible to create a copy of a const container
+  at any place and modifying the data through this copy, we would regard a
+  different behaviour as a false promise.
+
+  To ensure true constness of the data, you have to assign to the base class
+  of the container. 
+  Any container class (e.g. \c Cont) provides the type of container for const
+  elements through a typedef Tcontainer_of_const 
+  (i.e. \c Cont::Tcontainer_of_const) or short Tcoc.
+  Remember that a \c const \c aff::Array always
+  may be assigned to a mutable aff::Array, which in turn allows modification
+  of the data!
+
+\subsection sec_design_const_alternatives Alternatives
+
+  Three alternatives to this concept have been discussed (and discarded).
+  Both have the appealing property of needing only one class definition for
+  each container (in contrast to a class and a base class in our case).
+  Additionally both would offer name commonality for containers of non-const
+  elements and containers of const elements.
+
+\par Using arrays with element type const T
+  A rather straight approach is to use the element type \c const \c T
+  where an array of elements of type \c T should be used, that we do not allow
+  to be changed. This design concept can be accomplished with a special traits
+  class that is specialized for \c const \c T and allows to derive a mutable
+  or const version of any type. By further providing appropriate conversion
+  operators, an \code Array<T> \endcode could be converted to an
+  \code Array<const T>, \endcode both sharing the same elements in memory.
+  In this approach, however, both container classes are completely
+  independent (although having the same name) due to their different template
+  arguments. The conversion to the container for const elements is not a
+  trivial conversion (like for a reference to a reference of a public base
+  class) and must be done explicitely. That's inconvenient for the most common
+  use (i.e. passing a container to a function).
+
+\par Deriving from a template specialization
+  The name commonality could still be achieved by deriving the Array<T> from
+  template specialization Array<const T>. In this case the specialization must
+  be used as a base class before it is actually defined. That's improper
+  design.
+
+\par Ensuring constness of elements through const qualifier of functions
+  We could strictly follow the concept (as we do anyway to some extent) to
+  couple the constness of the container to the constness of the contained
+  data. This is done by const qualifiers to member functions that allow
+  modification of the data. To avoid pitfalls,
+  we have to consider copy operators
+  and copy constructors then too. Both must not promise const-ness to their
+  arguments. While this works in principle, we would end up with a container
+  class which doesn't allow copies of const instances. Hence we could not
+  return a container from a function, that ensures that the accessed data
+  cannot be modified.
+
+\subsection sec_design_const_general General considerations
+
+  Arrays using the shared heap representation have reference semantics.
+  Different instances will access the same data in memory. Copying an array
+  instance just copies a reference to the data. This mechanism is not obvious
+  to the compiler. The array instances are values in the sense of C++ types
+  and not references. Passing an \c const \c aff::Array to a function does
+  not prohibit the function from assigning this instance to a non-const
+  \c aff::Array, which then references the same memory area and allows the
+  modification of the values contained in the array.
+
+  Generally it has to be defined, what is meant by declaring an array instance
+  to be \c const. In the first place this means constness of the container to
+  the compiler. The compiler will ensure, that the container (array class) is
+  not changed, thus no data member of the array is changed. This means that
+  the array will keep the reference to the same data and that the
+  index-mapping defined by the array shape may not be changed. However, the
+  compiler will not prevent to change any data, the array refers to. 
+
+  We may define access operators that have a non-const version that returns a
+  reference to the data, allowing to change the data values together with a
+  const version that returns a value of const reference, thus preventing the
+  data from being changed through an instance that is declared const. However,
+  the compiler will always allow to create a non-const copy of a const array
+  instance. In the sense of const-ness of C++ data, this does not violate the
+  const-ness of the source of the copy. The shape of the original array may
+  not be changed. Only the shape of the copy may be changed. But the data of
+  the original array may now be changed through the copied instance, since our
+  array classes implicitly have reference semantic. Thus we have to
+  distinguish between const-ness of the container (array class instance) and
+  the contained data (values in memory the arrays refers to).
+
+  In this library we will not provide a const and a non-const version of the
+  array classes. With templated code it is more convenient to use an array
+  with element type \c const \c T as the const version of an array with
+  element type \c T. To allow conversion of an instance with element type \c T
+  to an instance of type \c const \c T, we use the version for elements of
+  type \c const \c T as a base classe.
+
+   -  The need of const-correctness is discussed in "Chapter 1 Introduction,
+      C++ Conventions, Implementation of Vector and Matrix Classes" of
+      "Numerical Recipes in C++". A link to a PDF file of this chapter is
+      provided at "http://www.nr.com/cpp-blurb.html".
+   - The "C++ FAQ Lite" discusses many aspects of const-correctness in Chapter
+     18, which you find at
+     "http://www.inf.uni-konstanz.de/~kuehl/cpp/cppfaq.htm/const-correctness.html".
+   -  You may find my thoughts about const-correctness with containers that
+      have reference semantics at
+      "http://www.geophysik.uni-frankfurt.de/~forbrig/txt/cxx/tutorial/consthandle.doc/doc/html/index.html".
+
+*/
+
+/*======================================================================*/
+
+/*! \page page_using HOWTO use this library
+
+  Contents of this page:
+  - \ref sec_using_constructor
+  - \ref sec_using_examples
+
+\section sec_using_constructor Constructing arrays
+  Arrays are most easy constructed by means of the aff::Shaper.
+  If you want e.g. define an array \c A of element type int with Fortran
+  layout, three dimensions and the index ranges [-2:2], [1:4], and [6:10] you
+  have to code
+  \code
+  using namespace aff;
+  Array<int> A(Shaper(-2,2)(4)(6,10));
+  \endcode
+  The shaper is presented in aff/shaper.h.
+
+\section sec_using_examples Example code
+  Specific usage examples:
+  - examples/arraytest.cc
+
+  The test programs may serve as examples for using this library:
+  - tests/arraytest.cc
+  - tests/shapetest.cc
+  - tests/reprtest.cc
+  - tests/simplearraytest.cc
+
+\todo
+We need more text and examples.
+
+*/
+
+
+/*======================================================================*/
+
+/*! \page page_naming Naming conventions
+
+  Contents of this page:
+  - \ref sec_naming_identifiers
+  - \ref sec_naming_macros
+  - \ref sec_naming_files
+
+\section sec_naming_identifiers Classes, Typedefs, etc.
+
+  During coding it is sometimes helpfull to recognize the meaning of an
+  identifier due to some signals in irs name. Therefor the following
+  guidelines are used. The nameing of template parameters is left free for
+  convenience.
+
+  \par Classes
+   
+  Class names always start with a capital letter.
+
+  \par Typedefs
+
+  Typedefs always start with a capital \c T.
+
+  \par Member data
+
+  Member data identifiers always start with a capital \c M.
+
+\section sec_naming_macros Preprocessor macros
+
+  Preprocessor macros like include-guards should have the prefix "AFF_".
+  The macros in the \ref group_helpers are an exception to this rule.
+
+\section sec_naming_files Filenames
+
+  Files with the extension \c .cc contain only non-template definitions. Files
+  with the extension \c .h may contain prototypes, class declarations or
+  template code. Files ending on \c def.h contain template code definitions
+  that is factored out to be compilable into a binary library for explicit
+  instantiation.
+
+  The main directory %aff contains headers that are usually included by the
+  user. A subdirectory %aff/lib contains additional headers that are mostly
+  used internally.
+
+*/
+
+/*======================================================================*/
+
+/*! \page page_array_layout Array layout
+ 
+  The array class template aff::Array uses the shape class aff::Strided.
+  Usually and in particular when constructed by using aff::Shaper,
+  aff::Strided uses a Fortran like column-major layout in memory.
+  aff::FortranArray and aff::util::FortranShape are provided to interface
+  Fortran code with such kind of arrays.
+  Nevertheless aff::Array together with aff::Strided is able to address a
+  row-major C like memory layout too.
+  Classes to interface raw memory arrays are presented in Carray.h.
+
+  By definition the first index \f$ i \f$ on a two-dimenional matrix 
+  \f$ A_{ij} \f$ as represented by the array
+  \c A(i,j) is the row index while the second index \f$ j \f$ is the
+  column index.
+  If elements of the two-dimensional matrix or array are arranged in linear
+  computer memory, there are two options:
+
+  \section sec_array_layout_column_major Column major layout
+
+  When traversing the linear representation in memory byte by byte in
+     increasing address order the elements of the first column in order of
+     increasing row index are passed first.
+     Next the elements of the second column are passed in increasing row order
+     and so forth.
+     When labelling the array elements in linear memory, the first index
+     varies quicker than the second index of the array if the elements are
+     traversed in increasing address order.
+     This is called the "column major order" and is the usualy layout of
+     Fortran arrays.
+
+  Column major layout is described in detail at
+  http://en.wikipedia.org/wiki/Row-major_order#Column-major_order
+
+  \section sec_array_layout_row_major Row major layout
+
+  When traversing the linear representation in memory byte by byte in
+     increasing address order the elements of the first row in order of
+     increasing column index are passed first.
+     Next the elements of the second row are passed in increasing column order
+     and so forth.
+     When labelling the array elements in linear memory, the second index
+     varies quicker than the first index of the array if the elements are
+     traversed in increasing address order.
+     This is called the "row major order" and is the usualy layout of
+     C arrays.
+
+  Row major layout is described in detail at
+  http://en.wikipedia.org/wiki/Row-major_order#Row-major_order
+ 
+  \todo
+  Provide details on indexing raw memory in both layouts here.
+ */
+
+// ----- END OF doxygen.txt ----- 

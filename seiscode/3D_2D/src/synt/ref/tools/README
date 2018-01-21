@@ -1,0 +1,84 @@
+this is <README>
+============================================================================
+Reflectivity tools
+============================================================================
+
+Programs in this directory are tools and utilities to support seismogram
+synthesis using the reflectivity method.
+
+available programs:
+===================
+programs marked as "inactive" currently are not maintained
+
+ makesrc.f (inactive)
+   produces synthetic source time functions like the Müller-Brüstle wavelet
+   and writes the resulting time series to a file
+
+ momte.f
+   calculate moment tensor elements from strike, rake, and slip given for an
+   earthquake
+
+ queko.f
+   calculate epicentral distance and backazimuth for source and receiver
+   coordinates given in geographical coordinates on the sphere
+
+ refmet control files for global seismology
+ ------------------------------------------
+ cmt2refmet.f
+   reads CMT file describing a CMT solution for global earthquakes and
+   produces a source file with moment tensor to be used in refmet
+
+ rcvgen.f
+   produce a refmet receiver control file from a given source coordinate and
+   a set of station coordinates in geographical coordinates on the sphere
+
+ reflectivity expansion coefficients
+ -----------------------------------
+ amppg.f (inactive)
+   plot expansion coefficients calculated by refmat
+
+ matls.f (inactive)
+   dump layout of expansion coefficient file produced by refmat
+
+ reamp.f (inactive)
+   reads a coefficient file, which probably has to be produced by refmat,
+   and stores the values in a different format after some reflectivity
+   processing - honestly, I do not remember the purpose of this program
+  
+ earth model file manipulation
+ -----------------------------
+ chopmod.f (inactive)
+   reads an earth model file in GEMINI (Friederich and Dalkolmo, 1995) format,
+   applies a flat earth approximation and produces an appropriate
+   approximation by a model of discrete homogeneous layers
+
+ flamop.f
+   plots a flat earth model produced by chopmod
+
+ flamops.f
+   reads a flat earth model file and plots the equivalent spherical
+   earth model
+
+ gem2asc.f (inactive)
+   reads an earth model file in the GEMINI (Friederich and Dalkolmo, 1995)
+   format and produces an ASCII table of model parameters as output
+
+ gemmodpg.f
+   reads an earth model file in the GEMINI (Friederich and Dalkolmo, 1995)
+   format and produces a plot of model parameter curves
+
+ modrecipes.f
+   convert refmet earth model files between different recipes of defining
+   viscoelastic model parameters (see Forbriger and Friederich, 2005)
+
+References
+==========
+
+  Forbriger, T. and Friederich, W., 2005. A proposal for a consistent
+    parametrization of earth models. Geophys. J. Int., 162, 425-430.
+
+  Friederich, W. and Dalkolmo, J., 1995. Complete synthetic seismograms for a
+    spherically symmetric earth by a numerical computation of the Green's
+    function in the frequency domain. Geophys. J. Int., 122, 537-550.
+
+----- END OF README ----- 

@@ -1,0 +1,33 @@
+this is <README>
+============================================================================
+EMOD  --- earth model library 
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+libemod is a collection of Fortran 77 functions and subroutines to handle
+seismological Earth models or subsurface models. The library provides
+subroutines to read subsurface models in different text file formats.
+Additionally, the library provides function to apply a flat-earth-
+approximation as published by G. Mueller, 1977, J. Geophys., 42, 429-43
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+
+make all             installs headers, binary libraries and documentation
+
+Dependencies
+------------
+
+  external dependencies: -
+  internal dependencies: -
+
+----- END OF README ----- 

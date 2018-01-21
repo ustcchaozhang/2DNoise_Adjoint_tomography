@@ -1,0 +1,97 @@
+this is <README>
+============================================================================
+synt/misc: miscellaneous programs for time series synthesis
+============================================================================
+
+Most programs provide output in Stuttgart File Format (SFF). Three programs
+are also available with alternatively linked binary executables providing all
+data formats supported by libdatrwxx:
+dispfieldx, lambx, and siggenx
+
+Physical simulation of seismic wave propagation
+-----------------------------------------------
+lamb        Synthetic seismograms as solution to Lamb's problem (1904)
+
+Response of simple oscillatory systems to a transient force
+-----------------------------------------------------------
+coupledoscillators      Two coupled mass-spring oscillators
+hamres      Standard linear solid 
+kette       Chain of coupled mass-spring systems
+
+Demonstration of signal properties
+----------------------------------
+modeinterference  Demonstrate the effect of interference of surface wave modes
+      with different wave number at a given freqeuncy
+phasedsignals     Demonstrate the effect of the phase spectrum for signals
+      with identical amplitude spectrum    
+
+Multi-offset test wavefield
+---------------------------
+dispfield   Test wavefield with ad hoc dispersion
+planefield  Test wavefield of harmonic (single frequency) plane waves
+teswf       Non-dispersive transient signal with given slowness
+
+Test signal generators
+----------------------
+siggen      Provides a variety of fully adjustable test signals
+tesiff      Provides a fixed set of test signals with adjustable sampling
+
+============================================================================
+
+Installation
+------------
+
+For compilation instructions see README.md and INSTALL.md in the root
+directory.
+
+The Makefile supports program compilation and linking. Some binary libraries
+are required. 
+
+The command
+  make all
+will compile and install the binary executables as well as the doxygen
+documentation.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+  LOCLIBDIR           defines location of binary libraries
+  LOCINCLUDEDIR       defines location of C/C++ header files (prototypes)
+  LOCBINDIR           defines location of binary executables
+  TF_WWWBASEDIR       defines location of doxygen output
+
+Dependencies:
+  Compilers required to build the programs:
+    Fortran compiler
+    C++ compiler
+    C/C++ preprocessor
+    doxygen (required to process source code documentation)
+
+  external libraries/packages needed to compile the code
+    PGPLOT (libpgplot)
+    liblapack:      linear algebra package
+    libblas:        basic linear algebra functions
+    libgsl:         GNU scientific library (libgsl, libgslcblas)
+    The header files for these libraries are required as well. Under OpenSuSE
+    you have to install the respective devel packages.
+  
+  Seitosh libraries required to compile the code:
+    libaff
+    libdatrwxx
+    libfapidxx
+    libgsexx
+    libsff
+    libsffu
+    libsffxx
+    libtf
+    libtime (libtime, libtime++)
+
+============================================================================
+
+The home of this software suite is
+https://git.scc.kit.edu/Seitosh/Seitosh
+subdirectory src/synt/misc
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+----- END OF README ----- 

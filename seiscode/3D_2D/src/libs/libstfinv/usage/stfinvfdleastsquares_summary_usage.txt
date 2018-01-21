@@ -1,0 +1,11 @@
+# this is <stfinvfdleastsquares_summary_usage.txt>
+# ----------------------------------------------------------------------------
+#
+Procedure: Least squares in the frequency domain
+------------------------------------------------
+Find optimal correction filter by waterlevel-deconvolution in the Fourier
+domain (i.e. least squares with regularization).
+
+Options and parameters:
+  waterlevel=l  waterlevel to be applied for regularization.
+# ----- END OF stfinvfdleastsquares_summary_usage.txt ----- 

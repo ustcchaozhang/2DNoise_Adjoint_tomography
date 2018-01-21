@@ -1,0 +1,295 @@
+this is <README>
+============================================================================
+Toy examples and test cases for lisousi
+---------------------------------------
+
+This subdirectory contains test cases used by Forbriger et al. (2014). The
+processing of the test cases is controlled by make (see Makefile).
+Step-by-step examples are given at the end of this file. 
+
+Synthetic waveforms are calculated with the reflectivity method (Fuchs and
+Müller, 1971; Müller, 1985) as implemented by Ungerer (1990) and as provided
+by the program refmet in Seitosh. Several refmet control files are provided in
+this subdirectory. Their purpose can be displayed by
+
+  make reportcontrol
+
+The subsurface model biet000601.mod was derived by inversion from field data
+as described by Forbriger (2003a,b)
+
+In order to produce results for the test cases, other programs from Seitosh
+are required as well.
+
+The plots used by Forbriger et al. (2014) can be reproduced by
+
+  make all
+
+Their names are defined in the Makefile variable PUBPLOTS:
+  bietCR.pdf bietCZ.pdf bietmodcol.pdf bietmod.pdf bietRpcol.pdf bietR.pdf
+  bietZpcol.pdf bietZ.pdf fullspacecol.pdf fullspace.pdf
+
+As simple test cases they are quite inefficient. A huge amount of receivers
+(500 receivers per profile) are simulated in order to provide an appropriate
+dataset for the Fourier Bessel transformation. Since lisousi applies
+transformations to each receiver seperately, a significantly smaller amount of
+receivers would be sufficient to test its operation.
+
+Sparse receiver array test cases are provided by the following plot targets:
+  biet.zforce.sparse.Z.pdf
+  biet.zforce.sparse.R.pdf
+  fs.zforce0.sparse.Z.pdf
+
+Makefiles
+---------
+Makefile
+  Master Makefile which includes the others
+
+Makefile.model
+  Definition of subsurface model format conversion
+
+Makefile.synthetics
+  Calculation of synthetic test data
+
+Makefile.filter
+  Definition of time series filters
+
+Makefile.FourierBessel
+  Definition of line-source simulation by Fourier-Bessel transformation
+
+Makefile.SingleTraceTransformation
+  Definition of line-source simulation single-trace approaches
+
+Makefile.tests
+  Definition of very specific test cases (e.g. for debugging)
+
+Makefile.residuals
+  Calculations of residuals with respect to reference solution
+
+Makefile.plots
+  Waveform plots for comparison of results for different approaches
+
+References
+----------
+
+Forbriger, T., 2003a. Inversion of shallow-seismic wavefields: I. Wavefield
+transformation. Geophys. J. Int., 153, 719-734.
+(doi:10.1046/j.1365-246X.2003.01929.x)
+
+Forbriger, T., 2003b. Inversion of shallow-seismic wavefields: II. Inferring
+subsurface properties from wavefield transforms. Geophys. J. Int., 153,
+735-752. (doi: 10.1046/j.1365-246X.2003.01985.x)
+
+Forbriger, T., 2014. Line source simulation.
+http://www.opentoast.de/Data_analysis_code_lisousi.php
+
+Forbriger, T., L. Groos, M. Schäfer, 2014. Line-source simulation for
+shallow-seismic data. Part 1: theoretical background. Geophys. J. Int.,
+198(3), 1387-1404. (doi: 10.1093/gji/ggu199)
+
+Fuchs, K. and Müller, G., 1971. Computation of Synthetic Seismograms with the
+Reflectivity Method and Comparison with Observations. Geophys. J. R. astr.
+Soc., 23(4), 417-433.
+
+Müller, G., 1985. The reflectivity method: a tutorial, J. Geophys., 58,
+153-174.
+        
+Schäfer, T., M., L. Groos, T. Forbriger, T. Bohlen, 2014. Line-source simulation
+for shallow-seismic data. Part 2: full-waveform inversion — a synthetic 2-D
+case study. Geophys. J. Int., 198(3), 1405-1418. (doi: 10.1093/gji/ggu171)
+
+Ungerer, J., 1990. Berechnung von Nahfeldseismogrammen mit der
+Reflektivitätsmethode, Diplomarbeit, Institut für Geophysik der Universität
+Stuttgart.
+
+=============================================================================
+Step-by-step example
+====================
+
+The sparse receiver array test cases can be run manually by the following
+steps:
+
+Test-case Bietigheim:
+---------------------
+
+1. Create subsurface model in file format required by refmet
+
+     mocon P biet000601.mod biet000601.dmod
+
+2. Calculate synthetic seismograms for a vertical line force
+
+     refmetx -v -4 -c -o biet.zforce.sparse -ty ascii -l \
+       biet.zforce.sparse.main
+
+3. Swap sign of signals of vertical component, rename radial component file
+
+     printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+       biet.zforce.sparse.LZ.ascii biet.zforce.sparse.TZ 
+     /bin/mv -fv biet.zforce.sparse.TR biet.zforce.sparse.LR.ascii 
+
+4. Calculate synthetic seismograms for a vertical point force
+
+     refmetx -v -4 -c -o biet.zforce.sparse -ty ascii biet.zforce.sparse.main
+
+5. Swap sign of signals of vertical component, rename radial component file
+
+     printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+       biet.zforce.sparse.PZ.ascii biet.zforce.sparse.TZ 
+     /bin/mv -fv biet.zforce.sparse.TR biet.zforce.sparse.PR.ascii 
+
+Transformation of vertical component data:
+
+6. Apply direct wave transformation to vertical component
+
+     lisousi -v -o -type ascii -Type ascii -limitlength \
+       -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10. \
+         biet.zforce.sparse.PZ.LS.ascii \
+         biet.zforce.sparse.PZ.ascii
+
+7. Apply reflected wave transformation to vertical component
+
+     lisousi -v -o -type ascii -Type ascii -sqrttaper -velocity 0.18 \ 
+       -limitlength -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10. \
+         biet.zforce.sparse.PZ.LSP.ascii \
+         biet.zforce.sparse.PZ.ascii
+
+8. Apply single velocity transformation to vertical component
+
+     lisousi -v -o -type ascii -Type ascii -fredomain -velocity 0.18 \
+       biet.zforce.sparse.PZ.LSG.ascii \
+       biet.zforce.sparse.PZ.ascii
+
+9. Plot vertical component
+
+     refractx -d biet.zforce.sparse.Z.ps/vcps \
+       -C -Eg -Sm 2 -Se 1.1  -Sa 1. -Sc 100. \
+       -Sn  -St -0.0,0.7 -ty ascii -Lc -Sx -5.,105. -Ts 1.0 -TL 1 \
+       -Si -Ta "true amplitudes scaled by (offset/1m)\u1.1\d" -TR \
+       -Tt "1D testcase Bietigheim; vertical component"\
+          biet.zforce.sparse.LZ.ascii o:0.0 s:4,1,10 r:0.6,0.6,0.6 b:F \
+            n:"line source (reference)" o:0.0 \
+          biet.zforce.sparse.PZ.LS.ascii o:-2.0 s:2,1,4 r:0.,0.0,1.00 \
+            n:"direct wave" o:0.0 \
+          biet.zforce.sparse.PZ.LSG.ascii o:-4.0 s:5,1,2 r:0.,0.59,0.58 \
+            n:"single velocity"  o:-1.0 \
+          biet.zforce.sparse.PZ.LSP.ascii o:-6.0 s:6,1,2 r:0.82,0.55,0.01 \
+            n:"reflected wave" o:-2.0 
+
+Transformation of radial component data:
+
+10. Apply direct wave transformation to radial component
+
+      lisousi -v -o -type ascii -Type ascii -limitlength \
+        -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10. \
+        biet.zforce.sparse.PR.LS.ascii \
+        biet.zforce.sparse.PR.ascii
+
+11. Apply reflected wave transformation to radial component
+
+      lisousi -v -o -type ascii -Type ascii -sqrttaper -velocity 0.18  \
+        -limitlength -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10. \
+        biet.zforce.sparse.PR.LSP.ascii \
+        biet.zforce.sparse.PR.ascii
+
+12. Apply single velocity transformation to radial component
+
+      lisousi -v -o -type ascii -Type ascii -fredomain -velocity 0.18 \
+        biet.zforce.sparse.PR.LSG.ascii \
+        biet.zforce.sparse.PR.ascii
+
+13. Plot vertical component
+
+      refractx -d biet.zforce.sparse.R.ps/vcps \
+         -C -Eg -Sm 2 -Se 1.1 -Sa 1.0 -Sc 100. \
+         -St 0.,0.7 -ty ascii -Lc -Sx -5.,105. -Ts 1.0 -TL 1\
+         -Ta "true amplitudes scaled by (offset/1m)\u1.1\d" -TR \
+         -Tt "1D testcase Bietigheim; radial component"\
+           biet.zforce.sparse.LR.ascii o:0.0 s:4,1,10 r:0.6,0.6,0.6 b:F \
+             n:"line source (reference)" o:0.0 \
+           biet.zforce.sparse.PR.LS.ascii o:-2.0 s:2,1,4 r:0.,0.0,1.00 \
+             n:"direct wave" o:0.0 \
+           biet.zforce.sparse.PR.LSG.ascii o:-4.0 s:5,1,2 r:0.,0.59,0.58 \
+             n:"single velocity"  o:-1.0 \
+           biet.zforce.sparse.PR.LSP.ascii o:-6.0 s:6,1,2 r:0.82,0.55,0.01 \
+             n:"reflected wave" o:-2.0 
+
+Test-case homogeneous full space:
+---------------------------------
+
+1. rename subsurface model
+
+      /bin/cp -vpd fullspace.d.mod fullspace.dmod
+
+2. Calculate synthetic seismograms for a vertical line force
+
+      refmetx -v -4 -c -o fs.zforce0.sparse -ty ascii -l fs.zforce0.sparse.main
+
+3. Rename vertical component file
+
+      /bin/mv -fv fs.zforce0.sparse.TZ fs.zforce0.sparse.LZ.inv.ascii 
+
+4. Calculate synthetic seismograms for a vertical point force
+
+      refmetx -v -4 -c -o fs.zforce0.sparse -ty ascii fs.zforce0.sparse.main
+
+5. Swap sign of signals of vertical component
+
+      printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+        fs.zforce0.sparse.PZ.ascii fs.zforce0.sparse.TZ 
+
+Transformation of vertical component data:
+
+6. Apply direct wave transformation to vertical component
+   and swap sign of result
+
+      lisousi -v -o -type ascii -Type ascii -limitlength \
+        -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10.  \
+        fs.zforce0.sparse.PZ.LS.ascii \
+        fs.zforce0.sparse.PZ.ascii
+
+      printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+        fs.zforce0.sparse.PZ.LS.inv.ascii \
+        fs.zforce0.sparse.PZ.LS.ascii
+
+7. Apply reflected wave transformation to vertical component
+   and swap sign of result
+
+      lisousi -v -o -type ascii -Type ascii -sqrttaper -velocity 1. \
+        -limitlength -integ 0.5 -tapdel 0.00625 -pad 2 -tapslo 10. \
+        fs.zforce0.sparse.PZ.LSP.ascii \
+        fs.zforce0.sparse.PZ.ascii
+
+      printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+        fs.zforce0.sparse.PZ.LSP.inv.ascii \
+        fs.zforce0.sparse.PZ.LSP.ascii
+
+8. Apply single velocity transformation to vertical component
+   and swap sign of result
+
+      lisousi -v -o -type ascii -Type ascii -fredomain -velocity 1. \
+        fs.zforce0.sparse.PZ.LSG.ascii \
+        fs.zforce0.sparse.PZ.ascii
+
+      printf "fac  -1.\nend\n" | tidofi -v -o -cs -type ascii -Type ascii \
+        fs.zforce0.sparse.PZ.LSG.inv.ascii \
+        fs.zforce0.sparse.PZ.LSG.ascii
+
+9. Plot vertical component
+
+      refractx -d fs.zforce0.sparse.Z.ps/vcps -C -Eg -Sm 2 -Se 0.5 \
+        -Sa 8.0 -Sc 100. -TL 1 -Ts 1.2 \
+        -Fp lzline.pck -Ep T \
+        -Sn  -Sr 1. \
+        -St -0.03,0.045 -ty ascii -Lc -Sx -5.,115. \
+        -Ta "true amplitudes scaled by (offset/1m)\u0.5\d   v\dred\u=1. km/s" \
+        -Tx "reduced time / s" -TR \
+        -Tt "homogeneous full space testcase"\
+          fs.zforce0.sparse.LZ.inv.ascii o:0.0 s:4,1,10 r:0.6,0.6,0.6 b:F \
+            n:"line source (reference)" o:0.0 \
+          fs.zforce0.sparse.PZ.LS.inv.ascii o:-2.0 s:2,1,4 r:0.,0.0,1.00 \
+            n:"direct wave" o:0.0 \
+          fs.zforce0.sparse.PZ.LSG.inv.ascii o:-4.0 s:5,1,2 r:0.,0.59,0.58 \
+            n:"single velocity"  o:-1.0 \
+          fs.zforce0.sparse.PZ.LSP.inv.ascii o:-6.0 s:6,1,2 r:0.82,0.55,0.01 \
+            n:"reflected wave" o:-2.0 
+
+----- END OF README ----- 

@@ -1,0 +1,11 @@
+# this is <usage/stfinv_summary_usage.txt>
+# ----------------------------------------------------------------------------
+# 
+STFINV -- create and apply a source wavelet correction filter
+=============================================================
+
+Purpose
+-------
+Create and apply a source wavelet correction filter for full-waveform
+inversion of field data.
+# ----- END OF usage/stfinv_summary_usage.txt ----- 

@@ -1,0 +1,256 @@
+this is <README.compile>
+============================================================================
+How to compile the source code
+============================================================================
+
+In order to compile and install programs provided by Seitosh you have to
+make the following preparations:
+ 1. install required compilers and utilities
+ 2. install required external software libraries
+ 3. set environment variables appropriately
+ 4. compile and install by running 
+ 
+    src/compile.sh install doc clean
+
+See also https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc/installation
+
+On OpenSuSE systems the shell script contrib/utilities/checklibs.sh can be
+used to check for required packages.
+
+Required compilers and utilities
+================================
+  Please have a look at
+  https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc/systems
+  for recommended versions of compilers and utilities.
+
+  To compile the binary programs you need
+  - make                preferrably gmake (GNU variant of make)
+  - C compiler          preferrably gcc (GNU C compiler)
+  - C++ compiler        preferrably gcc (GNU C++ compiler)
+  - Fortran compiler    preferrably gfortran (GNU Fortran compiler)
+  - f2c compiler with libraries
+
+  To produce source code documentation in html files you need doxygen.
+
+Fortran compiler notes
+----------------------
+  Some programs link Fortran code against C code and vice versa. These require
+  the f2c compiler and its library.
+
+  Recommended compiler flags for gfortran are:
+  -ff2c -Wall -ffixed-line-length-0 -fno-backslash
+
+  The options -ff2c and -fno-backslash have to be used consistently for
+  libraries and main programs.
+
+  Notice that *all* code must be compiled with the -ff2c option set, to
+  ensure proper interlanguage linking. -ff2c in first place causes all
+  Fortran functions to return doublereal values even if they are declared
+  real.
+
+  The code relies on gfortran to produce f2c-compatible interfaces. Other
+  Fortran compilers are not guaranteed to work properly with code provided
+  here.
+
+  f2c.h typedefs are provided in other header files appropriately for 64bit
+  systems (see below). This can conflict with code, which includes f2c.h
+  additionally.
+
+  On 64bit systems Fortran "integer" has to be typedef to "int" not to 
+  "long int", since integer has to be 4 bytes long to be consistent with the
+  standard in binary i/o. In the traditional f2c.h "integer" is typedef to
+  "long int", making integer values 8 bytes long on 64bit systems.
+  Meanwhile this should be fixed in most distributions of libf2c.
+
+Required external software libraries
+====================================
+  Modules of Seitosh link against several non-standard software libraries.
+  A few modules may require static versions of these libraries. All modules
+  required header files (providing C code prototypes). With OpenSuSE header
+  files are provided in separate so-called "devel"-packages.
+
+  Required libraries are:
+  - boost         http://www.boost.org/
+  - LAPACK        http://www.netlib.org/lapack/
+  - BLAS          http://www.netlib.org/blas/
+  - GLS           http://www.gnu.org/software/gsl/
+  - FFTW3         http://www.fftw.org/
+  - PGPLOT        http://www.astro.caltech.edu/~tjp/pgplot/
+    (PGPLOT in turn requires the X11 header files, provided in the X11
+    development package)
+
+  OpenSuSE offers all of them except PGPLOT as precompiled packages. Other
+  Linux distributions will do as well. See contrib/pgplot/README.pgplot
+  for installation instructions for PGPLOT or visit
+  https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc/PGPLOT  
+
+  When compiling the PGPLOT library you must use the same Fortran compiler you
+  use for the other code and in particular pass the options -ff2c and
+  -fno-backslash to the the gfortran compiler. See
+  https://git.scc.kit.edu/Seitosh/Seitosh/wikis/doc/PGPLOT  
+  for assistance.
+
+Required environment variables in Makefiles
+===========================================
+  The behaviour of the Makefiles is controlled by environment variables. It is
+  most suitable to set their values in $HOME/.profile or $HOME/.bashrc
+  See the file contrib/SeitoshBashrc provided together with the source code.
+
+  Environment variables are required to 
+  - define where header files shall be installed and can be found afterwards
+  - define where binary libraries shall be installed and can be found
+    afterwards
+  - define where compiled binaries shall be installed
+  - define compilers to be used
+  - define compiler and linker options
+  - define a destination directory for source code documentation
+  - define your preferred html browser
+
+Recommended settings
+--------------------
+  
+  export LOCBINDIR=$HOME/bin
+    Compiled and linked binaries will be moved to this directory. If you
+    include this directory in the setting of your PATH variable, you will have
+    easy access to the binary executable from within any working directory.
+  
+  export LOCSCRIPTDIR=$HOME/bin/scripts
+    Shell scripts will be copied to this directory. If you include this
+    directory in the setting of your PATH variable, you will have easy access
+    to the shell scripts from within any working directory.
+
+  export LOCLIBDIR=$HOME/lib
+    Libraries will be copied to this directory. Makefiles pass this
+    directory to the linker in order to link against these binary libraries.
+
+  export LOCINCLUDEDIR=$HOME/include
+    Header files will be installed in this directory. The Makefiles
+    pass this directory to the preprocessor to search for header files.
+
+  SERVERLIBDIR
+    If libraries that are needed by this code (like PGPLOT) are installed in
+    an uncommon system directory, you can use this variable to pass the
+    location to the linker. This can be a colon-separated list of directories.
+
+  SERVERINCLUDEDIR
+    If header files that are needed by this code (like cpgplot.h) are installed
+    in an uncommon system directory, you can use this variable to pass the
+    location to the preprocessor. This can be a colon-separated list of
+    directories.
+
+  LD_LIBRARY_PATH
+    If you install external dynamic libraries (e.g. PGPLOT) in an uncommon
+    place, you might have to set LD_LIBRARY_PATH to pass the location of the
+    dynamic library (e.g. libpgplot.so) to the dynamic linker. See man-page
+    ld.so(8)
+
+  export TF_WWWBASEDIR=$HOME/doxydoc
+    C++ libraries usually are distributed together with a set of documentation
+    files that are automatically created by doxygen from the source code. The
+    resulting HTML files or man-pages will be installed in this place by the
+    Makefile. The Makefiles create subdiretories to distinguish different
+    packages.
+
+  export TF_BROWSER=firefox
+    The Makefiles support the display of doxygen documentation with your html
+    browser. Use this variable to pass the name of the browser to the
+    Makefile.
+
+  export TF_LINK_FORTRAN=-lgfortran
+    This variable is required when C or C++ programs must be linked against
+    Fortran libraries. It defines the linker option for interlanguage linking.
+    If you use g77, you will have to link against libg2c.a here (use -lg2c
+    then instead of -lgfortran).
+    
+  export TF_LINK_PGPLOT="-lpgplot -lX11 -L/usr/X11/lib -L$PGPLOT_DIR"
+    This variable is required for all programs making use of graphical output
+    through the PGPLOT library. It is passed to the linker in cases where
+    binaries have to be linked against PGPLOT. Use this variable to pass the
+    location of your X11 libraries as well as the names of additional
+    libraries that might be needed for the PGPLOT drivers in your installation
+    (like libpng.a by adding -lpng for example).
+    In case you are in doubt regaring additional libraries, the makefile in
+    your PGPLOT installation directory can be helpful. The variable PGPLOT_LIB
+    in the makefile contains settings required in TF_LINK_PGPLOT too.
+    TF_LINK_PGPLOT should additionally contain the X11 library (variable LIBS
+    in the PGPLOT makefile) and the path to your PGPLOT installation
+    directory (as provided by variable PGPLOT_DIR).
+
+  The following variables will be used in Makefiles in addition:
+    CXX       name of C++ compiler command
+    CC        name of C compiler command
+    FC        name of Fortran compiler command
+    CPP       name of C preprocessor command
+
+  The following variables are used in Makefiles to control preprocessor,
+  compiler and linker::
+    FLAGS     general flags (will be appended to other flag variables)
+    CFLAGS    flags to C compiler
+    FFLAGS    flags to Fortran compiler
+    CPPFLAGS  flags to preprocessor
+    CXXFLAGS  flags to C++ compiler
+    LDFLAGS   flags to linker
+
+Compilation and installation
+============================
+  The shell script src/compile.sh runs make in all relevant subdirectories of
+  src in turn. It uses a sepcific, mandatory order. In particular the
+  libraries in src/libs must be installed first and must be installed in
+  appropriate order. This is controlled by src/libs/Makefile.
+  
+  To install Seitosh run
+
+    src/compile.sh install doc clean --pause
+
+  or issue
+
+    src/compile.sh --help
+
+  to receive usage information.
+
+  It is recommended to install Seitosh completely. If you intend to install
+  only parts of Seitosh and to ommit some of the libraries, please consult
+  README.dependencies to understand how libraries depend on each other.
+  Further information regarding library dependencies are provided in README
+  files within the individual source code directories.
+
+Libraries
+---------
+  Some of the libraries are provided as dynamic libraries too. In case you
+  recompile a dynamic library from an updated source code package, your
+  already linked binary executables might fail. Currently the packages to not
+  properly distinguish different versions of dynamic libraries of the same
+  package. It is safe to reinstall the binary executables of packages which
+  use the library after updating the library from a new source code package.
+
+  For repository users:
+  ---------------------
+  Most libraries are available from subdirectory src/libs in the repository.
+  Just call 'make install' or 'make reinstall' in this subdirectory.
+
+  Libraries available from other places are:
+    libgremlin1xx.a
+      in subdirectory src/green/gremlin1/cxx
+    librefread.a
+      in subdirectory src/synt/ref/refmet
+    libginmod.a, libgindat.a, libgininv.a, libginpar.a, libginpg.a, libgin.a,
+      libginres.a
+      in subdirectory src/green/gremlin1/libs
+
+References
+==========
+  doxygen: www.doxygen.org
+  PGPLOT: www.astro.caltech.edu/~tjp/pgplot/
+  f2c: Netlib, http://www.netlib.org/f2c/
+
+  https://git.scc.kit.edu/Seitosh/Seitosh
+  https://git.scc.kit.edu/Seitosh/Seitosh/wikis/home  
+
+If you experience any problem, when compiling the code, please contact:
+--
+| Dr. Thomas Forbriger      e-mail: Thomas.Forbriger@kit.edu
+| Observatorium Schiltach (BFO), Heubach 206, D-77709 Wolfach, Germany,
+| Geophysikalisches Institut, Karlsruher Institut für Technologie (KIT)
+| Tel.: ++49 (0)7836/2151, Fax.: ++49 (0)7836/955240
+| http://www.gpi.kit.edu/BFO.php
+----- END OF README.compile ----- 

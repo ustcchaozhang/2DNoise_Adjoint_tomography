@@ -1,0 +1,11 @@
+# this is <.gitignore>
+# ============================================================================
+# files to be ignored by git
+# ============================================================================
+# grepg
+# -----
+#
+# temporary setting of array dimensions
+grepg_ardim.xxx.inc
+# 
+# ----- END OF .gitignore ----- 

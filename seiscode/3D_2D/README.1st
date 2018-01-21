@@ -1,0 +1,29 @@
+this is <README.1st>
+============================================================================
+Introduction to Seitosh
+============================================================================
+
+The home of Seitosh is https://git.scc.kit.edu/Seitosh/Seitosh
+
+General information of relevance is provided in the following files:
+
+README.md
+  Introduction to Seitosh in markdown wiki format
+
+INSTALL.md
+  General installation guidelines in markdown wiki format
+
+README.history
+  Information regarding the history of the source code collection
+
+src/README
+  Overview of the software collection
+
+src/README.compile
+  Compilation instructions
+
+contrib/pgplot/README.pgplot
+  Instructions for the installation of PGPLOT which is required by software
+  components producing graphical output
+
+----- END OF README.1st ----- 

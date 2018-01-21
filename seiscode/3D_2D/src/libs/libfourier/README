@@ -1,0 +1,46 @@
+this is <README>
+============================================================================
+FOURIER --- Fourier coefficients library
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+The library provides modules to perform Fourier transformations and to 
+operate on Fourier transforms.An interface to FFTW is available.Signal 
+filters can be defined by their Fourier domain response function and applied 
+to the Fourier transform of a signal. libaff is used to store Fourier 
+coefficients and time series samples.Further stuff will be collected in 
+this library in the future.
+
+Binary libraries
+----------------
+ libfourier.a         Fortran library
+ libfourierxx.a               C++ library
+
+Dependencies
+------------
+ libaff is required to compile the binary libraries
+ fftw3 is required for the C++ library
+ doxygen is required to process source code documentation
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+  TF_WWWBASEDIR   Defines the path to your personal homepage. That's the
+                  place where doxygen output will be written too (see
+                  in the Makefile).
+
+make all             installs headers, binary libraries and documentation
+
+
+Detailed documentation is provided through libfourier.doc (fortran code) 
+and doxygen source code. See target doxydoc in the Makefile.
+
+----- END OF README ----- 

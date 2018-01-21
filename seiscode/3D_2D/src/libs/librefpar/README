@@ -1,0 +1,43 @@
+this is <README>
+============================================================================
+librefpar: read reflectivity parameter files
+--------------------------------------------
+libs/librefpar
+============================================================================
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+librefpar reads parameter files used to configure the reflectivity program
+refmet. Some of these files are used by other programs too. For this reason
+the file reading subroutines are provided separate from the refmet code in
+this library. Until 24/09/2014 the code was part of the refmet package.
+
+Installation
+------------
+ environment variables:
+  LOCINCLUDEDIR   Defines the path where header files will be copied for
+                  usage in your own projects. You will pass this path to
+                  the precompiler with the -I option.
+  LOCLIBDIR       Defines the path where the binary library will be
+                  placed.
+
+make all             installs headers, binary libraries and documentation
+
+See also README.compile
+
+Dependencies
+------------
+
+  external dependencies: -
+  internal dependencies: -
+
+============================================================================
+
+The home of this software is https://git.scc.kit.edu/Seitosh/Seitosh
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+----- END OF README ----- 

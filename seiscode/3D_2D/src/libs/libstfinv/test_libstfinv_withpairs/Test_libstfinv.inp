@@ -1,0 +1,14 @@
+#---------- PARAMETER FILE FOR TEST_LIBSTFINV ---------- 
+#-------------------------------------------------------
+name_of_file_containing_observed_data_(FILE_OBS) = DENISE_y.su.shot1_observed
+name_of_file_containing_synthetic_data_(FILE_SYN) = DENISE_y.su.shot1_synt
+number_of_traces_in_FILE_OBS_and_FILE_SYN_(ntr) = 41
+#
+filename_for_convolved_data_(FILE_CONV) = test_conv_seismos.su
+filename_for_source_wavelet_(FILE_STF) = test_stf.su
+#
+parameter_(stfinv_par) = fdlsq:tshift=0.0
+#
+name_of_file_containing_additional_timeserie_(FILE_ADD) = synt_wavelet_32Hz.su
+# FILE_ADD is only implemented for single traces 
+name_of_file_containing_convolved_additional_timeserie_(FILE_ADD_CONV) = synt_wavelet_conv.su

@@ -1,0 +1,41 @@
+this is <README.status>
+============================================================================
+status of the library
+=====================
+
+General library
+---------------
+Both, C++ and C API are implemented and operational.
+
+Currently available engines:
+    ident: identity: just apply a scalar factor
+    fdlsq: least squares in the frequency domain
+
+Fourier domain least squares engine (fdlsq)
+-------------------------------------------
+class       stfinv::STFEngineFDLeastSquares
+  Operates in the Fourier domain.
+  Status: Implemented and fully operational.
+ 
+Engine to find a finite, causal source time-history in time domain
+------------------------------------------------------------------
+class       stfinv::STFEngineFiniteCausal
+  Status: Not yet implemented
+ 
+Engine to provide a fixed wavelet (fix)
+---------------------------------------
+class       stfinv::STFEngineFixedWavelet
+  Status: Not yet implemented
+ 
+Engine to apply a scalar factor (ident)
+---------------------------------------
+class       stfinv::STFEngineIdentity
+  Status: Implemented and fully operational.
+ 
+Normalization engine
+--------------------
+class       stfinv::STFEngineNormalize
+  Operates in the Fourier domain.
+  Status: Implemented, not yet tested 
+
+----- END OF README.status ----- 

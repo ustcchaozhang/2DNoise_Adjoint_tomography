@@ -1,0 +1,17 @@
+# this is <.gitignore>
+# ============================================================================
+# files to be ignored by git
+# --------------------------
+# files in src/libs/libstfinv
+# ---------------------------
+#
+# source code documentation
+*.doc
+*usage.cc
+*usage.h
+#
+# binary executables of programs in test directory
+tooltest
+onlinehelp
+# 
+# ----- END OF .gitignore ----- 

@@ -1,0 +1,73 @@
+# this is <Makefile.tijerasxx>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2012 by Thomas Forbriger (BFO Schiltach) 
+# 
+# test cases for tijerasxx
+#
+# ----
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version. 
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# ----
+#
+# 
+# REVISIONS and CHANGES 
+#    13/12/2012   V1.0   Thomas Forbriger
+# 
+# ============================================================================
+#
+
+all: tijerasxx.ps
+
+BNFLAGS=
+
+BN=tijerasxx
+
+BND=2012/12/12
+
+BNDT=0.05
+$(BN).asc: 
+	siggenx 1 $@ -ot ascii -o -T 2. -d $(BNDT) -f 0.5
+$(BN).m.asc: $(BN).asc
+	egrep -v 'date:' $< > $@
+$(BN).1.asc: $(BN).m.asc
+	any2any -verb -over -itype ascii:date=$(BND) -otype ascii $@ $^
+$(BN).2.asc: $(BN).m.asc
+	any2any -verb -over -itype ascii:date=$(BND)/0/0/3 -otype ascii $@ $^
+$(BN).3.asc: $(BN).m.asc
+	any2any -verb -over -itype ascii:date=$(BND)/0/0/6 -otype ascii $@ $^
+
+$(BN).bin: $(BN).1.asc $(BN).2.asc $(BN).3.asc
+	any2any -verb -over -itype ascii -otype bin $@ $^
+
+BNOP=--verb --over -iformat bin -oformat bin -DEB $(BNFLAGS)
+$(BN)t1.bin: $(BN).bin
+	tijerasxx $(BNOP) --samplesf=20 -samplesd=15 $@ $<
+$(BN)t2.bin: $(BN).bin
+	tijerasxx $(BNOP) --secondsf=0.4 -secondsd=0.2 $@ $<
+$(BN)t3.bin: $(BN).bin
+	tijerasxx $(BNOP) --datesf=2012/12/12/0/0/3.50\
+	  --datesl=2012/12/12/0/0/6.00 --datesd=0/0/0/0.2 $@ $<
+
+BNPOPS=n:"%F %T" sf:1.1
+$(BN).ps: $(BN).bin $(BN)t1.bin $(BN)t2.bin $(BN)t3.bin
+	stuploxx -dev $@/ps \
+	  -title="tijerasxx test; dt=$(BNDT)s" -tstitle=0.6 \
+	  -labr -labe -labh 0.13 \
+	  $(word 1,$^) p:1 f:bin $(BNPOPS) \
+	  $(word 2,$^) p:2 f:bin $(BNPOPS) \
+	  $(word 3,$^) p:3 f:bin $(BNPOPS) \
+	  $(word 4,$^) p:4 f:bin $(BNPOPS)
+
+# ----- END OF Makefile.tijerasxx ----- 

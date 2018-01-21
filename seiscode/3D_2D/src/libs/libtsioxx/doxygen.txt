@@ -1,0 +1,104 @@
+/*! \file doxygen.txt
+ * \brief Documentation of libtfxx
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 27/01/2014
+ * 
+ * Copyright (c) 2013 by Thomas Forbriger (BFO Schiltach) 
+ *
+ * ----
+ * The conv/many suite is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * REVISIONS and CHANGES 
+ *  - 27/01/2014    Thomas Forbriger (thof)
+ * 
+ * ============================================================================
+ */
+
+/*! \mainpage 
+
+\copyright Copyright (c) 2013 by Thomas Forbriger (BFO Schiltach)
+\author Thomas Forbriger
+\since January 2014
+\date January 2014 
+
+\section main_aims Aims
+\subsection main_sub_purpose Purpose
+
+This library is based on libtsxx which provides tools and utilities for time
+series analysis and processing which refer to a given sampling interval of the
+time series. libtsxx for this reason provides a ts::TimeSeries class template,
+for objects storing sample values along with the sampling interval. The
+current library (libtsioxx) inherits from this template to provide a
+ts::sff::SFFTimeSeries class template for objects storing sample values along
+with full qualified SFF headers (stored in ts::sff::TraceHeader objects) and
+which are valid ts::TimeSeries objects at the same time.
+
+Based on ts::sff::SFFTimeSeries libtsioxx provides ts::sff::TraceVector which
+publically inherits from the STL vector and provides an object to store
+several ts::sff::SFFTimeSeries objects. This, together with
+ts::sff::FileHeader, is used to compile the class template ts::sff::File,
+which is able to store complete data files.
+
+Further libtsioxx provides input/output operators for the above mentioned
+classes to be read from or written two libdatrwxx streams. Reading functions
+wich provide a rangelist selection for input traces are provided too.
+
+At the highest level of complexity, classes ts::sff::SFile and ts::sff::DFile
+are provided together with file reading functions. These classes are meant to
+store a complete set of data files as defined on the command line of
+application programs together with file specific parameters. A set of such
+files can be stored in ts::sff::TSFileList and ts::sff::TDFileList objects,
+which basically are typedefs referring to the STL list container. File input
+for these objects is supported for reading from libdatrwxx input streams.
+
+\subsection main_sub_interfaces Interfaces
+  \par \c sfftimeseries.h:
+    ts::sff::SFFTimeSeries class template
+  \par \c sfftsfile.h:
+    ts::sff::File class template
+  \par \c inputoperators.h, \c outputoperators.h:
+    input and output operators for ts::sff::SFFTimeSeries and ts::sff::File
+  \par \c SFFoutputoperators.h:
+    deprecated output operators to SFF files (still provided for backward
+    compatibility)
+  \par \c cmdlinefiles.h:
+    ts::sff::SFile and ts::sff::DFile and reading functions
+
+\section main_history History
+
+These modules previously were implemented in libtsxx and libtfxx.
+They produced a mutual dependency between both libraries which was
+undesirable.
+The modules are now separated into this library which in turn now depends on
+both, libtsxx and libtfxx.
+Namely 
+ - libtsxx/sffheaders.h,
+ - libtsxx/sffheaders.cc,
+ - libtfxx/readtsdata.h, and
+ - libtfxx/readtsdata.cc
+.
+have moved.
+
+Some modules presented in sffheaders.h date back to a pre-libdatrwxx era.
+They should be replaced by more up-to-date functionality.
+These modules (\ref group_SFFoutputoperators)
+are moved to SFFoutputoperators.h.
+
+*/
+
+// ----- END OF doxygen.txt ----- 

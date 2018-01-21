@@ -1,0 +1,36 @@
+this is <COPYING>
+============================================================================
+Reflectivity tools
+============================================================================
+
+Copyright (c) 1990 by Joachim Ungerer (IfG Stuttgart)
+Copyright (c) 1995, 1999 by Jörg Dalkolmo
+Copyright 1996, 1997, 1999, 2003, 2010, 2011, 1013, 2015 by Thomas Forbriger
+
+The reflectivity code by Joachim Ungerer
+is put into the public domain by Erhard Wielandt:
+http://www.software-for-seismometry.de/software/refseis/
+
+The gemini-2.2 package by Jörg Dalkolmo is publicly available at
+http://www.spice-rtn.org/library/software/GEMINI.html
+
+Programs in this directory are tools and utilities to support seismogram
+synthesis using the reflectivity method.
+
+--
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+--
+
+----- END OF COPYING ----- 

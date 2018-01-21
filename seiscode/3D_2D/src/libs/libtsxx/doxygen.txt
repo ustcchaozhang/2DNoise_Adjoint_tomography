@@ -1,0 +1,76 @@
+/*! \file libtsxx/doxygen.txt
+ * \brief C++ time series modules (implementation)
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 13/03/2011
+ * 
+ * C++ time series modules (implementation)
+ * 
+ * Copyright (c) 2011 by Thomas Forbriger (BFO Schiltach) 
+ *
+ * ----
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * REVISIONS and CHANGES 
+ *  - 13/03/2011   V1.0   Thomas Forbriger (thof)
+ *  - 18/07/2013   V1.1   tmetz (renamed file)
+ *  - 28/01/2014          (thof) make a note regarding change in API
+ * ============================================================================
+ */
+
+/*! \mainpage
+ *
+ * \author Thomas Forbriger
+ * \date 20/05/2015
+ * \since 2003
+ *
+ * This library provides modules for time series analysis.
+ * In particular this are functions that also need seismic trace header data
+ * (like the sampling interval) additional to the time series samples
+ * themselves.
+ * Provided are recursive filters (i.e. an interface to seife), FIR decimating
+ * filters, interpolation filters, tapers, containers for time series data
+ * together with header data, and more.
+
+
+   \section mainpage_sec_header Header Files
+     - anyfilter.h
+     - convolve.h
+     - correlate.h
+     - debug.h
+     - dropcontainer.h
+     - filterbase.h
+     - filter.h
+     - firfilters.h
+     - innerproduct.h
+     - ipo.h
+     - ipolin.h
+     - ovtaper.h
+     - random.h
+     - seifeclass.h
+     - seifexx.h
+     - tapers.h
+     - tsxx.h
+
+\note
+     The interface provided in sffheaders.h an associated files were moved to
+     libtsioxx in order to disentangle libtsxx and libtfxx.
+     (thof, 28/01/2014)
+ */
+
+/* ----- END OF doxygen.txt ----- */

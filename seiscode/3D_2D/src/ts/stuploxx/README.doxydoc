@@ -1,0 +1,24 @@
+/*! \file README.doxydoc
+\verbatim
+this is <README.doxydoc>
+============================================================================
+This is part of the doxygen documentation
+============================================================================
+\endverbatim
+*/
+
+/*! \mainpage
+
+\author Thomas Forbriger
+\date August 2008
+\since January 2007
+\version V0.8
+
+Specific pages:
+- \ref page_structures
+- \ref page_processing
+- \ref page_notes
+
+*/
+
+----- END OF README.doxydoc ----- 

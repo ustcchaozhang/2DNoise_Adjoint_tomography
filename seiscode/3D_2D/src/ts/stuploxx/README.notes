@@ -1,0 +1,35 @@
+/*! \file README.flow
+\verbatim
+this is <README.notes>
+============================================================================
+some notes
+============================================================================
+\endverbatim
+*/
+
+/*! \page page_notes Some notes regarding the design of stuploxx
+
+\todo
+  stuplo::PanelTime should provide a proper reference for the selected
+    range. This reference should be used such that the first day label is no
+    larger than 1d on the axis.
+
+\todo
+  stuplo::PanelTime usage should be such that the reference time label is
+    properly updated at each plot update.
+
+\section sec_design_data Design of data structures
+
+Classes that hold data (\ref subsec_datacontainers) are separated from such
+classes that do the actual graphical output (\ref subsec_plotters). Since data
+can be associated to the panels and each panel will require its plotter, this
+might cause some confusion.
+
+\ref stuplo::globalsettings is a global variable.
+
+\ref stuplo::Scaling is not used as a global variable, but can be used through
+a handle \ref stuplo::THScaling.
+
+*/
+
+----- END OF README.notes ----- 

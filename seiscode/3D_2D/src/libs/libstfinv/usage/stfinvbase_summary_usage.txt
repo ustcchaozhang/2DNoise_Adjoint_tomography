@@ -1,0 +1,10 @@
+# this is <stfinvbase_summary_usage.txt>
+# ----------------------------------------------------------------------------
+#
+Common control parameters
+-------------------------
+Options and parameters in common for all procedures:
+  verbose       produce verbose output (if implemented)
+  DEBUG=l       produce debug output with level l
+  exp=k         apply offset dependent weights to signals
+# ----- END OF stfinvbase_summary_usage.txt ----- 

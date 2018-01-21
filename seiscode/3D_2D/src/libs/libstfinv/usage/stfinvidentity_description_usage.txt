@@ -1,0 +1,15 @@
+# this is <stfinvidentity_description_usage.txt>
+# ----------------------------------------------------------------------------
+#
+Procedure: Scale with amplitude factor
+--------------------------------------
+This procedure does not modify the waveform of the synthetic data. It
+convolves the signales with a discrete delta pulse so to speak. Optionally the
+synthetics are scaled with an amplitude factor such that the weighted average
+signal energy of all traces in the scaled synthetics equals that of the
+recordings. Offset dependent weights are applied in this case. The
+appropriately scaled discrete delta pulse is returned as correction filter.
+
+Options and parameters:
+  scaleenergy   if flag is set: scale energy
+# ----- END OF stfinvidentity_description_usage.txt ----- 

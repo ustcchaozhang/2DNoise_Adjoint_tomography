@@ -1,0 +1,73 @@
+this is <README>
+============================================================================
+green/disan
+programs to calculate wavefield transforms and for dispersion analysis
+============================================================================
+
+this directory contains the following programs:
+
+greda:          dispersion analysis, wavefield transformation
+grereso:        resolution analysis for wavefield transformation
+gabor:          group traveltime analysis, Gabor matrix
+phadi:          classical dispersion analysis using Fourier phases only
+hivgabor:       calculate H/V from gabor output
+hivexpanco:     claculate H/V from Fourier Bessel coefficients
+
+corresponding binaries being able to read SU and other formats:
+gaborx, phadix, gredax
+
+============================================================================
+
+Installation:
+
+For installation instructions see INSTALL.md in the root directory or
+the projects wiki at
+https://git.scc.kit.edu/Seitosh/Seitosh/wikis/home
+
+The Makefile supports program compilation and linking. Some binary libraries
+are required. 
+
+The command
+  make all
+will compile and install the binary executables as well as the documentation.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+  LOCLIBDIR           defines location of binary libraries
+  LOCINCLUDEDIR       defines location of C/C++ header files (prototypes)
+  LOCBINDIR           defines location of binary executables
+  TF_WWWBASEDIR       defines location of doxygen output (used by some libraries)
+
+libraries/packages needed to compile the code
+
+extern libraries/packages needed to compile the code
+  PGPLOT
+  liblapack:      linear algebra package
+  libblas:        basic linear algebra functions
+  libgsl:         GNU scientific library
+
+Seitosh libraries required to compile the code:
+  libsff:         package containing libsff.a
+  libtime:        package containing libtime.a
+  libtf:          package containing libtf.a
+  libts:          package containing libts.a
+  libsffu:        package containing libsffu.a
+  you can obtain the latter packages from where you obtained the present code
+
+to link binaries able to read SU data additional libraries are required:
+  libfapidxx.a
+  libdatrwxx.a
+  libsffxx.a
+  libgsexx.a
+  libtime++.a
+  libaff.a
+   
+============================================================================
+
+The home of this software suite is
+https://git.scc.kit.edu/Seitosh/Seitosh/blob/master/src/green/disan
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+----- END OF README ----- 

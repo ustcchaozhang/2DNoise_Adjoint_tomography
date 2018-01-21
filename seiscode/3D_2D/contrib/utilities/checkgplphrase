@@ -1,0 +1,17 @@
+#!/bin/bash
+# this is <checkgplphrase>
+# ----------------------------------------------------------------------------
+# 
+# Copyright (c) 2014 by Thomas Forbriger (BFO Schiltach) 
+# 
+# check whether GPL phrase is present in source code files
+# 
+# REVISIONS and CHANGES 
+#    19/01/2014   V1.0   Thomas Forbriger
+# 
+# ============================================================================
+#
+grep -c "GNU General Public License" \
+  $(find . -name \*.c -o -name \*.f -o -name \*.cc -o -name \*.h -o -name \*akefil\* -o -name README) \
+  | egrep -v ":3$" | grep -v "svn-base" 
+# ----- END OF checkgplphrase ----- 

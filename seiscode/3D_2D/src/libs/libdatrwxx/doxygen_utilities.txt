@@ -1,0 +1,54 @@
+/*! \file doxygen_utilities.txt
+ * \brief describe utilities provided in internal functions (documentation)
+ * 
+ * ----------------------------------------------------------------------------
+ * 
+ * \author Thomas Forbriger
+ * \date 23/06/2016
+ * 
+ * describe utilities provided in internal functions (documentation)
+ * 
+ * Copyright (c) 2016 by Thomas Forbriger (BFO Schiltach) 
+ * 
+ * REVISIONS and CHANGES 
+ *  - 23/06/2016   V1.0   Thomas Forbriger
+ * 
+ * ============================================================================
+ */
+
+/*! \page page_utilities Internal utilities
+
+  \tableofcontents
+
+  \note
+    This page is still under construction.
+
+  \section sec_util_formatmodifiers Format modifiers
+
+    \sa \ref group_formatmodifiers
+
+  \section sec_util_datatypes Data types
+
+    \sa \ref datrw::datatypes
+    \sa datatypes.h
+
+  \section sec_util_properties Properties
+
+    \sa \subpage page_properties
+    \sa \ref group_properties
+
+  \section sec_util_bytesex Bytesex
+
+    \sa \ref group_bytesex
+
+  \section sec_util_error Error handling
+
+    \sa \ref group_error
+
+  \section sec_util_reservoir Time series reservoir
+
+    \sa reservoir.h
+
+ */
+
+/* ----- END OF doxygen_utilities.txt ----- */

@@ -1,0 +1,72 @@
+this is <README>
+============================================================================
+Reflectivity method by Joahim Ungerer (1990) - utility library
+============================================================================
+
+This subdirectory contains utility functions for the program refmet
+(Reflectivity method implemented by Joahim Ungerer). Some of these functions
+(primarily file i/o functions) are also by other programs. They are provided
+through library librefread.a
+
+Source code in this subdirectory:
+(Check Makefile for functions included in librefread.a)
+
+usage texts for main programs
+  sub/refmat_basinf.f
+  sub/refmet_basinf.f
+  sub/refmet_comments.f (included from librefpar)
+  sub/refmet_intro.f    (included from librefpar)
+  sub/refmet_preptrace.f
+  sub/resus_basinf.f
+  sub/resusnoise_basinf.f
+
+Fortran interface to C Bessel functions
+  sub/lmath.c
+
+Time series output functions
+  sub/refmet_output.f
+  sub/refmet_wtrace.f
+
+Functions to read configuration files
+  sub/refmet_rmain.f
+
+  sub/refmet_rmod.f     (included from librefpar)
+  sub/refmet_rrcv.f     (included from librefpar)
+  sub/refmet_rsource.f  (included from librefpar)
+
+On 24/09/2014 some of the source files (as indicated above) were moved to a
+dedicated library package called librefpar.
+
+============================================================================
+
+Installation
+------------
+
+This software is part of the project Seitosh. See README.1st in the root
+directory of the collection or https://git.scc.kit.edu/Seitosh/Seitosh for
+general installation instructions.
+
+The Makefile supports program compilation and linking. Some binary libraries
+are required.
+
+The command
+  make all
+will compile and install the binary executables.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+  LOCLIBDIR           defines location of binary libraries
+
+Dependencies:
+  Compilers required to build the programs:
+    Fortran compiler
+
+============================================================================
+
+The home of this software suite is
+https://git.scc.kit.edu/Seitosh/Seitosh/tree/master/src/synt/ref/refmet
+
+Please send bug reports and suggestions to
+Thomas.Forbriger@kit.edu
+
+----- END OF README ----- 

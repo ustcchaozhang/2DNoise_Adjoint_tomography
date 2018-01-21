@@ -61,19 +61,9 @@ program data_misfit
 
         write(filename, "(a)") trim(output_dir)//'/misfit/all_misfit'
         OPEN (IOUT, FILE=trim(filename),status='unknown',POSITION='APPEND')
-        write(IOUT,'(i,f15.5,5f15.5)') iter,step_length,misfit_cur_f2,misfit_cur_f3,misfit_cur_f4,misfit_cur_f5,misfit_cur
+        write(IOUT,'(i,f15.5,5f15.5)') iter,step_length,misfit_cur_f2
         close(IOUT)
 
-
-        write(filename, "(a)") trim(output_dir)//'/misfit/mean_data_misfit_hist_detail'
-        OPEN (IOUT, FILE=trim(filename),status='unknown',POSITION='APPEND')
-        write(IOUT,'(i,f15.5,4f15.5)') iter,step_length,misfit_cur_mean2,misfit_cur_mean3,misfit_cur_mean4,misfit_cur_mean5
-        close(IOUT)
-
-        write(filename, "(a)") trim(output_dir)//'/misfit/std_data_misfit_hist_detail'
-        OPEN (IOUT, FILE=trim(filename),status='unknown',POSITION='APPEND')
-        write(IOUT,'(i,f15.5,6f15.5)') iter,step_length,misfit_cur_std2,misfit_cur_std3,misfit_cur_std4,misfit_cur_std5,misfit_cur_std6,misfit_cur_std7
-        close(IOUT)
 
 
         ! check search status 

@@ -1,0 +1,126 @@
+this is <README>
+============================================================================
+The Seitosh libraries
+============================================================================
+
+These libraries are provided within project Seitosh. See
+https://git.scc.kit.edu/Seitosh/Seitosh
+for general installation instructions.
+
+Actively maintained libraries
+=============================
+
+  libaff:
+    A lightweight container for numbers. 
+  libdatrwxx:
+    C++ seismic data I/O for multiple file formats. 
+  libemod:
+    Earth model library. 
+  libfapidxx:
+    Fortran SFF API to data I/O streams in C++. 
+  libfourier:
+    C++ library to operate on Fourier transforms. 
+  libgrrefsub:
+    Reflectivity Method. 
+  libgsexx:
+    C++ code to handle the GSE data format. 
+  liblinearxx:
+    C++ interface to use LAPACK with libaff arrays. 
+  libpgplot++:
+    C++ interface to PGPLOT. 
+  librheology:
+    Rheology library. 
+  libseife:
+    seismic waveform filters 
+  libserialxx:
+    C++ hacks to access a serial port. 
+  libsff:
+    Read and write seismic data in Stuttgart File Format (SFF). 
+  libsffu:
+    Some little helpers for SFF data manipulation. 
+  libsffxx:
+    C++ code to read and write SFF data. 
+  libstfinv:
+    Remove the source time function in waveform inversion. 
+  libtf:
+    TF utilities. 
+  libtfxx:
+    Miscellaneous, frequently used C++ classes and modules. 
+  libtime:
+    Date and time calculation. 
+  libts:
+    Some small functions for time series analysis. 
+  libtsioxx:
+    Time series input/output. 
+  libtsxx:
+    C++ code for time series filters. 
+  libttsynt:
+    TTSYNT —- synthetic traveltimes for dipping refractors 
+  librefpar:
+    Read reflectivity parameter files
+  libwrefsub:
+    Synthetics Fourier-Bessel expansion coefficients for models with water
+    layer
+
+
+Issues of library configuration
+===============================
+Standard make targets
+---------------------
+Makefiles in the library subdirectories and the master Makefile in
+trunk/src/libs provide the following targets:
+
+all
+    installs header files, the binary libraries and documentation 
+install
+    just install the header files and binary libraries 
+install-include
+    just install the header files 
+reinstall
+    reinstall header files and binary libraries by removing old versions of
+    the header files first 
+doc
+    create documentation files where available (this should also call the
+    doxydoc target, which is currently [Jan 2011] not yet the case) 
+doxydoc
+    create and install doxygen documentation where available 
+clean
+    removes all local intermediate files (like binary object files or
+    dependency lists)
+
+Documentation
+-------------
+Documentation for C++ libraries is produced by doxygen. Makefiles are
+configured accordingly. The resulting documentation is published at
+http://gpitrsvn.gpi.uni-karlsruhe.de/~tforb/doc/.
+
+Installation
+------------
+For installation of the libraries the environment must be setup appropriately.
+See README.compile for details.
+
+Environment variables control where the results are stored and where
+libraries and library header files are expected:
+
+  LOCLIBDIR           defines location of binary libraries
+  LOCINCLUDEDIR       defines location of C/C++ header files (prototypes)
+  LOCBINDIR           defines location of binary executables
+  TF_WWWBASEDIR       defines location of doxygen output
+
+Dependencies:
+-------------
+Compilers required to build the libraries:
+  C++ compiler
+  C/C++ preprocessor
+  Fortran 77 compiler
+  doxygen (required to process source code documentation)
+
+Some libraries depend on other to be already installed. The order of
+installation matters for this reason. See README.dependencies for details.
+
+Further details
+---------------
+The subdirectories contain library specific README files. Check them for
+further details.
+
+----- END OF README ----- 

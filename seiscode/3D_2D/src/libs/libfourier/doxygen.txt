@@ -1,0 +1,137 @@
+/*! \file libfourier/doxygen.txt
+ * \brief C++ library to operate on Fourier transforms (libfourierxx)
+ *
+ * ----------------------------------------------------------------------------
+ * 
+ * Copyright (c) 2002 by Thomas Forbriger (IMG Frankfurt) 
+ * 
+ * C++ library to operate on Fourier transforms (libfourierxx)
+ *
+ * ----
+ * libfourier is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ----
+ * 
+ * REVISIONS and CHANGES 
+ *  - 02/10/2007   V1.0   Thomas Forbriger (started README)
+ *  - 18/07/2013   V1.1   tmetz (renamed file)
+ * ============================================================================
+ */
+
+/*! \mainpage
+\author Thomas Forbriger
+\since 2002
+
+The library provides modules to perform Fourier transformations and to operate
+on Fourier transforms.
+An interface to FFTW is available.
+Signal filters can be defined by their Fourier domain response function and
+applied to the Fourier transform of a signal.
+libaff is used to store Fourier coefficients and time series samples.
+Further stuff will be collected in this library in the future.
+  
+*/
+
+/*======================================================================*/
+
+/*! \page page_fftw3 Scaling of Fourier transform in FFTW3
+ *
+ * \section sec_fftw3_library Fourier transformation in the FFTW3 library
+ *
+ * The FFTW3 reference
+ * http://www.fftw.org/fftw3_doc/The-1d-Discrete-Fourier-Transform-_0028DFT_0029.html#The-1d-Discrete-Fourier-Transform-_0028DFT_0029
+ * tells:
+ * \verbatim
+ * 4.8.1 The 1d Discrete Fourier Transform (DFT)
+ *
+ * The forward (FFTW_FORWARD) discrete Fourier transform (DFT) of a 1d complex
+ * array X of size n computes an array Y, where:
+ *
+ *   Y_k = sum_{j=0}^{n-1} X_j exp(-2i pi j k / n)
+ * 
+ * The backward (FFTW_BACKWARD) DFT computes:
+ *
+ *   X_k = sum_{j=0}^{n-1} Y_j exp(+2i pi j k / n)
+ *
+ * FFTW computes an unnormalized transform, in that there is no coefficient in
+ * front of the summation in the DFT. In other words, applying the forward and
+ * then the backward transform will multiply the input by n.
+ *
+ * From above, an FFTW_FORWARD transform corresponds to a sign of -1 in the
+ * exponent of the DFT. Note also that we use the standard in-order output
+ * orderingthe k-th output corresponds to the frequency k/n (or k/T, where T
+ * is your total sampling period). For those who like to think in terms of
+ * positive and negative frequencies, this means that the positive frequencies
+ * are stored in the first half of the output and the negative frequencies are
+ * stored in backwards order in the second half of the output. (The frequency
+ * -k/n is the same as the frequency (n-k)/n.) 
+ * \endverbatim
+ *
+ * The forward transform is:
+ * \f[
+ *   Y_k = \sum_{j=0}^{n-1} X_j e^{-i 2 \pi \frac{j k}{n}}
+ * \f]
+ *
+ * The backward transform is:
+ * \f[
+ *   X_k = \sum_{j=0}^{n-1} Y_j e^{i 2 \pi \frac{j k}{n}}
+ * \f]
+ *
+ * \section sec_fftw3_integral_transform Integral transform scaling
+ *
+ * The Fourier transform presented here is scaled to represent the Fourier
+ * integral transform pair
+ * \f[
+ *   \tilde{s}(\omega) = \int\limits_{-\infty}^{+\infty}
+ *     s(t)\,e^{-i\omega t}\frac{\textrm{d}\omega}{2\pi}
+ *                     = \int\limits_{0}^{N\Delta t}
+ *     s(t)\,e^{-i\omega t}\frac{\textrm{d}\omega}{2\pi}
+ * \f]
+ * with \f$s(t)=0\f$ for \f$t<0\f$ and \f$t>T=N\Delta t\f$
+ * and
+ * \f[
+ *   s(t) = \int\limits_{-\infty}^{+\infty}
+ *     \tilde{s}(\omega)\,e^{i\omega t}\,\textrm{d}t
+ *        = \int\limits_{-\pi/(N\Delta t)}^{+\pi/(N\Delta t)}
+ *     \tilde{s}(\omega)\,e^{i\omega t}\,\textrm{d}t
+ * \f]
+ * with \f$\tilde{s}(\omega)=0\f$
+ * for \f$|\omega|>\pi/T=\pi/(N\Delta t)\f$.
+ *
+ * The FFTW3 transformation consequently has to be scaled according to
+ * \f[
+ *   Y_k = \sum_{j=0}^{N-1} X_j e^{-i 2 \pi \frac{j k}{N}} \Delta t
+ * \f]
+ * and
+ * \f[
+ *   X_k = \sum_{j=0}^{N-1} Y_j e^{i 2 \pi \frac{j k}{N}} \frac{1}{N\Delta t}
+ * \f]
+ *
+ * Where \f$X_k=s(t=k\Delta t)\f$ is the time series
+ * with \f$N\f$ samples at \f$\Delta t\f$ sampling interval.
+ * \f$Y_k=\tilde{s}(\omega=k\Delta \omega)\f$ are samples of the Fourier
+ * integral transform, where
+ * \f$\Delta\omega=2\pi/T\f$ and \f$T=N\Delta t\f$.
+ *
+ * The library provides functions which return the appropriate scaling factors
+ * such that application of a inverse transformation in sequence with a
+ * forward transformation is an identity-operation.
+ *
+ * \sa fourier::fft::DRFFTWAFFArrayEngine::scale_series,
+ *     fourier::fft::DRFFTWAFFArrayEngine::scale_spectrum,
+ *     fourier::fft::DRFFTWAFF::scale_series,
+ *     fourier::fft::DRFFTWAFF::scale_spectrum
+ */
+
+// ----- END OF doxygen.txt ----- 

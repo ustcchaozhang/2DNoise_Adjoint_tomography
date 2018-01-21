@@ -1,0 +1,17 @@
+Vertical single force at topmost interface (normally surface)
+
+typ, sig, src, Ts, Td, Zs
+2, 2, 1, 0., 0.0125, 0.000
+
+F0
+1.e13
+
+units
+nm
+
+sourec is defined as
+vertical single force (typ=2)
+source signal is taken as is (sig=2), 
+  i.e. first derivative of Müller-Brüstle function,
+  i.e. sin(t)**3
+use compiled source time function (src=1)
