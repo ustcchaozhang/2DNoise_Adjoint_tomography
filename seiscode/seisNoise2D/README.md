@@ -1,13 +1,16 @@
 # seisNoise2D
 
-To run the numerical experiments in the paper
+This is the source code without users' manual about how to use it. If you need a detail description, feel free to send an email to Chao Zhang (czhang18@mail.ustc.edu.cn) with a brief introduction about yourself and why you want to use it. We will be happy to help.
 
-cd $seisNoise2D/JGR2017
 
-Exp1 -- figure 8d
 
-cd Exp1
 
-./run_this_example.sh
 
-cd submit_job
+
+
+
+
+
+
+
+
