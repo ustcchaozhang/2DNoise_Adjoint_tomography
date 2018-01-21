@@ -1,12 +1,13 @@
-# seisDD
+# seisNoise2D
 
-Double-difference adjoint seismic tomography
+To run the numerical experiments in the paper
 
-Yanhua O. Yuan; Frederik J. Simons; Jeroen Tromp
+cd $seisNoise2D/JGR2017
 
-Geophys. J. Int. 2016 : ggw233v1-ggw233.
+Exp1 -- figure 8d
 
-http://dx.doi.org/10.1093/gji/ggw233
+cd Exp1
 
-[READ INSTRUCTIONS](INSTRUCTIONS)
+./run_this_example.sh
 
+cd submit_job
