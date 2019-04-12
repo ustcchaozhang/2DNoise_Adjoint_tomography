@@ -19,8 +19,6 @@ This is the source code without users' manual about how to use it. If you need a
 -------------------------------------------------
 # part-2: Joint-inversion-based-on-adjoint-method
 
-This is providing the final models, REGFs and codes in the paper:
-Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton.  J. Geophys. Res. , 123, DOI: 10.1002/2017JB015019
+Following the workflow of part-1, we develope the joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography.
 
-This is providing the final models, REGFs and codes in the paper:
-Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton.  J. Geophys. Res. , 123, DOI: 10.1002/2017JB015019
+
