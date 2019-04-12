@@ -25,5 +25,4 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
 
 (基于线性台阵背景噪声和远震体波联合伴随层析成像方法)
  
- <img src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg" width="150" height="150" alt="图片加载失败时，显示这段字"/>
- <div align=center><img width="150" height="150" src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg"/></div>
+ <img src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg" width="200" height="200" alt="图片加载失败"/>
