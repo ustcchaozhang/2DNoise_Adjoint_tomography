@@ -21,4 +21,4 @@ This is the source code without users' manual about how to use it. If you need a
 
 Following the workflow of part-1, we develope the joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography.
 
-![Image text](https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg?imageMogr2/auto-orient/strip)
+![Image text](https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg)
