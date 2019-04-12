@@ -24,7 +24,5 @@ This is the source code without users' manual about how to use it. If you need a
 Following the workflow of part-1, we develope the joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography.
 
 (基于线性台阵背景噪声和远震体波联合伴随层析成像方法)
-
- ![image](https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg)
  
- <img src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg" width="150" height="150" alt="图片加载失败时，显示这段字"/>
+ <img src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg" width="150" height="200" alt="图片加载失败时，显示这段字"/>
