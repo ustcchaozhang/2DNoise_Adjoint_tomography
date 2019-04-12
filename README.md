@@ -1,4 +1,4 @@
-# part-1:2DNoise_Adjoint_tomography
+## part-1:2DNoise_Adjoint_tomography
 
 (基于线性台阵背景噪声伴随层析成像方法)
 
@@ -19,7 +19,7 @@ Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear arra
 This is the source code without users' manual about how to use it. If you need a detail description, feel free to send an email to Chao Zhang (czhang18@mail.ustc.edu.cn) with a brief introduction about yourself and why you want to use it. We will be happy to help.
 
 -------------------------------------------------
-# part-2: Joint-inversion-based-on-adjoint-method
+## part-2: Joint-inversion-based-on-adjoint-method
 
 Following the workflow of part-1, we develope the joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography.
 
