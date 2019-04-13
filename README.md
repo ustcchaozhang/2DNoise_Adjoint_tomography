@@ -27,4 +27,4 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
  
  <img src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg" div align=center width="400" height="400" alt="图片加载失败"/> 
 
-<div align=center><img width="150" height="150" src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg/></div>
+<div align=center><img width="150" height="150" src="https://github.com/HeTingwei/ReadmeLearn/blob/master/avatar1.jpg"/></div>
