@@ -1,4 +1,5 @@
-## part-1:2D ambient noise adjoint tomography  基于线性台阵背景噪声伴随层析成像方法)
+## part-1:2D ambient noise adjoint tomography    
+基于线性台阵背景噪声伴随层析成像方法
 
 This is providing the final models, REGFs and codes in the paper:
 Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton.  J. Geophys. Res. , 123, DOI: 10.1002/2017JB015019
