@@ -30,3 +30,4 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
                                                   
 
 ## References(参考文献)
+[1]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2018, Linear Array Ambient Noise Adjoint Tomography Reveals Intense Crust Mantle Interactions in North China Craton, Journal of Geophysical Research: Solid Earth, 123(1), 368-383. 
