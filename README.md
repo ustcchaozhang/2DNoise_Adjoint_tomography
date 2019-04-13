@@ -26,3 +26,4 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
 (基于线性台阵背景噪声和远震体波联合伴随层析成像方法)
  
 <div align=center><img width="500" height="500" src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg"/></div>
+<div style="text-align: center;">联合伴随层析成像流程示意图</div>
