@@ -25,4 +25,4 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
  
 <div align=center><img width="500" height="500" src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg"/></div>
 
-                                               联合伴随层析成像流程示意图
+                                                  图-1 联合伴随层析成像流程示意图
