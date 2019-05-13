@@ -4,6 +4,9 @@
 This is providing the final models, REGFs and codes in the paper:
 Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear array ambient noise adjoint tomography reveals intense crust-mantle interactions in North China Craton.  J. Geophys. Res. , 123, DOI: 10.1002/2017JB015019
 
+<div align=center><img width="500" height="500" src="https://github.com/ustcchaozhang/image_fold/blob/master/ambient_noise.png"/></div>
+
+                                 图-1 基于线性台阵背景噪声波形伴随成像法流程示意图
 
 1 Finalmodel: the inverted Vs model: M14_Fang_final(Figure 8d), M23_Duan_final(Figure 10b)
 
@@ -26,7 +29,7 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
  
 <div align=center><img width="500" height="500" src="https://github.com/ustcchaozhang/image_fold/blob/master/workflow_1.jpg"/></div>
 
-                                                  图-1 联合伴随层析成像流程示意图
+                                                  图-2 联合伴随层析成像流程示意图
                                                   
 
 ## References(参考文献)
