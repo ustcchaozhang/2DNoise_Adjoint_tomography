@@ -21,7 +21,7 @@ Zhang C., Yao H., Liu Q., Zhang P., Yuan Y., Feng J., Fang L., 2018. Linear arra
 This is the source code without users' manual about how to use it. If you need a detail description, feel free to send an email to Chao Zhang (czhang18@mail.ustc.edu.cn) with a brief introduction about yourself and why you want to use it. We will be happy to help.
 
 -------------------------------------------------
-## part-2: Joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography  
+## part-2: Joint inversion based on adjoint tomography of ambient noise and teleseismic body-wave for linear arrays   
 基于线性台阵背景噪声和远震体波联合伴随层析成像方法  
 
 Following the workflow of part-1, we develope the joint inversion of ambient noise and teleseismic body-wave for linear arrays based on adjoint tomography.
@@ -35,8 +35,10 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
 ## References(参考文献)
 [1]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2018, Linear Array Ambient Noise Adjoint Tomography Reveals Intense Crust Mantle Interactions in North China Craton, Journal of Geophysical Research: Solid Earth, 123(1), 368-383.   
 
-[2]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2017, Ambient noise adjoint tomography for a Linear array in North China, AGU Fall Meeting, New Orleans.  
+[2]	Zhang, C., Yao, H., Tong,P., Liu, Q., 2019, Joint inversion of ambient noise and teleseismic body-wave data for linear arrays based on adjoint tomography (In preparation).  
 
-[3]	张超, 姚华建, 刘沁雅, 袁艳华, 张萍, 冯吉坤, 房立华, 2017, 基于线性台阵波形反演的背景噪声互相关函数二维结构成像方法研究及应用, 第4届中国地球科学联合学术年会, 北京.   
+[3]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2017, Ambient noise adjoint tomography for a Linear array in North China, AGU Fall Meeting, New Orleans.  
 
-[4]	Yao, H., Zhang, C., Lei, T., and Liu, Q., 2018. Linear Array Ambient Noise Adjoint Tomography with Phases and Amplitude Ratios: Methodology and Application, AOGS Annual meeting, Hawaii.
+[4]	张超, 姚华建, 刘沁雅, 袁艳华, 张萍, 冯吉坤, 房立华, 2017, 基于线性台阵波形反演的背景噪声互相关函数二维结构成像方法研究及应用, 第4届中国地球科学联合学术年会, 北京.   
+
+[5]	Yao, H., Zhang, C., Lei, T., and Liu, Q., 2018. Linear Array Ambient Noise Adjoint Tomography with Phases and Amplitude Ratios: Methodology and Application, AOGS Annual meeting, Hawaii.
