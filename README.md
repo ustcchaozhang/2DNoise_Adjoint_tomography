@@ -35,7 +35,7 @@ Following the workflow of part-1, we develope the joint inversion of ambient noi
 ## References(参考文献)
 [1]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2018, Linear Array Ambient Noise Adjoint Tomography Reveals Intense Crust Mantle Interactions in North China Craton, Journal of Geophysical Research: Solid Earth, 123(1), 368-383.   
 
-[2]	Zhang, C., Yao, H., Tong,P., Liu, Q., 2019, Joint inversion of ambient noise and teleseismic body-wave data for linear arrays based on adjoint tomography (In preparation).  
+[2]	Zhang, C., Yao, H., Tong,P., Liu, Q., 2019, Joint inversion of surface wave and teleseismic body-wave data for linear arrays based on adjoint tomography (In preparation).  
 
 [3]	Zhang, C., Yao, H., Liu, Q., Zhang, P., Yuan, Y., Feng, J., Fang, L., 2017, Ambient noise adjoint tomography for a Linear array in North China, AGU Fall Meeting, New Orleans.  
 
