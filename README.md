@@ -1,4 +1,4 @@
-#### Adjoint tomography for Linear seismic array data
+##                                   Adjoint tomography for Linear seismic array data
 
 ## part-1:2D ambient noise adjoint tomography    
 基于线性台阵背景噪声伴随层析成像方法
